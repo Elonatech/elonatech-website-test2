@@ -1,0 +1,15 @@
+.faq {
+  height: 35rem;
+  background: #34548c;
+}
+
+@media (max-width: 768px) {
+  .faq {
+    height: 100vh;
+  }
+
+  .animation-context {
+    height: 100vh;
+    width: 100%;
+  }
+}

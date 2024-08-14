@@ -1,0 +1,48 @@
+.img-rou {
+  border-radius: 50%;
+  width: 5vmin;
+  height: 5vmin;
+  object-fit: cover;
+  object-position: center;
+  transition: all 0.2s ease;
+}
+
+.ko:hover {
+  cursor: pointer;
+  position: relative;
+  bottom: 20px;
+  transition: all 0.25s ease 0s;
+}
+.WebDesignAndDevelopment {
+  background-position: top !important;
+  background-size: cover !important;
+  width: 90%;
+  height: 350px;
+  position: relative;
+  cursor: pointer;
+}
+
+.webOverlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 4;
+  background: linear-gradient(
+    0deg,
+    rgba(52, 84, 140, 0.9),
+    rgba(52, 84, 140, 0.9)
+  );
+  overflow: hidden;
+  width: 90%;
+  height: 0;
+  transition: 0.5s ease;
+}
+
+.webContainer:hover .webOverlay {
+  height: 23%;
+}
+
+.carousel-control-next,
+.carousel-control-prev /*, .carousel-indicators */ {
+  filter: invert(100%);
+}

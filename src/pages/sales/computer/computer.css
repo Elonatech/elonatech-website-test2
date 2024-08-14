@@ -1,0 +1,100 @@
+.take {
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.take:hover {
+  transform: scale(0.9);
+  transition: all 0.3s;
+}
+.form-controli:focus {
+  border-color: #ced4da; /* default B5 color or set your own color*/
+  border: none !important; /* if you want to remove borders at all*/
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Pop-Up-Message */
+
+.pop-up-message {
+  width: 68rem;
+  font-family: sans-serif;
+  position: relative;
+}
+
+/*   Media Pop Up Message  */
+
+@media only screen and (max-width: 1673px) {
+  .pop-up-message {
+    width: 59rem;
+    font-family: sans-serif;
+    position: relative;
+    left: 29px;
+  }
+}
+
+@media only screen and (max-width: 1599px) {
+  .pop-up-message {
+    width: 57rem;
+    font-family: sans-serif;
+    position: relative;
+    left: 25px;
+  }
+}
+
+@media only screen and (max-width: 1538px) {
+  .pop-up-message {
+    width: 51rem;
+    font-family: sans-serif;
+    position: relative;
+    left: 25px;
+  }
+}
+
+@media only screen and (max-width: 1428px) {
+  .pop-up-message {
+    width: 49rem;
+    font-family: sans-serif;
+    position: relative;
+    left: 25px;
+  }
+}
+
+@media only screen and (max-width: 1399px) {
+  .pop-up-message {
+    width: 49rem;
+    font-family: sans-serif;
+    position: relative;
+    left: 25px;
+  }
+}
+
+@media only screen and (max-width: 1290px) {
+  .pop-up-message {
+    width: 47rem;
+    font-family: sans-serif;
+    position: relative;
+  }
+}
+
+@media only screen and (max-width: 500px) {
+  .pop-up-message {
+    width: 24rem;
+    font-family: sans-serif;
+    position: relative;
+    left: 25px;
+  }
+}
+
+.editorContainer {
+  height: 400px;
+  overflow: scroll;
+  overflow-x: hidden;
+  border: 1px solid lightgray;
+}
+
+.editor {
+  height: 300%;
+  border: none;
+  overflow-y: hidden;
+}

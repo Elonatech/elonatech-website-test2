@@ -1,0 +1,23 @@
+.trainer-item {
+  transition: 0.5s;
+  border: 1px solid transparent;
+  transition: 0.5s;
+}
+
+.trainer-item:hover {
+  border-color: var(--primary);
+}
+
+.rm-border-train {
+  border-right: 1px solid red;
+}
+
+@media only screen and (max-width: 500px) {
+  .rm-border-train {
+    border: none;
+  }
+
+  .straight-line {
+    border: none;
+  }
+}

@@ -1,0 +1,29 @@
+.remote-text {
+  text-align: left;
+  width: 50%;
+}
+.photo-icon {
+  width: 80px;
+  /* border-radius: 50%; */
+  margin-left: 20px;
+  margin-top: 20px;
+}
+.remote-card {
+  transition: all 0.3s;
+}
+.remote-card:hover {
+  transform: scale(0.9);
+}
+
+@media screen and (max-width: 768px) {
+  .remote-text {
+    text-align: center;
+    width: 100%;
+  }
+  .remote-text p {
+    text-align: center;
+  }
+  .remote-row {
+    margin-left: 30px;
+  }
+}

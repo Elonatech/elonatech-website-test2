@@ -1,0 +1,83 @@
+.about__text {
+  padding-top: 20px;
+}
+
+.about__text h2 {
+  color: #111111;
+  font-weight: 700;
+  text-transform: uppercase;
+  margin-bottom: 15px;
+}
+
+.about__text p {
+  color: #111111;
+  margin-bottom: 26px;
+}
+
+.about__text .about__achievement .about__achieve__item {
+  display: inline-block;
+  margin-right: 95px;
+  margin-bottom: 30px;
+}
+
+.about__text .about__achievement .about__achieve__item:last-child {
+  margin-right: 0;
+}
+
+.about__text .about__achievement .about__achieve__item span {
+  font-size: 30px;
+  color: #4c57d6;
+}
+
+.about__text .about__achievement .about__achieve__item h4 {
+  color: #111111;
+  font-weight: 700;
+  margin-top: 12px;
+}
+
+.about__text .about__achievement .about__achieve__item p {
+  font-size: 13px;
+  text-transform: uppercase;
+  color: #444444;
+  margin-bottom: 0;
+}
+
+.feature-section {
+  background: #f5f5f5;
+  padding-bottom: 70px;
+}
+
+.feature__item {
+  background: #ffffff;
+  -webkit-box-shadow: 0px 0px 10px rgba(18, 8, 81, 0.15);
+  box-shadow: 0px 0px 10px rgba(18, 8, 81, 0.15);
+  padding: 30px 35px 32px 35px;
+  text-align: center;
+  -webkit-transition: all 0.3s;
+  -o-transition: all 0.3s;
+  transition: all 0.3s;
+  margin-bottom: 30px;
+}
+
+.feature__item:hover {
+  -webkit-box-shadow: 0px 8px 30px rgba(18, 8, 81, 0.2);
+  box-shadow: 0px 8px 30px rgba(18, 8, 81, 0.2);
+}
+
+.feature__item span {
+  font-size: 42px;
+  color: #4c57d6;
+}
+
+.feature__item h5 {
+  font-size: 20px;
+  color: #111111;
+  font-weight: 700;
+  margin-top: 18px;
+  margin-bottom: 10px;
+}
+
+.feature__item p {
+  color: #111111;
+  margin-bottom: 0;
+}

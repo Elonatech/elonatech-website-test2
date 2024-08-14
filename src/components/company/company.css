@@ -1,0 +1,52 @@
+.transparent {
+  border: 1px solid white;
+}
+
+.transparent {
+  border-top: 100px solid transparent;
+}
+
+/* ----------   core values --------------- */
+
+.border-start-fg {
+  border: 1px solid white;
+}
+
+@media only screen and (max-width: 500px) {
+  .transparent {
+    border: none;
+  }
+
+  .border-start-fg {
+    border: none;
+  }
+  .company-professional {
+    position: absolute;
+    top: 7px;
+    padding-right: 70px;
+  }
+  .company-team-bord {
+    position: relative;
+    bottom: 40px;
+    right: 50px;
+  }
+
+  .company-integrity {
+    position: relative;
+    bottom: 40px;
+    right: 50px;
+  }
+
+  .company-excellence {
+    position: relative;
+    bottom: 70px;
+  }
+
+  .company-team-text {
+    text-align: start;
+  }
+
+  .company-professionalism-text {
+    text-align: start;
+  }
+}

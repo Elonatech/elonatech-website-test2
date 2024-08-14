@@ -1,0 +1,13 @@
+.cvb:hover {
+  background-color: #dc3545;
+}
+
+.refd {
+  color: #dc3545;
+}
+
+.cvb:focus {
+  outline: none !important;
+  box-shadow: none;
+}
+

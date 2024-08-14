@@ -1,0 +1,33 @@
+.carouselCard{
+ height: 700px;
+color: white;
+background-size: cover;
+background-position: center;
+
+}
+
+
+.carouselCardPadding{
+padding-top: 16rem;
+padding-left: 5rem;
+}
+
+.carouselText{
+    margin-bottom: 150px;
+}
+
+
+@media only screen and (max-width: 500px) {
+    .carouselCard{
+       height: 567px;
+       color: white;
+       background-size: cover;
+       background-position: center;
+       
+       }
+       .carouselCardPadding{
+        padding-top: 12rem;
+        padding-left: 5rem;
+        }
+
+}

@@ -1,0 +1,30 @@
+/*--------------------------------------------------------------
+# Services Section
+--------------------------------------------------------------*/
+.servic .service-item {
+  padding: 40px;
+  background: #fff;
+  height: 100%;
+}
+
+.servic .service-item .icon {
+  width: 48px;
+  height: 48px;
+  position: relative;
+  margin-bottom: 50px;
+}
+
+.servic .service-item p {
+  line-height: 24px;
+  font-size: 14px;
+  margin-bottom: 0;
+}
+
+.servic .service-item:hover .icon:before {
+  background: red;
+}
+
+.mrth {
+  -webkit-filter: brightness(60%);
+  filter: brightness(60%);
+}

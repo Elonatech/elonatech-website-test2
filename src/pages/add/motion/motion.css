@@ -1,0 +1,32 @@
+.motion-video {
+  width: 560px;
+  height: 415px;
+}
+
+.motion-img {
+  width: 450px;
+  height: 35vh;
+}
+
+.sample-img {
+  margin-left: 50px;
+}
+
+
+@media (max-width: 768px) {
+  .motion-video {
+    width: 380px;
+    height: 35vh;
+    margin-left: 40px;
+  }
+
+  .sample-img {
+    margin-left: 60px;
+  }
+
+  .motion-img {
+    width: 350px;
+    height: 25vh;
+    margin-left: 40px;
+  }
+}

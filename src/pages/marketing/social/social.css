@@ -1,0 +1,35 @@
+.elonateech-text {
+  max-width: 600px;
+  max-height: 85px;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  font-size: 1.1rem;
+}
+
+.elonateech-text-btn {
+  appearance: none;
+  background-color: #014e78;
+  color: white;
+  padding: 0.5em;
+  cursor: pointer;
+  width: fit-content;
+  border-radius: 0.25em;
+  -webkit-border-radius: 0.25em;
+  -moz-border-radius: 0.25em;
+  -ms-border-radius: 0.25em;
+  -o-border-radius: 0.25em;
+}
+
+.elonateech-text-btn::before {
+  content: "Read More";
+  text-transform: capitalize;
+}
+
+.elonateech-text-btn:checked::before {
+  content: "Read Less";
+}
+
+.elonateech-text:has(+ .elonateech-text-btn:checked) {
+  max-height: none;
+}
