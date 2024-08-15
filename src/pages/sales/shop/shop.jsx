@@ -284,7 +284,7 @@ const Shop = () => {
               </div>
             </section>
           </div>
-          <div class="col-md-3  mb-5">
+          <div id="last" class="col-md-3 ">
             <div class="position-sticky p-3" style={{ top: "2rem" }}>
               <div class="mb-3 mt-4 rounded">
                 <form class="d-flex  pt-5"></form>

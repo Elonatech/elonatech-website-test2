@@ -10,6 +10,7 @@ import "./company.css";
 import CompanyForm from "../forms/companyForm";
 import companyProfilePdf from "./Our-Company-Profile_Elonatech.pdf";
 import { Helmet } from "react-helmet-async";
+import image from "./image/groupics.jpg"
 
 const Company = () => {
   return (
@@ -206,7 +207,7 @@ const Company = () => {
             <div className=" text-center mt-2 mb-4">
               <img
                 src="https://i.stack.imgur.com/qq8AE.gif"
-                data-src="https://res.cloudinary.com/elonatech/image/upload/v1710316935/groupPicture/general_team_picture_j8lg2m.jpg"
+                data-src={image}
                 className="img-fluid rounded lazyload"
               />
             </div>
