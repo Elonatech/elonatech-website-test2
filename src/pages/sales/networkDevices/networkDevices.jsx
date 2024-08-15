@@ -20,6 +20,14 @@ const NetworkDevices = () => {
   const [pageNumberLimit, setpageNumberLimit] = useState(4);
   const [maxPageNumberLimit, setmaxPageNumberLimit] = useState(4);
   const [minPageNumberLimit, setminPageNumberLimit] = useState(0);
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  const [activeItem, setActiveItem] = useState("Item 6");
+
+  const handleClick = (item) => {
+    setActiveItem(item);
+  };
+
 
 
 
@@ -265,22 +273,35 @@ const NetworkDevices = () => {
           <div class="col-md-3 mb-5">
             <div class="position-sticky p-3" style={{ top: "2rem" }}>
               <div class="mb-3 mt-4 rounded">
-                <form class="d-flex pt-5">
-                </form>
-                <h4 class="">Categories</h4>
+                <form class="d-flex pt-5"></form>
+                <h4 class="">Browse Categories</h4>
                 <ul className="list-unstyled">
                   <li>
                     <Link
                       to={"/shop"}
-                      className="text-decoration-none text-dark"
+                      className="text-dark"
+                      style={{ textDecoration: "none" }}
+                      onMouseEnter={(e) =>
+                        (e.currentTarget.style.textDecoration = "underline")
+                      }
+                      onMouseLeave={(e) =>
+                        (e.currentTarget.style.textDecoration = "none")
+                      }
                     >
-                      Shop
+                      All
                     </Link>
                   </li>
                   <li>
                     <Link
                       to={"/computers"}
-                      className="text-decoration-none text-dark"
+                      className="text-dark"
+                      style={{ textDecoration: "none" }}
+                      onMouseEnter={(e) =>
+                        (e.currentTarget.style.textDecoration = "underline")
+                      }
+                      onMouseLeave={(e) =>
+                        (e.currentTarget.style.textDecoration = "none")
+                      }
                     >
                       Computers
                     </Link>
@@ -288,7 +309,14 @@ const NetworkDevices = () => {
                   <li>
                     <Link
                       to={"/office-equipment"}
-                      className="text-decoration-none text-dark"
+                      className="text-dark"
+                      style={{ textDecoration: "none" }}
+                      onMouseEnter={(e) =>
+                        (e.currentTarget.style.textDecoration = "underline")
+                      }
+                      onMouseLeave={(e) =>
+                        (e.currentTarget.style.textDecoration = "none")
+                      }
                     >
                       Office Equipment
                     </Link>
@@ -296,7 +324,14 @@ const NetworkDevices = () => {
                   <li>
                     <Link
                       to={"/pos-system"}
-                      className="text-decoration-none text-dark"
+                      className="text-dark"
+                      style={{ textDecoration: "none" }}
+                      onMouseEnter={(e) =>
+                        (e.currentTarget.style.textDecoration = "underline")
+                      }
+                      onMouseLeave={(e) =>
+                        (e.currentTarget.style.textDecoration = "none")
+                      }
                     >
                       POS System
                     </Link>
@@ -304,7 +339,14 @@ const NetworkDevices = () => {
                   <li>
                     <Link
                       to={"/printers"}
-                      className="text-decoration-none text-dark"
+                      className="text-dark"
+                      style={{ textDecoration: "none" }}
+                      onMouseEnter={(e) =>
+                        (e.currentTarget.style.textDecoration = "underline")
+                      }
+                      onMouseLeave={(e) =>
+                        (e.currentTarget.style.textDecoration = "none")
+                      }
                     >
                       Printers
                     </Link>
@@ -312,7 +354,10 @@ const NetworkDevices = () => {
                   <li>
                     <Link
                       to={"/network-devices"}
-                      className="text-decoration-none text-dark"
+                      className={`item ${
+                        activeItem === "Item 6" ? "active" : ""
+                      }`}
+                      onClick={() => handleClick("Item 6")}
                     >
                       Network Devices
                     </Link>

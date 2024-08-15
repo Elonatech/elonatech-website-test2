@@ -19,6 +19,14 @@ const Pos = () => {
   const [pageNumberLimit, setpageNumberLimit] = useState(4);
   const [maxPageNumberLimit, setmaxPageNumberLimit] = useState(4);
   const [minPageNumberLimit, setminPageNumberLimit] = useState(0);
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  const [activeItem, setActiveItem] = useState("Item 4");
+
+  const handleClick = (item) => {
+    setActiveItem(item);
+  };
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -267,20 +275,34 @@ const Pos = () => {
                   {/* <input class="form-control me-2 " type="search" placeholder="Search" aria-label="Search"/>
         <button class="btn btn-success me-5" type="submit">Search</button> */}
                 </form>
-                <h4 class="fw-bold">Categories</h4>
+                <h4 class="fw-bold">Browse Categories</h4>
                 <ul className="list-unstyled">
                   <li>
                     <Link
                       to={"/shop"}
-                      className="text-decoration-none text-dark"
+                      className="text-dark"
+                      style={{ textDecoration: "none" }}
+                      onMouseEnter={(e) =>
+                        (e.currentTarget.style.textDecoration = "underline")
+                      }
+                      onMouseLeave={(e) =>
+                        (e.currentTarget.style.textDecoration = "none")
+                      }
                     >
-                      Shop
+                      All
                     </Link>
                   </li>
                   <li>
                     <Link
                       to={"/computers"}
-                      className="text-decoration-none text-dark"
+                      className="text-dark"
+                      style={{ textDecoration: "none" }}
+                      onMouseEnter={(e) =>
+                        (e.currentTarget.style.textDecoration = "underline")
+                      }
+                      onMouseLeave={(e) =>
+                        (e.currentTarget.style.textDecoration = "none")
+                      }
                     >
                       Computers
                     </Link>
@@ -288,7 +310,14 @@ const Pos = () => {
                   <li>
                     <Link
                       to={"/office-equipment"}
-                      className="text-decoration-none text-dark"
+                      className="text-dark"
+                      style={{ textDecoration: "none" }}
+                      onMouseEnter={(e) =>
+                        (e.currentTarget.style.textDecoration = "underline")
+                      }
+                      onMouseLeave={(e) =>
+                        (e.currentTarget.style.textDecoration = "none")
+                      }
                     >
                       Office Equipment
                     </Link>
@@ -296,7 +325,10 @@ const Pos = () => {
                   <li>
                     <Link
                       to={"/pos-system"}
-                      className="text-decoration-none text-dark"
+                      className={`item ${
+                        activeItem === "Item 4" ? "active" : ""
+                      }`}
+                      onClick={() => handleClick("Item 4")}
                     >
                       POS System
                     </Link>
@@ -304,7 +336,14 @@ const Pos = () => {
                   <li>
                     <Link
                       to={"/printers"}
-                      className="text-decoration-none text-dark"
+                      className="text-dark"
+                      style={{ textDecoration: "none" }}
+                      onMouseEnter={(e) =>
+                        (e.currentTarget.style.textDecoration = "underline")
+                      }
+                      onMouseLeave={(e) =>
+                        (e.currentTarget.style.textDecoration = "none")
+                      }
                     >
                       Printers
                     </Link>
@@ -312,7 +351,14 @@ const Pos = () => {
                   <li>
                     <Link
                       to={"/network-devices"}
-                      className="text-decoration-none text-dark"
+                      className="text-dark"
+                      style={{ textDecoration: "none" }}
+                      onMouseEnter={(e) =>
+                        (e.currentTarget.style.textDecoration = "underline")
+                      }
+                      onMouseLeave={(e) =>
+                        (e.currentTarget.style.textDecoration = "none")
+                      }
                     >
                       Network Devices
                     </Link>

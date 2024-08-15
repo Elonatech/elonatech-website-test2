@@ -280,7 +280,7 @@ const ComputerPages = () => {
             <div class="position-sticky p-3" style={{ top: "2rem" }}>
               <div class="mb-3 mt-4 rounded">
                 <form class="d-flex  pt-5"></form>
-                <h4 class="fw-bold">Categories</h4>
+                <h4 class="fw-bold">Pages Categories</h4>
                 <ul className="list-unstyled">
                   <li>
                     <Link

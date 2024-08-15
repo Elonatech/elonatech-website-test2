@@ -42,6 +42,22 @@
   }
 }
 
+
+#itemList {
+  list-style-type: none;
+  padding: 0;
+}
+
+.item {
+ 
+  background-color: lightgray;
+  cursor: pointer;
+}
+
+.item.active {
+  background-color: black;
+  color: white;
+}
 @media only screen and (max-width: 1538px) {
   .pop-up-message {
     width: 51rem;

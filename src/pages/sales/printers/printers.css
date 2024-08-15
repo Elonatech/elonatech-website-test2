@@ -6,6 +6,26 @@
   position: relative;
 }
 
+#itemList {
+  list-style-type: none;
+  padding: 0;
+}
+
+.item {
+ 
+  background-color: lightgray;
+  cursor: pointer;
+}
+
+.item.active {
+  background-color: black;
+  color: white;
+  text-decoration: none;
+ font-weight: 800;
+ padding:2px 10px;
+ border-radius: 5px;
+}
+
 /*   Media Pop Up Message  */
 
 @media only screen and (max-width: 1673px) {
