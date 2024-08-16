@@ -202,7 +202,7 @@ Graphic Design, Branding and Digital Marketing."
                 <Link className="text-decoration-none" to={"/violet-oku"}>
                   <img
                     class="img-fluid mb-4"
-                    src="https://res.cloudinary.com/elonatech/image/upload/v1709808286/teamPage/Admin_-_Copy_ugao5i.png"
+                    src="https://res.cloudinary.com/elonatech/image/upload/v1723795656/Admin__3_uuxdh0.jpg"
                     alt=""
                   />
                   <h4 className="fw-bold" style={{ color: "#34548c" }}>

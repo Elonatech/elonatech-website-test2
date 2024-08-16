@@ -1,7 +1,7 @@
 import "./css/team.css";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import image from "../company/image/Admin.jpg"
+
 
 const Team = () => {
   return (
@@ -328,7 +328,7 @@ const Team = () => {
                     <Link className="text-decoration-none" to={"/violet-oku"}>
                       <img
                         class="img-fluid mb-4"
-                        src={image}
+                        src="https://res.cloudinary.com/elonatech/image/upload/v1723795656/Admin__3_uuxdh0.jpg"
                         alt=""
                       />
                       <h4 className="fw-bold" style={{ color: "#34548c" }}>

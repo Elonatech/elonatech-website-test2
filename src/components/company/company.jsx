@@ -207,7 +207,7 @@ const Company = () => {
             <div className=" text-center mt-2 mb-4">
               <img
                 src="https://i.stack.imgur.com/qq8AE.gif"
-                data-src={image}
+                data-src="https://res.cloudinary.com/elonatech/image/upload/v1723798509/group_pics_dg1sql.jpg"
                 className="img-fluid rounded lazyload"
               />
             </div>
