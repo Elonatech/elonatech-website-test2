@@ -282,14 +282,33 @@ const PrintersPages = () => {
               </div>
             </section>
           </div>
-          <div class="col-md-3  mb-5">
-            <div class="position-sticky p-3" style={{ top: "2rem" }}>
-              <div class="mb-3 mt-4 rounded">
-                <form class="d-flex pt-5">
-                  {/* <input class="form-control me-2 " type="search" placeholder="Search" aria-label="Search"/>
-        <button class="btn btn-success me-5" type="submit">Search</button> */}
-                </form>
-                <h4 class="fw-bold">Browse Categories</h4>
+          <div class="col-md-3 ">
+            <div
+              class="position-sticky "
+              style={{ top: "2rem", marginTop: "20px" }}
+            >
+              <div
+                style={{
+                  marginTop: "50px",
+                  paddingTop: "30px",
+                  paddingBottom: "30px",
+
+                  marginLeft: "15px"
+                }}
+              >
+                <form
+                  style={{
+                    paddingTop: "20px",
+                    paddingBottom: "20px"
+                  }}
+                  class="d-flex "
+                ></form>
+                <h4
+                  style={{ marginTop: "-8px", marginBottom: "16px" }}
+                  class="fw-bold "
+                >
+                  Browse Categories
+                </h4>
                 <ul className="list-unstyled">
                   <li>
                     <Link
@@ -303,7 +322,7 @@ const PrintersPages = () => {
                         (e.currentTarget.style.textDecoration = "none")
                       }
                     >
-                      All
+                      All Products
                     </Link>
                   </li>
                   <li>

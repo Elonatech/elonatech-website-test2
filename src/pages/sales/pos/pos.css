@@ -26,6 +26,11 @@
   background-color: lightgray;
   cursor: pointer;
 }
+.last{
+margin-left: -5px;
+padding: 5px;
+
+}
 
 .item.active {
   background-color: black;

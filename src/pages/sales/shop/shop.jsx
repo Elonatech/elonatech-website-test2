@@ -284,13 +284,29 @@ const Shop = () => {
               </div>
             </section>
           </div>
-          <div id="last" class="col-md-3 ">
-            <div class="position-sticky p-5 " style={{ top: "2rem" }}>
-              <div class=" mt-5 rounded last">
+          <div class="col-md-3 ">
+            <div
+              class="position-sticky "
+              style={{ top: "2rem", marginTop: "20px" }}
+            >
+              <div
+                style={{
+                  marginTop: "50px",
+                  paddingTop: "30px",
+                  paddingBottom: "30px",
+              
+                  marginLeft: "15px"
+                }}
+              >
                 <form
-               class="d-flex p-3 "
+                  style={{
+                    paddingTop: "20px",
+                    paddingBottom: "20px",
+                   
+                  }}
+                  class="d-flex "
                 ></form>
-                <h4 class="fw-bold">Browse Categories</h4>
+                <h4 style={{marginTop:"-8px", marginBottom:"16px"}} class="fw-bold ">Browse Categories</h4>
                 <ul className="list-unstyled">
                   <li>
                     <Link
@@ -300,7 +316,7 @@ const Shop = () => {
                       }`}
                       onClick={() => handleClick("Item 1")}
                     >
-                      All
+                      All Products
                     </Link>
                   </li>
                   <li>

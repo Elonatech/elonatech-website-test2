@@ -25,6 +25,11 @@
  padding:2px 10px;
  border-radius: 5px;
 }
+.last{
+margin-left: -5px;
+padding: 5px;
+
+}
 
 /*   Media Pop Up Message  */
 

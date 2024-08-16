@@ -48,7 +48,7 @@ const TeamAdmin = () => {
           <div className="col-md-4">
             <div className="card border-0">
               <img
-                src="https://res.cloudinary.com/elonatech/image/upload/v1723795656/Admin__3_uuxdh0.jpg"
+                src="https://res.cloudinary.com/elonatech/image/upload/v1723814537/admin_dctuiq.jpg"
                 className="img-fluid"
                 alt=""
               />
