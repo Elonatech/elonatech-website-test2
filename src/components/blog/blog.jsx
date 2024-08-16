@@ -119,7 +119,11 @@ const Blog = () => {
                     <div className="col-md-12" key={item.id}>
                       <Link
                         className="text-decoration-none text-dark"
-                        to={`${item._id}/${item.title.split(` `).join(`-`).toLowerCase()}`}>
+                        to={`${item._id}/${item.title
+                          .split(` `)
+                          .join(`-`)
+                          .toLowerCase()}`}
+                      >
                         <div className="mt-4">
                           <div className="row g-0 shim ">
                             <div className="col-md-6">
@@ -144,7 +148,10 @@ const Blog = () => {
                                   {" "}
                                   <Link
                                     className="text-decoration-none blogTitle-"
-                                    to={`${item._id}/${item.title.split(` `).join(`-`).toLowerCase()}`}
+                                    to={`${item._id}/${item.title
+                                      .split(` `)
+                                      .join(`-`)
+                                      .toLowerCase()}`}
                                   >
                                     {item.title}
                                   </Link>
@@ -203,10 +210,48 @@ const Blog = () => {
           <div className="col-md-3">
             <div className="mt-4">
               <h5 style={{ color: "#34548c" }}>Categories</h5>
-              <ul className="list-unstyled mt-2">
-                <li>News</li>
-                <li>Trend</li>
-              </ul>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  margin: "10px",
+                  gap: "5px",
+                  width:"50%"
+                }}
+                className="mt-2"
+              >
+                <button
+                  style={{
+                    borderRadius: "10px",
+                    backgroundColor: "rgb(0, 123, 255)",
+                    color: "rgb(255, 255, 255)",
+                    borderColor: "rgb(0, 123, 255)",
+                    
+                  }}
+                >
+                  Blog
+                </button>
+                <button
+                  style={{
+                    borderRadius: "10px",
+                    backgroundColor: "rgb(0, 123, 255)",
+                    color: "rgb(255, 255, 255)",
+                    borderColor: "rgb(0, 123, 255)"
+                  }}
+                >
+                  news
+                </button>
+                <button
+                  style={{
+                    borderRadius: "10px",
+                    backgroundColor: "rgb(0, 123, 255)",
+                    color: "rgb(255, 255, 255)",
+                    borderColor: "rgb(0, 123, 255)"
+                  }}
+                >
+                  Trends
+                </button>
+              </div>
               <h5 className="mt-2" style={{ color: "#34548c" }}>
                 Be the first to know
               </h5>
