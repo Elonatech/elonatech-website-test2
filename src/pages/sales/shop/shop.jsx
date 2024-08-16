@@ -285,9 +285,11 @@ const Shop = () => {
             </section>
           </div>
           <div id="last" class="col-md-3 ">
-            <div class="position-sticky p-3" style={{ top: "2rem" }}>
-              <div class="mb-3 mt-4 rounded">
-                <form class="d-flex  pt-5"></form>
+            <div class="position-sticky p-5 " style={{ top: "2rem" }}>
+              <div class=" mt-5 rounded last">
+                <form
+               class="d-flex p-3 "
+                ></form>
                 <h4 class="fw-bold">Browse Categories</h4>
                 <ul className="list-unstyled">
                   <li>

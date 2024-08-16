@@ -53,8 +53,9 @@
   text-decoration: none;
 }
 
-#last{
- padding: 10px;
+.last{
+margin-left: -15px;
+
 }
 .item.active {
   background-color: black;
