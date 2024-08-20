@@ -8,7 +8,6 @@ import BlogPagination from "./blogPagination/blogPagination";
 import "./blog.css";
 import { Helmet } from "react-helmet-async";
 
-
 const Blog = () => {
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -22,10 +21,9 @@ const Blog = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`http://localhost:6100/api/v1/blog/`);
+        const response = await axios.get(`${BASEURL}/api/v1/blog/`);
         setData(response.data.getAllBlogs.reverse());
         setIsLoading(true);
-        console.log(response.data)
       } catch (error) {
         console.error("Error fetching data:", error);
         setIsLoading(true);

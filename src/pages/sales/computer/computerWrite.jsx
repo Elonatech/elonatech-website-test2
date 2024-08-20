@@ -105,10 +105,7 @@ const ComputerWrite = () => {
         images
       };
 
-      await axios.post(
-        `http://localhost:6100/api/v1/product/create`,
-        newData
-      );
+      await axios.post(`${BASEURL}/api/v1/product/create`, newData);
       setImages([]);
       toast.success("Product Added Successfully");
       navigate("/shop");
