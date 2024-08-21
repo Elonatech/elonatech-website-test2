@@ -22,7 +22,6 @@ const Shop = () => {
   const [pageNumberLimit, setpageNumberLimit] = useState(4);
   const [maxPageNumberLimit, setmaxPageNumberLimit] = useState(4);
   const [minPageNumberLimit, setminPageNumberLimit] = useState(0);
-  const [activeIndex, setActiveIndex] = useState(0);
 
  const [activeItem, setActiveItem] = useState("Item 1");
 

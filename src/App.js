@@ -30,6 +30,8 @@ const Internet = lazy(() => import("./components/internet/internet"));
 const Security = lazy(() => import("./components/security/security"));
 const Time = lazy(() => import("./components/time/time"));
 const Blog = lazy(() => import("./components/blog/blog"));
+const News = lazy(() => import("./components/news/News"));
+const Trends = lazy(() => import("./components/trends/Trends"));
 
 // =================================================
 
@@ -403,7 +405,7 @@ const router = createBrowserRouter([
         path: "/office-equipment/page/:pagenumber",
         element: <OfficePages />
       },
-      {    
+      {
         path: "/pos-system",
         element: <Pos />
       },
@@ -417,7 +419,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/printers/page/:pagenumber",
-        element: < PrintersPages />
+        element: <PrintersPages />
       },
 
       {
@@ -491,6 +493,14 @@ const router = createBrowserRouter([
       {
         path: "/graphic-career",
         element: <GraphicCareer />
+      },
+      {
+        path: "/news",
+        element: <News />
+      },
+      {
+        path: "/trends",
+        element: <Trends />
       },
       {
         path: "/marketing-career",
