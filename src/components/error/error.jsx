@@ -1,57 +1,95 @@
-import { useRouteError } from "react-router-dom";
+import Navbar from "../navbar/navbar";
+import "./error.css";
+import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 
 const Error = () => {
-  const error = useRouteError();
-
+  
+ 
   return (
     <>
-      <main>
-        <div
-          class="container-fluid   bg-dark page-header py-5 mb-5 wow fadeIn"
-          style={{ minHeight: "410px" }}
-          data-wow-delay="0.1s"
-        >
-          <div class="container text-center py-5 mt-5">
-            <h1 class="display-2 text-white mb-4 animated slideInDown">
-              {error.status}
-            </h1>
-            <nav aria-label="breadcrumb animated slideInDown">
-              <ol class="breadcrumb justify-content-center mb-0">
-                <li class="breadcrumb-item">
-                  <Link to={"/"} className="text-decoration-none">
-                    Home
-                  </Link>
-                </li>
-                <li class="breadcrumb-item text-primary" aria-current="page">
-                  404 Error
-                </li>
-              </ol>
-            </nav>
-          </div>
+      <Navbar />
+      <Helmet>
+        <title>Page Not Found</title>
+        <meta
+          name="description"
+          content="Our Technical Support Team
+          is composed of individuals that are familiar with the ins and outs of the device they are assigned to. They offer user-friendly assistance for individuals having technical problems with computer/electronic devices. With this knowledge, they are able to troubleshoot most problems that a user experiences. Technical support may be provided over the phone, through email, a live-chat interface or with a remote support solution."
+        />
+        <link
+          rel="canonical"
+          href="https://elonatech.com.ng/technical-support"
+        />
+      </Helmet>
+
+      {/*======================================================== header ==============================================*/}
+      <div
+        class="container-fluid  py-5 "
+        style={{
+          minHeight: "500px",
+          marginBottom: "50px",
+          backgroundImage: `linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(https://res.cloudinary.com/elonatech/image/upload/v1709812685/techSupportPage/tech_support_header_m69n74.jpg)`,
+          backgroundRepeat: "no-repeat",
+          backgroundSize: "cover"
+        }}
+      >
+        <div class="py-5 mt-5 ">
+          <h1 class=" mt-5 text-white text-center">Page not found!!!</h1>
         </div>
+      </div>
 
-        <div class="container-xxl py-5  wow fadeInUp" data-wow-delay="0.1s">
-          <div class="container text-center">
-            <div class="row justify-content-center">
-              <div class="col-lg-6">
-                <i class="bi bi-exclamation-triangle display-1 text-primary"></i>
-                <h1 class="display-1">{error.status}</h1>
-                <h1 class="mb-4">{error.statusText}</h1>
-
-                <p class="mb-4">{error.data}</p>
-                <Link to={-1} class="btn btn-primary rounded-pill py-3 px-5">
-                  Go Back To Home
+      <div className="container d-flex justify-content-center align-items-center">
+        <div className="row text-center">
+          <div className="col-md-6 d-flex flex-column justify-content-center align-items-center">
+            <h1
+              className="display-1 fw-bold"
+              style={{ fontSize: "10rem", fontWeight: "900" }}
+            >
+              404
+            </h1>
+            <p
+              className="text-uppercase"
+              style={{
+                color: "#f56a07",
+                fontWeight: "bold",
+                letterSpacing: "2px"
+              }}
+            >
+              Sorry, <span className="text-muted">the page not found</span>
+            </p>
+          </div>
+          <div className="col-md-6 d-flex flex-column justify-content-center">
+            <div className="mb-3">
+              <input
+                type="text"
+                className="form-control form-control-lg"
+                placeholder="Movie search..."
+                aria-label="Movie search"
+              />
+            </div>
+            <button type="button" className="btn btn-danger btn-lg mb-4">
+              GO
+            </button>
+            <div className="d-flex justify-content-center gap-2">
+              
+                <Link to={-1} class="btn btn-danger py-2 px-5">
+              Previous Page
                 </Link>
-              </div>
+         
+              
+               <Link to={"/"} class="btn btn-danger  py-2 px-5">Go Home</Link>
             </div>
           </div>
         </div>
-      </main>
+      </div>
     </>
   );
 };
 
-const firstError = () => {};
-
 export default Error;
+
+
+
+      
+
+
