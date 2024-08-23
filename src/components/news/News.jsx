@@ -4,9 +4,9 @@ import { Link } from "react-router-dom";
 import { BASEURL } from "../../BaseURL/BaseURL";
 import Loading from "../Loading/Loading";
 import DOMPurify from "dompurify";
-import BlogPagination from "../blog/blogPagination/blogPagination";
 import "./new.css";
 import { Helmet } from "react-helmet-async";
+import NewsPagination from "./newsPagination/NewsPagination";
 
 const News = () => {
   const [data, setData] = useState([]);
@@ -26,8 +26,8 @@ const News = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`${BASEURL}/api/v1/blog/`);
-        setData(response.data.getAllBlogs.reverse());
+        const response = await axios.get(`${BASEURL}/api/v1/blog/news`);
+        setData(response.data.getAllNews.reverse());
         setIsLoading(true);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -140,7 +140,7 @@ const News = () => {
                             <div className="col-md-6 ">
                               <div className="ms-3">
                                 <h6 className="fs-6 pb-3 pt-4">
-                                  {item.category.charAt(0).toUpperCase() +
+                                  {item.category +
                                     item.category.slice(1)}
                                 </h6>
                                 <h5
@@ -192,7 +192,7 @@ const News = () => {
                 )}
               </div>
               <div className="mt-5">
-                <BlogPagination
+                <NewsPagination
                   totalPosts={data.length}
                   itemsPerPage={itemsPerPage}
                   maxPageNumberLimit={maxPageNumberLimit}

@@ -3,6 +3,8 @@ import { lazy, useState, Suspense } from "react";
 import { CartProvider } from "react-use-cart";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import NewsPages from "./components/news/NewsPages";
+import TrendsPages from "./components/trends/TrendsPages";
 
 
 const Navbar = lazy(() => import("./components/navbar/navbar"));
@@ -297,6 +299,7 @@ const router = createBrowserRouter([
         path: "/blog/page/:pagenumber",
         element: <BlogPages />
       },
+
       {
         path: "/blog/:id/:title",
         element: <BlogDetails />
@@ -499,8 +502,16 @@ const router = createBrowserRouter([
         element: <News />
       },
       {
+        path: "/news/page/:pagenumber",
+        element: <NewsPages />
+      },
+      {
         path: "/trends",
         element: <Trends />
+      },
+      {
+        path: "/trends/page/:pagenumber",
+        element: <TrendsPages />
       },
       {
         path: "/marketing-career",

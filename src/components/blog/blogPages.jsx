@@ -21,6 +21,11 @@ const BlogPages = () => {
   const [maxPageNumberLimit, setmaxPageNumberLimit] = useState(4);
   const [minPageNumberLimit, setminPageNumberLimit] = useState(0);
   const [email, setEmail] = useState("");
+  const [activeItem, setActiveItem] = useState("Item 1");
+
+  const handleClick = (item) => {
+    setActiveItem(item);
+  };
   
 
 
@@ -153,8 +158,7 @@ const BlogPages = () => {
                             <div className="col-md-6 ">
                               <div className="ms-3">
                                 <h6 className="fs-6 pb-3 pt-4">
-                                  {item.category.charAt(0).toUpperCase() +
-                                    item.category.slice(1)}
+                                  {item.category + item.category.slice(1)}
                                 </h6>
                                 <h5
                                   className="pb-3"
@@ -163,7 +167,7 @@ const BlogPages = () => {
                                   {" "}
                                   <Link
                                     className="text-decoration-none blogTitle-"
-                                    to={`/blog/${item._id}/${item.title.split(` `).join(`-`).toLowerCase()}`}
+                                    to={`${item._id}`}
                                   >
                                     {item.title}
                                   </Link>
@@ -223,8 +227,40 @@ const BlogPages = () => {
             <div className="mt-4">
               <h5 style={{ color: "#34548c" }}>Categories</h5>
               <ul className="list-unstyled mt-2">
-                <li>News</li>
-                <li>Trend</li>
+                <li>
+                  <button
+                    className={`buttons btn btn-outline-primary rounded-pill px-5 mt-1 item ${
+                      activeItem === "Item 1" ? "active" : ""
+                    }`}
+                    onClick={() => handleClick("Item 1")}
+                  >
+                    Blogs
+                  </button>
+                </li>
+                <li>
+                  <Link to={"/news"}>
+                    <button
+                      className={`buttons btn btn-outline-primary rounded-pill px-5 mt-1  item ${
+                        activeItem === "Item 2" ? "active" : ""
+                      }`}
+                      onClick={() => handleClick("Item 2")}
+                    >
+                      News
+                    </button>
+                  </Link>
+                </li>
+                <li>
+                  <Link to={"/trends"}>
+                    <button
+                      className={`buttons btn btn-outline-primary rounded-pill px-5 mt-1  item ${
+                        activeItem === "Item 3" ? "active" : ""
+                      }`}
+                      onClick={() => handleClick("Item 3")}
+                    >
+                      Trends
+                    </button>
+                  </Link>
+                </li>
               </ul>
               <h5 className="mt-2" style={{ color: "#34548c" }}>
                 Be the first to know

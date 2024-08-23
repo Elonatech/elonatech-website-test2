@@ -140,7 +140,7 @@ const Blog = () => {
                             <div className="col-md-6 ">
                               <div className="ms-3">
                                 <h6 className="fs-6 pb-3 pt-4">
-                                  {item.category.charAt(0).toUpperCase() +
+                                  {item.category +
                                     item.category.slice(1)}
                                 </h6>
                                 <h5
@@ -212,7 +212,7 @@ const Blog = () => {
               <ul className="list-unstyled mt-2">
                 <li>
                   <button
-                    className={`buttons btn btn-outline-primary rounded-pill px-5 mt-1 item ${
+                    className={`buttons btn btn-outline-primary rounded-pill px-5  item ${
                       activeItem === "Item 1" ? "active" : ""
                     }`}
                     onClick={() => handleClick("Item 1")}

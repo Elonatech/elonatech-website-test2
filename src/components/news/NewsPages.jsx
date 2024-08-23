@@ -4,31 +4,34 @@ import { Link } from "react-router-dom";
 import { BASEURL } from "../../BaseURL/BaseURL";
 import Loading from "../Loading/Loading";
 import DOMPurify from "dompurify";
-import BlogPagination from "../blog/blogPagination/blogPagination";
-import "./trends.css";
+import NewsPagination from "./newsPagination/NewsPagination";
+import "./new.css";
 import { Helmet } from "react-helmet-async";
-import TrendsPagination from "./trendsPagination/TrendsPagination";
+import { useParams } from "react-router-dom";
 
-const Trends = () => {
+const NewsPages = () => {
+  const { pagenumber } = useParams();
+
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(Number(pagenumber));
   const [itemsPerPage] = useState(6);
   const [pageNumberLimit, setpageNumberLimit] = useState(4);
   const [maxPageNumberLimit, setmaxPageNumberLimit] = useState(4);
   const [minPageNumberLimit, setminPageNumberLimit] = useState(0);
   const [email, setEmail] = useState("");
-  const [activeItem, setActiveItem] = useState("Item 3");
+    const [activeItem, setActiveItem] = useState("Item 2");
 
-  const handleClick = (item) => {
-    setActiveItem(item);
-  };
+    const handleClick = (item) => {
+      setActiveItem(item);
+    };
+
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`${BASEURL}/api/v1/blog/trends`);
-        setData(response.data.getAllTrends.reverse());
+        const response = await axios.get(`${BASEURL}/api/v1/blog/news`);
+        setData(response.data.getAllNews.reverse());
         setIsLoading(true);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -37,6 +40,10 @@ const Trends = () => {
     };
     fetchData();
   }, []);
+
+  useEffect(() => {
+    setCurrentPage(Number(pagenumber));
+  }, [currentPage]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -71,6 +78,11 @@ const Trends = () => {
       setminPageNumberLimit(minPageNumberLimit + pageNumberLimit);
     }
   };
+
+  if (parseInt(pagenumber) > maxPageNumberLimit) {
+    setmaxPageNumberLimit(maxPageNumberLimit + pageNumberLimit);
+    setminPageNumberLimit(minPageNumberLimit + pageNumberLimit);
+  }
 
   const handlePrevbtn = () => {
     setCurrentPage(currentPage - 1);
@@ -141,8 +153,7 @@ const Trends = () => {
                             <div className="col-md-6 ">
                               <div className="ms-3">
                                 <h6 className="fs-6 pb-3 pt-4">
-                                  {item.category +
-                                    item.category.slice(1)}
+                                  {item.category + item.category.slice(1)}
                                 </h6>
                                 <h5
                                   className="pb-3"
@@ -193,7 +204,7 @@ const Trends = () => {
                 )}
               </div>
               <div className="mt-5">
-                <TrendsPagination
+                <NewsPagination
                   totalPosts={data.length}
                   itemsPerPage={itemsPerPage}
                   maxPageNumberLimit={maxPageNumberLimit}
@@ -214,31 +225,29 @@ const Trends = () => {
                 <li>
                   <Link to={"/blog"}>
                     <button
-                      className={`buttons btn btn-outline-primary rounded-pill px-5 mt-1  background-color: #007bff; color: #ffffff item ${
+                      className={`buttons btn btn-outline-primary rounded-pill px-5 mt-1 item ${
                         activeItem === "Item 1" ? "active" : ""
                       }`}
-                      onMouseEnter={() => handleClick("Item 1")}
+                      onClick={() => handleClick("Item 1")}
                     >
                       Blogs
                     </button>
                   </Link>
                 </li>
                 <li>
-                  <Link to={"/news"}>
-                    <button
-                      className={`buttons btn btn-outline-primary rounded-pill px-5 mt-1 background-color: #007bff; color: #ffffff item ${
-                        activeItem === "Item 2" ? "active" : ""
-                      }`}
-                      onClick={() => handleClick("Item 2")}
-                    >
-                      News
-                    </button>
-                  </Link>
+                  <button
+                    className={` buttons btn btn-outline-primary rounded-pill px-5 mt-1 item ${
+                      activeItem === "Item 2" ? "active" : ""
+                    }`}
+                    onClick={() => handleClick("Item 2")}
+                  >
+                    News
+                  </button>
                 </li>
                 <li>
                   <Link to={"/trends"}>
                     <button
-                      className={`buttons btn btn-outline-primary rounded-pill px-5 mt-1 background-color: #007bff; color: #ffffff item ${
+                      className={` buttons btn btn-outline-primary rounded-pill px-5 mt-1 item ${
                         activeItem === "Item 3" ? "active" : ""
                       }`}
                       onClick={() => handleClick("Item 3")}
@@ -299,4 +308,4 @@ const Trends = () => {
   );
 };
 
-export default Trends;
+export default NewsPages;
