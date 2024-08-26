@@ -133,3 +133,16 @@
     left: 25px;
   }
 }
+
+.filter-section {
+  max-width: 300px;
+}
+.filter-section h5 {
+  font-weight: bold;
+}
+.filter-section .form-check-label {
+  cursor: pointer;
+}
+.filter-section .btn {
+  border-radius: 20px;
+}

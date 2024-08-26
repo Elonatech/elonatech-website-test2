@@ -293,19 +293,23 @@ const Shop = () => {
                   marginTop: "50px",
                   paddingTop: "30px",
                   paddingBottom: "30px",
-              
+
                   marginLeft: "15px"
                 }}
               >
                 <form
                   style={{
                     paddingTop: "20px",
-                    paddingBottom: "20px",
-                   
+                    paddingBottom: "20px"
                   }}
                   class="d-flex "
                 ></form>
-                <h4 style={{marginTop:"-8px", marginBottom:"16px"}} class="fw-bold ">Browse Categories</h4>
+                <h4
+                  style={{ marginTop: "-8px", marginBottom: "16px" }}
+                  class="fw-bold "
+                >
+                  Browse Categories
+                </h4>
                 <ul className="list-unstyled">
                   <li>
                     <Link
@@ -394,6 +398,96 @@ const Shop = () => {
                     </Link>
                   </li>
                 </ul>
+              </div>
+              {/* <h1>filters</h1> */}
+              <div className="filter-section p-2 bg-white rounded shadow-sm ">
+                <h4 className="mb-3">Filter Products</h4>
+
+                <div className="mb-2">
+                  <label htmlFor="priceRange" className="form-label">
+                    Price Range
+                  </label>
+                  <input type="range" className="form-range" id="priceRange" />
+                </div>
+
+                <div className="mb-2">
+                  <label htmlFor="ram" className="form-label">
+                    RAM
+                  </label>
+                  <select className="form-select" id="ram">
+                    <option>2GB</option>
+                    <option>4GB</option>
+                    <option>8GB</option>
+                    <option>16GB</option>
+                  </select>
+                </div>
+
+                <div className="mb-2">
+                  <label htmlFor="storage" className="form-label">
+                    Storage
+                  </label>
+                  <select className="form-select" id="storage">
+                    <option>128GB</option>
+                    <option>256GB</option>
+                    <option>512GB</option>
+                    <option>1TB</option>
+                  </select>
+                </div>
+
+                <div className="mb-2">
+                  <label htmlFor="brand" className="form-label">
+                    Brand
+                  </label>
+                  <select className="form-select" id="brand">
+                    <option>Apple</option>
+                    <option>Samsung</option>
+                    <option>Huawei</option>
+                    <option>Dell</option>
+                    <option>HP</option>
+                  </select>
+                </div>
+
+                {/* <div className="mb-2">
+                  <label htmlFor="color" className="form-label">
+                    Color
+                  </label>
+                  <select className="form-select" id="color">
+                    <option>Black</option>
+                    <option>White</option>
+                    <option>Blue</option>
+                    <option>Red</option>
+                  </select>
+                </div> */}
+
+                <div className="mb-2">
+                  <label htmlFor="availability" className="form-label">
+                    Availability
+                  </label>
+                  <select className="form-select" id="availability">
+                    <option>In Stock</option>
+                    <option>Out of Stock</option>
+                  </select>
+                </div>
+
+                <div className="mb-2">
+                  <label htmlFor="rating" className="form-label">
+                    Rating
+                  </label>
+                  <select className="form-select" id="rating">
+                    <option>5 Stars</option>
+                    <option>4 Stars</option>
+                    <option>3 Stars</option>
+                    <option>2 Stars</option>
+                    <option>1 Star</option>
+                  </select>
+                </div>
+
+                <button className="btn btn-danger mt-3 w-100">
+                  Apply Filters
+                </button>
+                <button className="btn btn-secondary mt-2 w-100">
+                  Reset Filters
+                </button>
               </div>
             </div>
           </div>

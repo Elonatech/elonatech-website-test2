@@ -140,8 +140,7 @@ const Blog = () => {
                             <div className="col-md-6 ">
                               <div className="ms-3">
                                 <h6 className="fs-6 pb-3 pt-4">
-                                  {item.category +
-                                    item.category.slice(1)}
+                                  {item.category + item.category.slice(1)}
                                 </h6>
                                 <h5
                                   className="pb-3"
@@ -208,40 +207,40 @@ const Blog = () => {
 
           <div className="col-md-3">
             <div className="mt-4">
-              <h5 style={{ color: "#34548c" }}>Categories</h5>
+          <h5>Categories</h5>
               <ul className="list-unstyled mt-2">
                 <li>
-                  <button
+                  <a
                     className={`buttons btn btn-outline-primary rounded-pill px-5  item ${
                       activeItem === "Item 1" ? "active" : ""
                     }`}
                     onClick={() => handleClick("Item 1")}
                   >
                     Blogs
-                  </button>
+                  </a>
                 </li>
                 <li>
                   <Link to={"/news"}>
-                    <button
+                    <a
                       className={`buttons btn btn-outline-primary rounded-pill px-5 mt-1  item ${
                         activeItem === "Item 2" ? "active" : ""
                       }`}
                       onClick={() => handleClick("Item 2")}
                     >
                       News
-                    </button>
+                    </a>
                   </Link>
                 </li>
                 <li>
                   <Link to={"/trends"}>
-                    <button
+                    <a
                       className={`buttons btn btn-outline-primary rounded-pill px-5 mt-1  item ${
                         activeItem === "Item 3" ? "active" : ""
                       }`}
                       onClick={() => handleClick("Item 3")}
                     >
                       Trends
-                    </button>
+                    </a>
                   </Link>
                 </li>
               </ul>

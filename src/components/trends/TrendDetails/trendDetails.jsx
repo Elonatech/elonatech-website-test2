@@ -1,16 +1,16 @@
 import { useEffect, useState } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { BASEURL } from "../../BaseURL/BaseURL";
+import { BASEURL } from "../../../BaseURL/BaseURL";
 import hgdelete from "./caption/delete.png";
 import edit from "./caption/editing.png";
-import "./blogDetails.css";
-import Loading from "../Loading/Loading";
+import "./trendDetails.css";
+import Loading from "../../Loading/Loading";
 import DOMPurify from "dompurify";
 import { Helmet } from "react-helmet-async";
 import sanitizeHtml from "sanitize-html";
 
-const BlogDetails = () => {
+const TrendDetails = () => {
   const [data, setData] = useState({});
   const [relatedPosts, setRelatedPosts] = useState([]);
   const [currentAdmin, setCurrentAdmin] = useState("");
@@ -18,7 +18,7 @@ const BlogDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
-  const [activeItem, setActiveItem] = useState("Item 1");
+  const [activeItem, setActiveItem] = useState("Item 3");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -340,4 +340,4 @@ const BlogDetails = () => {
   );
 };
 
-export default BlogDetails;
+export default TrendDetails;

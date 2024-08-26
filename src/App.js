@@ -5,6 +5,10 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import NewsPages from "./components/news/NewsPages";
 import TrendsPages from "./components/trends/TrendsPages";
+import NewsDetails from "./components/news/newsDetails/newsDetails";
+import NewsRelated from "./components/news/newsDetails/newsRelated";
+import TrendDetails from "./components/trends/TrendDetails/trendDetails";
+import TrendRelated from "./components/trends/TrendDetails/trendRelated";
 
 
 const Navbar = lazy(() => import("./components/navbar/navbar"));
@@ -31,9 +35,9 @@ const Cctv = lazy(() => import("./components/cctv/cctv"));
 const Internet = lazy(() => import("./components/internet/internet"));
 const Security = lazy(() => import("./components/security/security"));
 const Time = lazy(() => import("./components/time/time"));
-const Blog = lazy(() => import("./components/blog/blog"));
 const News = lazy(() => import("./components/news/News"));
 const Trends = lazy(() => import("./components/trends/Trends"));
+const Blog = lazy(()=>import("./components/blog/blog"))
 
 // =================================================
 
@@ -301,12 +305,28 @@ const router = createBrowserRouter([
       },
 
       {
-        path: "/blog/:id/:title",
+        path: "/blog/:id",
         element: <BlogDetails />
       },
       {
         path: "/blog/related/:id",
         element: <BlogRelated />
+      },
+      {
+        path: "/news/:id",
+        element: <NewsDetails />
+      },
+      {
+        path: "/blog/related/:id",
+        element: <NewsRelated />
+      },
+      {
+        path: "/trends/:id",
+        element: <TrendDetails />
+      },
+      {
+        path: "/trends/related/:id",
+        element: <TrendRelated />
       },
       {
         path: "/surveillance",
