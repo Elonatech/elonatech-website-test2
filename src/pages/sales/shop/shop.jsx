@@ -23,6 +23,56 @@ const Shop = () => {
   const [maxPageNumberLimit, setmaxPageNumberLimit] = useState(4);
   const [minPageNumberLimit, setminPageNumberLimit] = useState(0);
 
+  const [filters, setFilters] = useState({
+    price: "",
+    priceMin: "",
+    priceMax: "",
+    ram: "",
+    brand: "",
+    name: "",
+    hardDisk: "",
+    category: "",
+    discount: "",
+    rating: ""
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      [name]: value.toLowerCase() // Convert to lowercase
+    }));
+  };
+
+   const handlePriceChange = (e) => {
+     const { name, value } = e.target;
+     setFilters((prevFilters) => ({
+       ...prevFilters,
+       [name]: value // Update priceMin or priceMax
+     }));
+   };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // Construct the query parameters dynamically
+    const queryParams = new URLSearchParams();
+
+    Object.entries(filters).forEach(([key, value]) => {
+      if (value) {
+        queryParams.append(key, value.toLowerCase()); // Convert to lowercase
+      }
+    });
+
+    const url = `http://localhost:8000/api/v1/product/filter?${queryParams.toString()}`;
+
+    try {
+      const response = await axios.get(url);
+      console.log(response.data); // Handle the response data
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
  const [activeItem, setActiveItem] = useState("Item 1");
 
    const handleClick = (item) => {
@@ -284,211 +334,266 @@ const Shop = () => {
             </section>
           </div>
           <div class="col-md-3 ">
-            <div
+            {/* <
               class="position-sticky "
               style={{ top: "2rem", marginTop: "20px" }}
+            > */}
+            <div
+              style={{
+                marginTop: "50px",
+                paddingTop: "30px",
+                paddingBottom: "30px",
+
+                marginLeft: "15px"
+              }}
             >
-              <div
+              <form
                 style={{
-                  marginTop: "50px",
-                  paddingTop: "30px",
-                  paddingBottom: "30px",
-
-                  marginLeft: "15px"
+                  paddingTop: "20px",
+                  paddingBottom: "20px"
                 }}
+                class="d-flex "
+              ></form>
+              <h4
+                style={{ marginTop: "-8px", marginBottom: "16px" }}
+                class="fw-bold "
               >
-                <form
-                  style={{
-                    paddingTop: "20px",
-                    paddingBottom: "20px"
-                  }}
-                  class="d-flex "
-                ></form>
-                <h4
-                  style={{ marginTop: "-8px", marginBottom: "16px" }}
-                  class="fw-bold "
-                >
-                  Browse Categories
-                </h4>
-                <ul className="list-unstyled">
-                  <li>
-                    <Link
-                      to={"/shop"}
-                      className={`item ${
-                        activeItem === "Item 1" ? "active" : ""
-                      }`}
-                      onClick={() => handleClick("Item 1")}
-                    >
-                      All Products
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      to={"/computers"}
-                      className="text-dark"
-                      style={{ textDecoration: "none" }}
-                      onMouseEnter={(e) =>
-                        (e.currentTarget.style.textDecoration = "underline")
-                      }
-                      onMouseLeave={(e) =>
-                        (e.currentTarget.style.textDecoration = "none")
-                      }
-                    >
-                      Computers
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      to={"/office-equipment"}
-                      className="text-dark"
-                      style={{ textDecoration: "none" }}
-                      onMouseEnter={(e) =>
-                        (e.currentTarget.style.textDecoration = "underline")
-                      }
-                      onMouseLeave={(e) =>
-                        (e.currentTarget.style.textDecoration = "none")
-                      }
-                    >
-                      Office Equipment
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      to={"/pos-system"}
-                      className="text-dark"
-                      style={{ textDecoration: "none" }}
-                      onMouseEnter={(e) =>
-                        (e.currentTarget.style.textDecoration = "underline")
-                      }
-                      onMouseLeave={(e) =>
-                        (e.currentTarget.style.textDecoration = "none")
-                      }
-                    >
-                      POS System
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      to={"/printers"}
-                      className="text-dark"
-                      style={{ textDecoration: "none" }}
-                      onMouseEnter={(e) =>
-                        (e.currentTarget.style.textDecoration = "underline")
-                      }
-                      onMouseLeave={(e) =>
-                        (e.currentTarget.style.textDecoration = "none")
-                      }
-                    >
-                      Printers
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      to={"/network-devices"}
-                      className="text-dark"
-                      style={{ textDecoration: "none" }}
-                      onMouseEnter={(e) =>
-                        (e.currentTarget.style.textDecoration = "underline")
-                      }
-                      onMouseLeave={(e) =>
-                        (e.currentTarget.style.textDecoration = "none")
-                      }
-                    >
-                      Network Devices
-                    </Link>
-                  </li>
-                </ul>
-              </div>
-              {/* <h1>filters</h1> */}
-              <div className="filter-section p-2 bg-white rounded shadow-sm ">
-                <h4 className="mb-3">Filter Products</h4>
+                Browse Categories
+              </h4>
+              <ul className="list-unstyled">
+                <li>
+                  <Link
+                    to={"/shop"}
+                    className={`item ${
+                      activeItem === "Item 1" ? "active" : ""
+                    }`}
+                    onClick={() => handleClick("Item 1")}
+                  >
+                    All Products
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to={"/computers"}
+                    className="text-dark"
+                    style={{ textDecoration: "none" }}
+                    onMouseEnter={(e) =>
+                      (e.currentTarget.style.textDecoration = "underline")
+                    }
+                    onMouseLeave={(e) =>
+                      (e.currentTarget.style.textDecoration = "none")
+                    }
+                  >
+                    Computers
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to={"/office-equipment"}
+                    className="text-dark"
+                    style={{ textDecoration: "none" }}
+                    onMouseEnter={(e) =>
+                      (e.currentTarget.style.textDecoration = "underline")
+                    }
+                    onMouseLeave={(e) =>
+                      (e.currentTarget.style.textDecoration = "none")
+                    }
+                  >
+                    Office Equipment
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to={"/pos-system"}
+                    className="text-dark"
+                    style={{ textDecoration: "none" }}
+                    onMouseEnter={(e) =>
+                      (e.currentTarget.style.textDecoration = "underline")
+                    }
+                    onMouseLeave={(e) =>
+                      (e.currentTarget.style.textDecoration = "none")
+                    }
+                  >
+                    POS System
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to={"/printers"}
+                    className="text-dark"
+                    style={{ textDecoration: "none" }}
+                    onMouseEnter={(e) =>
+                      (e.currentTarget.style.textDecoration = "underline")
+                    }
+                    onMouseLeave={(e) =>
+                      (e.currentTarget.style.textDecoration = "none")
+                    }
+                  >
+                    Printers
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to={"/network-devices"}
+                    className="text-dark"
+                    style={{ textDecoration: "none" }}
+                    onMouseEnter={(e) =>
+                      (e.currentTarget.style.textDecoration = "underline")
+                    }
+                    onMouseLeave={(e) =>
+                      (e.currentTarget.style.textDecoration = "none")
+                    }
+                  >
+                    Network Devices
+                  </Link>
+                </li>
+              </ul>
+            </div>
+            {/* <h1>filters</h1> */}
+            <div className="filter-section p-2 bg-white rounded shadow-sm">
+              <h4 className="mb-3">Filter Products</h4>
 
-                <div className="mb-2">
-                  <label htmlFor="priceRange" className="form-label">
-                    Price Range
-                  </label>
-                  <input type="range" className="form-range" id="priceRange" />
-                </div>
-
-                <div className="mb-2">
-                  <label htmlFor="ram" className="form-label">
-                    RAM
-                  </label>
-                  <select className="form-select" id="ram">
-                    <option>2GB</option>
-                    <option>4GB</option>
-                    <option>8GB</option>
-                    <option>16GB</option>
-                  </select>
-                </div>
-
-                <div className="mb-2">
-                  <label htmlFor="storage" className="form-label">
-                    Storage
-                  </label>
-                  <select className="form-select" id="storage">
-                    <option>128GB</option>
-                    <option>256GB</option>
-                    <option>512GB</option>
-                    <option>1TB</option>
-                  </select>
-                </div>
-
+              <form onSubmit={handleSubmit}>
+                {/* Brand */}
                 <div className="mb-2">
                   <label htmlFor="brand" className="form-label">
                     Brand
                   </label>
-                  <select className="form-select" id="brand">
-                    <option>Apple</option>
-                    <option>Samsung</option>
-                    <option>Huawei</option>
-                    <option>Dell</option>
-                    <option>HP</option>
-                  </select>
+                  <input
+                    type="text"
+                    id="brand"
+                    name="brand"
+                    className="form-control mb-2"
+                    placeholder="Search"
+                    value={filters.brand}
+                    onChange={handleChange}
+                  />
                 </div>
 
-                {/* <div className="mb-2">
-                  <label htmlFor="color" className="form-label">
-                    Color
+                {/* Display Size */}
+                <div className="mb-2">
+                  <label htmlFor="name" className="form-label">
+                    Name
                   </label>
-                  <select className="form-select" id="color">
-                    <option>Black</option>
-                    <option>White</option>
-                    <option>Blue</option>
-                    <option>Red</option>
-                  </select>
+                  <input
+                    type="text"
+                    name="name"
+                    className="form-control mb-2"
+                    placeholder="Search"
+                    value={filters.name}
+                    onChange={handleChange}
+                  />
+                </div>
+
+                {/* Hard Disk */}
+                {/* <div className="mb-2">
+                  <label htmlFor="hardDisk" className="form-label">
+                    Hard Disk (GB)
+                  </label>
+                  <input
+                    type="text"
+                    id="hardDisk"
+                    name="hardDisk"
+                    className="form-control mb-2"
+                    placeholder="Search"
+                    value={filters.hardDisk}
+                    onChange={handleChange}
+                  />
                 </div> */}
 
+                {/* Operating System */}
                 <div className="mb-2">
-                  <label htmlFor="availability" className="form-label">
-                    Availability
+                  <label htmlFor="operatingSystem" className="form-label">
+                    Category
                   </label>
-                  <select className="form-select" id="availability">
-                    <option>In Stock</option>
-                    <option>Out of Stock</option>
-                  </select>
+                  <input
+                    type="text"
+                    id="category"
+                    name="category"
+                    className="form-control mb-2"
+                    placeholder="Search"
+                    value={filters.category}
+                    onChange={handleChange}
+                  />
                 </div>
 
+                {/* Price Range */}
                 <div className="mb-2">
+                  <label htmlFor="priceRange" className="form-label">
+                    Price Range (₦)
+                  </label>
+                  <div className="d-flex">
+                    <input
+                      type="number"
+                      className="form-control w-50 me-2"
+                      placeholder="Min"
+                      name="priceMin"
+                      value={filters.priceMin}
+                      onChange={handlePriceChange}
+                    />
+                    <input
+                      type="number"
+                      className="form-control w-50"
+                      placeholder="Max"
+                      name="priceMax"
+                      value={filters.priceMax}
+                      onChange={handlePriceChange}
+                    />
+                  </div>
+                </div>
+
+                {/* Discount Percentage */}
+                {/* <div className="mb-2">
+                  <label htmlFor="discount" className="form-label">
+                    Discount Percentage
+                  </label>
+                  <input
+                    type="text"
+                    id="discount"
+                    name="discount"
+                    className="form-control mb-2"
+                    placeholder="e.g., 10"
+                    value={filters.discount}
+                    onChange={handleChange}
+                  />
+                </div> */}
+
+                {/* RAM */}
+                {/* <div className="mb-2">
+                  <label htmlFor="ram" className="form-label">
+                    RAM
+                  </label>
+                  <input
+                    type="text"
+                    id="ram"
+                    name="ram"
+                    className="form-control mb-2"
+                    placeholder="e.g., 4GB,8GB"
+                    value={filters.ram}
+                    onChange={handleChange}
+                  />
+                </div> */}
+
+                {/* Rating */}
+                {/* <div className="mb-2">
                   <label htmlFor="rating" className="form-label">
-                    Rating
+                    Product Rating
                   </label>
-                  <select className="form-select" id="rating">
-                    <option>5 Stars</option>
-                    <option>4 Stars</option>
-                    <option>3 Stars</option>
-                    <option>2 Stars</option>
-                    <option>1 Star</option>
-                  </select>
-                </div>
+                  <input
+                    type="text"
+                    id="rating"
+                    name="rating"
+                    className="form-control mb-2"
+                    placeholder="e.g., 4"
+                    value={filters.rating}
+                    onChange={handleChange}
+                  />
+                </div> */}
 
-                <button className="btn btn-danger mt-3 w-100">
-                  Apply Filters
+                <button type="submit" className="btn btn-warning mt-2 w-100">
+                  Apply
                 </button>
-                <button className="btn btn-secondary mt-2 w-100">
-                  Reset Filters
-                </button>
-              </div>
+              </form>
             </div>
           </div>
         </div>
