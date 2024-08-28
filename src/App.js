@@ -309,6 +309,10 @@ const router = createBrowserRouter([
         element: <BlogDetails />
       },
       {
+        path: "/blog/page/:pagenumber/:id",
+        element: <BlogDetails />
+      },
+      {
         path: "/blog/related/:id",
         element: <BlogRelated />
       },
@@ -317,11 +321,19 @@ const router = createBrowserRouter([
         element: <NewsDetails />
       },
       {
+        path: "/news/page/:pagenumber/:id",
+        element: <NewsDetails />
+      },
+      {
         path: "/blog/related/:id",
         element: <NewsRelated />
       },
       {
         path: "/trends/:id",
+        element: <TrendDetails />
+      },
+      {
+        path: "/trends/page/:pagenumber/:id",
         element: <TrendDetails />
       },
       {

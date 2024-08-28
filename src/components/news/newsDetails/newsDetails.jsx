@@ -255,14 +255,16 @@ const BlogDetails = () => {
               <h5 style={{ color: "#34548c" }}>Categories</h5>
               <ul className="list-unstyled mt-2">
                 <li>
-                  <button
-                    className={`buttons btn btn-outline-primary rounded-pill px-5  item ${
-                      activeItem === "Item 1" ? "active" : ""
-                    }`}
-                    onClick={() => handleClick("Item 1")}
-                  >
-                    Blogs
-                  </button>
+                  <Link to={"/blog"}>
+                    <button
+                      className={`buttons btn btn-outline-primary rounded-pill px-5  item ${
+                        activeItem === "Item 1" ? "active" : ""
+                      }`}
+                      onClick={() => handleClick("Item 1")}
+                    >
+                      Blogs
+                    </button>
+                  </Link>
                 </li>
                 <li>
                   <Link to={"/news"}>
