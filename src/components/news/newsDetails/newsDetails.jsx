@@ -10,7 +10,7 @@ import DOMPurify from "dompurify";
 import { Helmet } from "react-helmet-async";
 import sanitizeHtml from "sanitize-html";
 
-const BlogDetails = () => {
+const NewsDetails = () => {
   const [data, setData] = useState({});
   const [relatedPosts, setRelatedPosts] = useState([]);
   const [currentAdmin, setCurrentAdmin] = useState("");
@@ -65,9 +65,9 @@ const BlogDetails = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`${BASEURL}/api/v1/blog/`);
+        const response = await axios.get(`${BASEURL}/api/v1/blog/news`);
         setRelatedPosts(
-          response.data.getAllBlogs
+          response.data.getAllNews
             .sort(() => Math.random() - Math.random())
             .slice(0, 4)
         );
@@ -79,7 +79,7 @@ const BlogDetails = () => {
   }, []);
 
   const handleDelete = async () => {
-    const res = await axios.delete(`${BASEURL}/api/v1/blog/${id}`);
+    const res = await axios.delete(`${BASEURL}/api/v1/blog/news/${id}`);
     console.log(res);
     navigate("/blog");
   };
@@ -342,4 +342,4 @@ const BlogDetails = () => {
   );
 };
 
-export default BlogDetails;
+export default NewsDetails;

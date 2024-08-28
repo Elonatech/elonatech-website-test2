@@ -23,6 +23,7 @@
     "moment": "^2.29.4",
     "oaf-react-router": "^4.1.0",
     "primereact": "^10.2.1",
+    "rc-slider": "^11.1.5",
     "react": "^18.2.0",
     "react-blurhash": "^0.3.0",
     "react-bootstrap": "^2.9.1",

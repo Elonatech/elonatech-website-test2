@@ -10,6 +10,8 @@ import { useCart } from "react-use-cart";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Helmet } from "react-helmet-async";
+import "rc-slider/assets/index.css";
+import Slider from "rc-slider";
 
 const Shop = () => {
 
@@ -35,6 +37,7 @@ const Shop = () => {
     discount: "",
     rating: ""
   });
+    const [priceRange, setPriceRange] = useState([0, 100000]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -63,6 +66,10 @@ const Shop = () => {
         queryParams.append(key, value.toLowerCase()); // Convert to lowercase
       }
     });
+
+    if (priceRange) {
+      queryParams.append("price", `${priceRange[0]}-${priceRange[1]}`);
+    }
 
     const url = `http://localhost:8000/api/v1/product/filter?${queryParams.toString()}`;
 
@@ -453,7 +460,10 @@ const Shop = () => {
             <div className="filter-section p-2 bg-white rounded shadow-sm">
               <h4 className="mb-3">Filter Products</h4>
 
-              <form onSubmit={handleSubmit}>
+              <form
+                onSubmit={handleSubmit}
+                onKeyDown={(e) => e.key === "Enter" && handleSubmit(e)}
+              >
                 {/* Brand */}
                 <div className="mb-2">
                   <label htmlFor="brand" className="form-label">
@@ -470,131 +480,34 @@ const Shop = () => {
                   />
                 </div>
 
-                {/* Display Size */}
-                <div className="mb-2">
-                  <label htmlFor="name" className="form-label">
-                    Name
-                  </label>
-                  <input
-                    type="text"
-                    name="name"
-                    className="form-control mb-2"
-                    placeholder="Search"
-                    value={filters.name}
-                    onChange={handleChange}
-                  />
-                </div>
-
-                {/* Hard Disk */}
-                {/* <div className="mb-2">
-                  <label htmlFor="hardDisk" className="form-label">
-                    Hard Disk (GB)
-                  </label>
-                  <input
-                    type="text"
-                    id="hardDisk"
-                    name="hardDisk"
-                    className="form-control mb-2"
-                    placeholder="Search"
-                    value={filters.hardDisk}
-                    onChange={handleChange}
-                  />
-                </div> */}
-
-                {/* Operating System */}
-                <div className="mb-2">
-                  <label htmlFor="operatingSystem" className="form-label">
-                    Category
-                  </label>
-                  <input
-                    type="text"
-                    id="category"
-                    name="category"
-                    className="form-control mb-2"
-                    placeholder="Search"
-                    value={filters.category}
-                    onChange={handleChange}
-                  />
-                </div>
-
                 {/* Price Range */}
                 <div className="mb-2">
                   <label htmlFor="priceRange" className="form-label">
                     Price Range (₦)
                   </label>
-                  <div className="d-flex">
-                    <input
-                      type="number"
-                      className="form-control w-50 me-2"
-                      placeholder="Min"
-                      name="priceMin"
-                      value={filters.priceMin}
-                      onChange={handlePriceChange}
+                  <div className="d-flex flex-column">
+                    <Slider
+                      range
+                      min={0}
+                      max={100000} // Adjust this to your needs
+                      defaultValue={priceRange}
+                      onChange={(value) => setPriceRange(value)}
+                      allowCross={false}
                     />
-                    <input
-                      type="number"
-                      className="form-control w-50"
-                      placeholder="Max"
-                      name="priceMax"
-                      value={filters.priceMax}
-                      onChange={handlePriceChange}
-                    />
+                    <div className="d-flex justify-content-between mt-2">
+                      <span>{`₦${priceRange[0]}`}</span>
+                      <span>{`₦${priceRange[1]}`}</span>
+                    </div>
                   </div>
                 </div>
-
-                {/* Discount Percentage */}
-                {/* <div className="mb-2">
-                  <label htmlFor="discount" className="form-label">
-                    Discount Percentage
-                  </label>
-                  <input
-                    type="text"
-                    id="discount"
-                    name="discount"
-                    className="form-control mb-2"
-                    placeholder="e.g., 10"
-                    value={filters.discount}
-                    onChange={handleChange}
-                  />
-                </div> */}
-
-                {/* RAM */}
-                {/* <div className="mb-2">
-                  <label htmlFor="ram" className="form-label">
-                    RAM
-                  </label>
-                  <input
-                    type="text"
-                    id="ram"
-                    name="ram"
-                    className="form-control mb-2"
-                    placeholder="e.g., 4GB,8GB"
-                    value={filters.ram}
-                    onChange={handleChange}
-                  />
-                </div> */}
-
-                {/* Rating */}
-                {/* <div className="mb-2">
-                  <label htmlFor="rating" className="form-label">
-                    Product Rating
-                  </label>
-                  <input
-                    type="text"
-                    id="rating"
-                    name="rating"
-                    className="form-control mb-2"
-                    placeholder="e.g., 4"
-                    value={filters.rating}
-                    onChange={handleChange}
-                  />
-                </div> */}
 
                 <button type="submit" className="btn btn-warning mt-2 w-100">
                   Apply
                 </button>
               </form>
             </div>
+
+            {/* end */}
           </div>
         </div>
       </main>
