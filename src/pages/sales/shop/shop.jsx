@@ -37,6 +37,28 @@ const Shop = () => {
     discount: "",
     rating: ""
   });
+
+  const handleRamChange = (e) => {
+    const { value, checked } = e.target;
+    let updatedRam = filters.ram.split(",").filter(Boolean); // Split and remove empty strings
+
+    if (checked) {
+      // Add RAM value to the list
+      updatedRam.push(value);
+    } else {
+      // Remove RAM value from the list
+      updatedRam = updatedRam.filter((ram) => ram !== value);
+    }
+
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      ram: updatedRam.join(","), // Join the array into a string separated by commas
+    }));
+  }
+
+
+
+
     const [priceRange, setPriceRange] = useState([0, 100000]);
 
   const handleChange = (e) => {
@@ -478,6 +500,41 @@ const Shop = () => {
                     value={filters.brand}
                     onChange={handleChange}
                   />
+                </div>
+
+                {/* ram */}
+                <div className="mb-2">
+                  <label className="form-label">RAM</label>
+                  <div className="form-check">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      value="4gb"
+                      onChange={handleRamChange}
+                      checked={filters.ram.includes("4gb")}
+                    />
+                    <label className="form-check-label">4GB</label>
+                  </div>
+                  <div className="form-check">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      value="8gb"
+                      onChange={handleRamChange}
+                      checked={filters.ram.includes("8gb")}
+                    />
+                    <label className="form-check-label">8GB</label>
+                  </div>
+                  <div className="form-check">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      value="16gb"
+                      onChange={handleRamChange}
+                      checked={filters.ram.includes("16gb")}
+                    />
+                    <label className="form-check-label">16GB</label>
+                  </div>
                 </div>
 
                 {/* Price Range */}

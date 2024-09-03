@@ -9,12 +9,18 @@ import { LazyLoadImage } from "react-lazy-load-image-component";
 import { useCart } from "react-use-cart";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import "rc-slider/assets/index.css";
+import Slider from "rc-slider";
+import ComputerFilter from "./ComputerFilter";
+
+
+
 
 
 const Computer = () => {
   const [data, setData] = useState([]);
   const [records, setRecords] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(12);
   const [pageNumberLimit, setpageNumberLimit] = useState(4);
@@ -22,42 +28,125 @@ const Computer = () => {
   const [minPageNumberLimit, setminPageNumberLimit] = useState(0);
  const [activeItem, setActiveItem] = useState("Item 2");
 
- const handleClick = (item) => {
-   setActiveItem(item);
- };
+  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [filters, setFilters] = useState({
+    price: "",
+    priceMin: "",
+    priceMax: "",
+    ram: "",
+    name: "",
+    hardDisk: "",
+    category: "",
+    discount: "",
+    rating: ""
+  });
 
+  const { Range } = Slider;
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(`${BASEURL}/api/v1/product/`);
-        const filtered = response.data.getAllProducts.filter(
-          (user) => user.category === "Computer"
-        );
-        setData(filtered.reverse());
-        setRecords(filtered);
-        setIsLoading(true);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        setIsLoading(true);
+const handleDriveChange = async (e) => {
+  const { value } = e.target;
+
+  setFilters((prevFilters) => ({
+    ...prevFilters,
+    drive: value
+  }));
+
+  try {
+    const queryParams = new URLSearchParams();
+    queryParams.append("drive", value);
+    // Include other filters if necessary
+    const url = `http://localhost:8000/api/v1/product/filter?${queryParams.toString()}`;
+    const response = await axios.get(url);
+    console.log(response.data); // Handle the response data
+  } catch (error) {
+    console.error("Error fetching data:", error);
+  }
+};
+  const handleRamChange = async (e) => {
+    const { value } = e.target;
+
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      ram: value
+    }));
+
+    try {
+      const queryParams = new URLSearchParams();
+      queryParams.append("ram", value);
+      // Include other filters if necessary
+      const url = `http://localhost:8000/api/v1/product/filter?${queryParams.toString()}`;
+      const response = await axios.get(url);
+      console.log(response.data); // Handle the response data
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  const [priceRange, setPriceRange] = useState([0, 100000]);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      [name]: value.toLowerCase() // Convert to lowercase
+    }));
+  };
+
+  const handlePriceChange = (e) => {
+    const { name, value } = e.target;
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      [name]: value // Update priceMin or priceMax
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+     console.log("Filters State:", filters);
+
+    // Construct the query parameters dynamically
+    const queryParams = new URLSearchParams();
+
+    Object.entries(filters).forEach(([key, value]) => {
+      if (value) {
+        queryParams.append(key, value.toLowerCase()); // Convert to lowercase
       }
-    };
-    fetchData();
+    });
+
+    if (priceRange) {
+      queryParams.append("price", `${priceRange[0]}-${priceRange[1]}`);
+    }
+
+    const url = `http://localhost:8000/api/v1/product/filter?${queryParams.toString()}`;
+
+    try {
+      const response = await axios.get(url);
+      console.log(response.data); // Handle the response data
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+
+  const handleClick = (item) => {
+    setActiveItem(item);
+  };
+
+  
+  useEffect(() => {
+    // Fetch all computers initially
+    fetch("http://localhost:8000/api/v1/product/filter?category=Computer")
+      .then((response) => response.json())
+      .then((data) => setFilteredProducts(data.data));
   }, []);
 
-  const Filter = (event) => {
-    setRecords(
-      data
-        .reverse()
-        .filter((c) => c.name.toLowerCase().includes(event.target.value))
-    );
-  };
+ 
 
   const paginate = (pages) => setCurrentPage(pages);
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentPosts = records.slice(indexOfFirstItem, indexOfLastItem);
+ 
 
   const handleNextbtn = () => {
     setCurrentPage(currentPage + 1);
@@ -156,7 +245,7 @@ const Computer = () => {
                     <input
                       class="form-control"
                       type="search"
-                      onChange={Filter}
+                      onChange={filters}
                       placeholder="Search"
                       aria-label="Search"
                     />
@@ -164,7 +253,7 @@ const Computer = () => {
                 </div>
                 <div class="row g-1 progress-circle ">
                   {isLoading ? (
-                    currentPosts?.map((product) => {
+                    filteredProducts.map((product) => {
                       return (
                         <div class="col-lg-3 mb-4" key={product.id}>
                           <div class=" mx-1  shadow-lg p-3  bg-body rounded showbutton">
@@ -249,7 +338,7 @@ const Computer = () => {
                         </div>
                       </div>
                     </div>
-                  )}
+                  )} 
                   {/*============================================== Pagination ================================================*/}
                   <div className="mt-5">
                     <ComputerPagination
@@ -383,6 +472,131 @@ const Computer = () => {
                   </li>
                 </ul>
               </div>
+              {/* <h1>filters</h1> */}
+
+              <div className="filter-section p-2 bg-white rounded shadow-sm">
+                <h4 className="mb-3">Filter Products</h4>
+                <ComputerFilter setFilteredProducts={setFilteredProducts} />
+
+                {/* <form
+                  onSubmit={handleSubmit}
+                  onKeyDown={(e) => e.key === "Enter" && handleSubmit(e)}
+                > */}
+                {/* Brand */}
+                {/* <div className="mb-2">
+                    <label htmlFor="brand" className="form-label">
+                      Brand
+                    </label>
+                    <input
+                      type="text"
+                      id="brand"
+                      name="brand"
+                      className="form-control mb-2"
+                      placeholder="Search"
+                      value={filters.brand}
+                      onChange={handleChange}
+                    />
+                  </div> */}
+
+                {/* ram */}
+                <div className="mb-2">
+                  {/* <label className="form-label">RAM</label> */}
+                  {/* <div className="form-check">
+                      <input
+                        className="form-check-input"
+                        type="checkbox"
+                        value="4Gb"
+                        onChange={handleRamChange}
+                        checked={filters.ram.includes("4")}
+                      />
+                      <label className="form-check-label">4GB</label>
+                    </div> */}
+
+                  <div className="form-check">
+                    {/* <input
+                        className="form-check-input"
+                        type="checkbox"
+                        value="8 Gb"
+                        onChange={handleRamChange}
+                        checked={filters.ram.includes("8")}
+                      /> */}
+                    {/* <label className="form-check-label">8GB</label> */}
+                  </div>
+                  {/* <div className="form-check">
+                      <input
+                        className="form-check-input"
+                        type="checkbox"
+                        value="16 Gb"
+                        onChange={handleRamChange}
+                        checked={filters.ram.includes("16")}
+                      />
+                      <label className="form-check-label">16GB</label>
+                    </div> */}
+                </div>
+                {/* computer */}
+                <div className="mb-2">
+                  {/* <label className="form-label">Storage</label> */}
+                  {/* <div className="form-check">
+                      <input
+                        className="form-check-input"
+                        type="checkbox"
+                        value="256"
+                        onChange={handleDriveChange}
+                        checked={filters.drive === "256"}
+                      />
+                      <label className="form-check-label">256GB</label>
+                    </div> */}
+                  {/* <div className="form-check">
+                      <input
+                        className="form-check-input"
+                        type="checkbox"
+                        value="512"
+                        onChange={handleDriveChange}
+                        checked={filters.drive === "512"}
+                      />
+                      <label className="form-check-label">512GB</label>
+                    </div> */}
+                  {/* <div className="form-check">
+                      <input
+                        className="form-check-input"
+                        type="checkbox"
+                        value="1TB"
+                        onChange={handleDriveChange}
+                        checked={filters.drive === "1TB"}
+                      />
+                      <label className="form-check-label">1TB</label>
+                    </div> */}
+                </div>
+
+                {/* end */}
+                {/* Price Range */}
+                {/* <div className="mb-2">
+                    <label htmlFor="priceRange" className="form-label">
+                      Price Range (₦)
+                    </label>
+                    <div className="d-flex flex-column"> */}
+                {/* <Slider
+                        range
+                        min={0}
+                        max={100000} // Adjust this to your needs
+                        defaultValue={priceRange}
+                        onChange={(value) => setPriceRange(value)}
+                        allowCross={false}
+                      /> */}
+                {/* <div className="d-flex justify-content-between mt-2">
+                        <span>{`₦${priceRange[0]}`}</span>
+                        <span>{`₦${priceRange[1]}`}</span>
+                      </div> */}
+                {/* </div>
+                  </div> */}
+
+                {/* <button type="submit" className="btn btn-warning mt-2 w-100">
+                    Apply
+                  </button> */}
+                {/* </form> */}
+              </div>
+
+              {/* end */}
             </div>
           </div>
         </div>
