@@ -53,7 +53,7 @@ const Computer = () => {
 useEffect(() => {
   // Fetch all computers initially
   axios
-    .get("http://localhost:8000/api/v1/product/computers", {})
+    .get(`${BASEURL}api/v1/product/computers`, {})
     .then((response) => {
       const products = response.data.data;
       setFilteredProducts(products);
