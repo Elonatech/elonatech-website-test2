@@ -1,86 +1,92 @@
 import "./computer.css";
 import { useState, useEffect } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link } from "react-router-dom";
+import ComputerPagination from "./computerPagination/computerPagination";
 import { BASEURL } from "../../../BaseURL/BaseURL";
 import Loading from "../../../components/Loading/Loading";
-import ComputerPagination from "./computerPagination/computerPagination";
 import axios from "axios";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import { useCart } from "react-use-cart";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import "rc-slider/assets/index.css";
 import ComputerFilter from "./ComputerFilter";
+
+
+
+
 
 const Computer = () => {
   const [data, setData] = useState([]);
   const [records, setRecords] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [searchParams, setSearchParams] = useSearchParams();
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(12);
   const [pageNumberLimit, setpageNumberLimit] = useState(4);
   const [maxPageNumberLimit, setmaxPageNumberLimit] = useState(4);
   const [minPageNumberLimit, setminPageNumberLimit] = useState(0);
-    const [filteredProducts, setFilteredProducts] = useState([]);
+ const [activeItem, setActiveItem] = useState("Item 2");
+   const [itemCount, setItemCount] = useState(0); 
 
-  useEffect(() => {
-    // Fetch all computers initially
-    axios
-      .get(`${BASEURL}/api/v1/product/computers`, {})
-      .then((response) => {
-        const products = response.data.data;
-        setFilteredProducts(products);
-        setIsLoading(true);
-        setItemCount(products.length); // Set the number of items
-        console.log(products);
-      })
-      .catch((error) => {
-        console.error("Error fetching computers:", error);
-      });
-  }, []);
+  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [filters, setFilters] = useState({
+    price: "",
+    priceMin: "",
+    priceMax: "",
+    ram: "",
+    name: "",
+    hardDisk: "",
+    category: "",
+    discount: "",
+    rating: ""
+  });
+
+
+  const handleClick = (item) => {
+    setActiveItem(item);
+  };
+
+  
+
+
+useEffect(() => {
+  // Fetch all computers initially
+  axios
+    .get(`${BASEURL}/api/v1/product/computers`, {})
+    .then((response) => {
+      const products = response.data.data;
+      setFilteredProducts(products);
+      setIsLoading(true)
+      setItemCount(products.length); // Set the number of items
+      console.log(products);
+    })
+    .catch((error) => {
+      console.error("Error fetching computers:", error);
+    });
+}, []);
 
 
  
 
-  useEffect(() => {
-    const page = parseInt(searchParams.get("page") || "1", 10);
-    setCurrentPage(page);
-  }, [searchParams]);
-
-  const Filter = (event) => {
-    setRecords(
-      data
-        .reverse()
-        .filter((c) => c.name.toLowerCase().includes(event.target.value))
-    );
-  };
-
-  const paginate = (pageNumber) => {
-    setCurrentPage(pageNumber);
-    setSearchParams({ page: pageNumber.toString() });
-  };
+  const paginate = (pages) => setCurrentPage(pages);
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentPosts = records.slice(indexOfFirstItem, indexOfLastItem);
+ 
 
   const handleNextbtn = () => {
-    const nextPage = currentPage + 1;
-    setCurrentPage(nextPage);
-    setSearchParams({ page: nextPage.toString() });
+    setCurrentPage(currentPage + 1);
 
-    if (nextPage > maxPageNumberLimit) {
+    if (currentPage + 1 > maxPageNumberLimit) {
       setmaxPageNumberLimit(maxPageNumberLimit + pageNumberLimit);
       setminPageNumberLimit(minPageNumberLimit + pageNumberLimit);
     }
   };
 
   const handlePrevbtn = () => {
-    const prevPage = currentPage - 1;
-    setCurrentPage(prevPage);
-    setSearchParams({ page: prevPage.toString() });
+    setCurrentPage(currentPage - 1);
 
-    if ((prevPage - 1) % pageNumberLimit == 0) {
+    if ((currentPage - 1) % pageNumberLimit == 0) {
       setmaxPageNumberLimit(maxPageNumberLimit - pageNumberLimit);
       setminPageNumberLimit(minPageNumberLimit - pageNumberLimit);
     }
@@ -115,6 +121,8 @@ const Computer = () => {
     setInterval(showPopUp(), 604800000);
   }, []);
 
+
+
   return (
     <>
       {/* Header */}
@@ -140,7 +148,6 @@ const Computer = () => {
           </p>
         </div>
       </div>
-
       {/* ======================================================================================= */}
       <main class="container-fluid">
         <div class="row g-0 ">
@@ -155,7 +162,7 @@ const Computer = () => {
                       <span className="text-danger">
                         {currentPage * itemsPerPage}
                       </span>{" "}
-                      OF <span className="text-danger">{data.length}</span>{" "}
+                      OF <span className="text-danger">{itemCount}</span>{" "}
                       RESULTS
                     </h6>
                   </div>
@@ -163,7 +170,7 @@ const Computer = () => {
                     <input
                       class="form-control"
                       type="search"
-                      onChange={Filter}
+                      onChange={filters}
                       placeholder="Search"
                       aria-label="Search"
                     />
@@ -171,13 +178,16 @@ const Computer = () => {
                 </div>
                 <div class="row g-1 progress-circle ">
                   {isLoading ? (
-                    filteredProducts.map((product) => {
+                    filteredProducts?.map((product) => {
                       return (
                         <div class="col-lg-3 mb-4" key={product.id}>
                           <div class=" mx-1  shadow-lg p-3  bg-body rounded showbutton">
                             <Link
                               className="text-decoration-none text-dark"
-                              to={`/product/${product._id}?fromPage=${currentPage}`}
+                              to={`/product/${product._id}/${product.name
+                                .split(` `)
+                                .join(`-`)
+                                .toLowerCase()}`}
                             >
                               <div className="text-center take">
                                 <LazyLoadImage
@@ -217,7 +227,7 @@ const Computer = () => {
                               </div>
                               <div class="d-flex justify-content-between">
                                 <p className="mt-2 px-1 text-danger">
-                                  ₦ {Number(product.price).toLocaleString()}.00
+                                  ₦ {product.price}.00
                                 </p>
                                 <i
                                   class="bi bi-cart p-1"
@@ -271,24 +281,56 @@ const Computer = () => {
               </div>
             </section>
           </div>
-          <div class="col-md-3  mb-5">
-            <div class="position-sticky p-3" style={{ top: "2rem" }}>
-              <div class="mb-3 mt-4 rounded">
-                <form class="d-flex  pt-5"></form>
-                <h4 class="fw-bold">Categories</h4>
+          <div class="col-md-3 ">
+            <div
+              class="position-sticky "
+              style={{ top: "2rem", marginTop: "20px" }}
+            >
+              <div
+                style={{
+                  marginTop: "50px",
+                  paddingTop: "30px",
+                  paddingBottom: "30px",
+
+                  marginLeft: "15px"
+                }}
+              >
+                <form
+                  style={{
+                    paddingTop: "20px",
+                    paddingBottom: "20px"
+                  }}
+                  class="d-flex "
+                ></form>
+                <h4
+                  style={{ marginTop: "-8px", marginBottom: "16px" }}
+                  class="fw-bold "
+                >
+                  Browse Categories
+                </h4>
                 <ul className="list-unstyled">
                   <li>
                     <Link
                       to={"/shop"}
-                      className="text-decoration-none text-dark"
+                      className="text-dark"
+                      style={{ textDecoration: "none" }}
+                      onMouseEnter={(e) =>
+                        (e.currentTarget.style.textDecoration = "underline")
+                      }
+                      onMouseLeave={(e) =>
+                        (e.currentTarget.style.textDecoration = "none")
+                      }
                     >
-                      Shop
+                      All Products
                     </Link>
                   </li>
                   <li>
                     <Link
                       to={"/computers"}
-                      className="text-decoration-none text-dark"
+                      className={`item ${
+                        activeItem === "Item 2" ? "active" : ""
+                      }`}
+                      onClick={() => handleClick("Item 2")}
                     >
                       Computers
                     </Link>
@@ -296,7 +338,14 @@ const Computer = () => {
                   <li>
                     <Link
                       to={"/office-equipment"}
-                      className="text-decoration-none text-dark"
+                      className="text-dark"
+                      style={{ textDecoration: "none" }}
+                      onMouseEnter={(e) =>
+                        (e.currentTarget.style.textDecoration = "underline")
+                      }
+                      onMouseLeave={(e) =>
+                        (e.currentTarget.style.textDecoration = "none")
+                      }
                     >
                       Office Equipment
                     </Link>
@@ -304,7 +353,14 @@ const Computer = () => {
                   <li>
                     <Link
                       to={"/pos-system"}
-                      className="text-decoration-none text-dark"
+                      className="text-dark"
+                      style={{ textDecoration: "none" }}
+                      onMouseEnter={(e) =>
+                        (e.currentTarget.style.textDecoration = "underline")
+                      }
+                      onMouseLeave={(e) =>
+                        (e.currentTarget.style.textDecoration = "none")
+                      }
                     >
                       POS System
                     </Link>
@@ -312,7 +368,14 @@ const Computer = () => {
                   <li>
                     <Link
                       to={"/printers"}
-                      className="text-decoration-none text-dark"
+                      className="text-dark"
+                      style={{ textDecoration: "none" }}
+                      onMouseEnter={(e) =>
+                        (e.currentTarget.style.textDecoration = "underline")
+                      }
+                      onMouseLeave={(e) =>
+                        (e.currentTarget.style.textDecoration = "none")
+                      }
                     >
                       Printers
                     </Link>
@@ -320,14 +383,145 @@ const Computer = () => {
                   <li>
                     <Link
                       to={"/network-devices"}
-                      className="text-decoration-none text-dark"
+                      className="text-dark"
+                      style={{ textDecoration: "none" }}
+                      onMouseEnter={(e) =>
+                        (e.currentTarget.style.textDecoration = "underline")
+                      }
+                      onMouseLeave={(e) =>
+                        (e.currentTarget.style.textDecoration = "none")
+                      }
                     >
                       Network Devices
                     </Link>
                   </li>
                 </ul>
               </div>
-              <ComputerFilter setFilteredProducts={setFilteredProducts} />
+              {/* <h1>filters</h1> */}
+
+              <div className="filter-section p-2 bg-white rounded shadow-sm">
+                <h4 className="mb-3">Filter Products</h4>
+                <ComputerFilter setFilteredProducts={setFilteredProducts} />
+
+                {/* <form
+                  onSubmit={handleSubmit}
+                  onKeyDown={(e) => e.key === "Enter" && handleSubmit(e)}
+                > */}
+                {/* Brand */}
+                {/* <div className="mb-2">
+                    <label htmlFor="brand" className="form-label">
+                      Brand
+                    </label>
+                    <input
+                      type="text"
+                      id="brand"
+                      name="brand"
+                      className="form-control mb-2"
+                      placeholder="Search"
+                      value={filters.brand}
+                      onChange={handleChange}
+                    />
+                  </div> */}
+
+                {/* ram */}
+                <div className="mb-2">
+                  {/* <label className="form-label">RAM</label> */}
+                  {/* <div className="form-check">
+                      <input
+                        className="form-check-input"
+                        type="checkbox"
+                        value="4Gb"
+                        onChange={handleRamChange}
+                        checked={filters.ram.includes("4")}
+                      />
+                      <label className="form-check-label">4GB</label>
+                    </div> */}
+
+                  <div className="form-check">
+                    {/* <input
+                        className="form-check-input"
+                        type="checkbox"
+                        value="8 Gb"
+                        onChange={handleRamChange}
+                        checked={filters.ram.includes("8")}
+                      /> */}
+                    {/* <label className="form-check-label">8GB</label> */}
+                  </div>
+                  {/* <div className="form-check">
+                      <input
+                        className="form-check-input"
+                        type="checkbox"
+                        value="16 Gb"
+                        onChange={handleRamChange}
+                        checked={filters.ram.includes("16")}
+                      />
+                      <label className="form-check-label">16GB</label>
+                    </div> */}
+                </div>
+                {/* computer */}
+                <div className="mb-2">
+                  {/* <label className="form-label">Storage</label> */}
+                  {/* <div className="form-check">
+                      <input
+                        className="form-check-input"
+                        type="checkbox"
+                        value="256"
+                        onChange={handleDriveChange}
+                        checked={filters.drive === "256"}
+                      />
+                      <label className="form-check-label">256GB</label>
+                    </div> */}
+                  {/* <div className="form-check">
+                      <input
+                        className="form-check-input"
+                        type="checkbox"
+                        value="512"
+                        onChange={handleDriveChange}
+                        checked={filters.drive === "512"}
+                      />
+                      <label className="form-check-label">512GB</label>
+                    </div> */}
+                  {/* <div className="form-check">
+                      <input
+                        className="form-check-input"
+                        type="checkbox"
+                        value="1TB"
+                        onChange={handleDriveChange}
+                        checked={filters.drive === "1TB"}
+                      />
+                      <label className="form-check-label">1TB</label>
+                    </div> */}
+                </div>
+
+                {/* end */}
+                {/* Price Range */}
+                {/* <div className="mb-2">
+                    <label htmlFor="priceRange" className="form-label">
+                      Price Range (₦)
+                    </label>
+                    <div className="d-flex flex-column"> */}
+                {/* <Slider
+                        range
+                        min={0}
+                        max={100000} // Adjust this to your needs
+                        defaultValue={priceRange}
+                        onChange={(value) => setPriceRange(value)}
+                        allowCross={false}
+                      /> */}
+                {/* <div className="d-flex justify-content-between mt-2">
+                        <span>{`₦${priceRange[0]}`}</span>
+                        <span>{`₦${priceRange[1]}`}</span>
+                      </div> */}
+                {/* </div>
+                  </div> */}
+
+                {/* <button type="submit" className="btn btn-warning mt-2 w-100">
+                    Apply
+                  </button> */}
+                {/* </form> */}
+              </div>
+
+              {/* end */}
             </div>
           </div>
         </div>

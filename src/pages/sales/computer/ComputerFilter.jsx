@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Slider from "react-slider";
 import { BASEURL } from "../../../BaseURL/BaseURL";
-// import "bootstrap/dist/css/bootstrap.min.css";
 
 const ComputerFilter = ({ setFilteredProducts }) => {
   const [filters, setFilters] = useState({
@@ -37,37 +36,45 @@ const ComputerFilter = ({ setFilteredProducts }) => {
   };
 
   const applyFilters = (updatedFilters) => {
-    let queryString = "";
+    let queryParams = [];
 
     if (updatedFilters.ram.length > 0) {
-      queryString += `ram=${updatedFilters.ram
-        .map((ram) => ram.replace(/\D/g, ""))
-        .join(",")}&`;
+      queryParams.push(
+        `ram=${updatedFilters.ram
+          .map((ram) => ram.replace(/\D/g, ""))
+          .join(",")}`
+      );
     }
 
     if (updatedFilters.brand.length > 0) {
-      queryString += `brand=${updatedFilters.brand
-        .map((brand) => brand.replace(/\s+/g, "").toLowerCase())
-        .join(",")}&`;
+      queryParams.push(
+        `brand=${updatedFilters.brand
+          .map((brand) => brand.replace(/\s+/g, "").toLowerCase())
+          .join(",")}`
+      );
     }
 
     if (updatedFilters.drive.length > 0) {
-      queryString += `drive=${updatedFilters.drive
-        .map((drive) => drive.replace(/\D/g, ""))
-        .join(",")}&`;
+      queryParams.push(
+        `drive=${updatedFilters.drive
+          .map((drive) => drive.replace(/\D/g, ""))
+          .join(",")}`
+      );
     }
 
     if (updatedFilters.price[0] !== 0 || updatedFilters.price[1] !== 100000) {
-      queryString += `price=${updatedFilters.price.join("-")}&`;
+      queryParams.push(`price=${updatedFilters.price.join("-")}`);
     }
 
+    const queryString = queryParams.length > 0 ? queryParams.join("&") : "";
+
     // Fetch filtered products
-  fetch(
-    `${BASEURL}/product/filter?category=Computer&${queryString}`
-  )
-    .then((response) => response.json())
-    .then((data) => setFilteredProducts(data.data))
-    .catch((error) => console.error("Error:", error));
+    fetch(
+      `${BASEURL}api/v1/product/filter?category=Computer&${queryString}`
+    )
+      .then((response) => response.json())
+      .then((data) => setFilteredProducts(data.data))
+      .catch((error) => console.error("Error:", error));
   };
 
   return (
@@ -177,6 +184,7 @@ const ComputerFilter = ({ setFilteredProducts }) => {
         </div>
       </div>
 
+      {/* Price Filter */}
       <div className="mb-3">
         <label className="form-label">Price Range (₦):</label>
         <Slider
@@ -195,7 +203,7 @@ const ComputerFilter = ({ setFilteredProducts }) => {
               }}
             />
           )}
-          renderThumb={(props, state) => (
+          renderThumb={(props) => (
             <div
               {...props}
               style={{
@@ -211,7 +219,7 @@ const ComputerFilter = ({ setFilteredProducts }) => {
           )}
           className="price-slider"
         />
-        <div className="d-flex justify-content-between mt-2 ">
+        <div className="d-flex justify-content-between mt-2">
           <span style={{ marginTop: "15px" }}>₦{filters.price[0]}</span>
           <span style={{ marginTop: "15px" }}>₦{filters.price[1]}</span>
         </div>
