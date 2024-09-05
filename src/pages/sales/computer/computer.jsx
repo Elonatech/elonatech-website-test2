@@ -10,7 +10,6 @@ import { useCart } from "react-use-cart";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "rc-slider/assets/index.css";
-import Slider from "rc-slider";
 import ComputerFilter from "./ComputerFilter";
 
 
@@ -149,7 +148,6 @@ useEffect(() => {
           </p>
         </div>
       </div>
-
       {/* ======================================================================================= */}
       <main class="container-fluid">
         <div class="row g-0 ">
@@ -183,7 +181,6 @@ useEffect(() => {
                     filteredProducts?.map((product) => {
                       return (
                         <div class="col-lg-3 mb-4" key={product.id}>
-                     
                           <div class=" mx-1  shadow-lg p-3  bg-body rounded showbutton">
                             <Link
                               className="text-decoration-none text-dark"
@@ -250,8 +247,7 @@ useEffect(() => {
                                 <h6 className="text-danger">ADD TO CART</h6>
                               </div>
                             </div>
-                          </div> 
-                       
+                          </div>
                         </div>
                       );
                     })

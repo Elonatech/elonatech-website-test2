@@ -1,122 +1,188 @@
-.take {
-  cursor: pointer;
-  transition: all 0.3s;
+
+
+
+.take{
+    cursor: pointer;
+    transition: all 0.3s;
+
 }
 
-.take:hover {
-  transform: scale(0.9);
-  transition: all 0.3s;
+.take:hover{
+    transform: scale(0.9);
+    transition: all 0.3s;
 }
 .form-controli:focus {
-  border-color: #ced4da; /* default B5 color or set your own color*/
-  border: none !important; /* if you want to remove borders at all*/
-  outline: none !important;
-  box-shadow: none !important;
-}
+    border-color: #ced4da; /* default B5 color or set your own color*/
+    border: none !important; /* if you want to remove borders at all*/
+    outline: none !important;
+    box-shadow: none !important;
+  }  
+
+
+
 
 /* Pop-Up-Message */
 
-.pop-up-message {
+.pop-up-message{
   width: 68rem;
   font-family: sans-serif;
   position: relative;
-}
-
-/*   Media Pop Up Message  */
-
-@media only screen and (max-width: 1673px) {
-  .pop-up-message {
-    width: 59rem;
-    font-family: sans-serif;
-    position: relative;
-    left: 29px;
   }
-}
-
-@media only screen and (max-width: 1599px) {
-  .pop-up-message {
-    width: 57rem;
-    font-family: sans-serif;
-    position: relative;
-    left: 25px;
+  
+  /*   Media Pop Up Message  */
+  
+  @media only screen and (max-width: 1673px) {
+    .pop-up-message{
+      width: 59rem;
+      font-family: sans-serif;
+      position: relative;
+      left: 29px;
+      }
+          
   }
-}
-
-
-#itemList {
-  list-style-type: none;
-  padding: 0;
-}
-
-.item {
- 
-  background-color: lightgray;
-  cursor: pointer;
-}
-
-.item.active {
-  background-color: black;
-  color: white;
-}
-@media only screen and (max-width: 1538px) {
-  .pop-up-message {
-    width: 51rem;
-    font-family: sans-serif;
-    position: relative;
-    left: 25px;
+  
+  @media only screen and (max-width: 1599px) {
+    .pop-up-message{
+      width: 57rem;
+      font-family: sans-serif;
+      position: relative;
+      left: 25px;
+      }
+          
   }
-}
-
-@media only screen and (max-width: 1428px) {
-  .pop-up-message {
-    width: 49rem;
-    font-family: sans-serif;
-    position: relative;
-    left: 25px;
+  
+  
+  
+  @media only screen and (max-width: 1538px) {
+    .pop-up-message{
+      width: 51rem;
+      font-family: sans-serif;
+      position: relative;
+      left: 25px;
+      }
+          
   }
-}
-
-@media only screen and (max-width: 1399px) {
-  .pop-up-message {
-    width: 49rem;
-    font-family: sans-serif;
-    position: relative;
-    left: 25px;
+  
+  @media only screen and (max-width: 1428px) {
+    .pop-up-message{
+      width: 49rem;
+      font-family: sans-serif;
+      position: relative;
+      left: 25px;
+      }
+          
   }
-}
-
-@media only screen and (max-width: 1290px) {
-  .pop-up-message {
-    width: 47rem;
-    font-family: sans-serif;
-    position: relative;
+  
+  @media only screen and (max-width: 1399px) {
+    .pop-up-message{
+      width: 49rem;
+      font-family: sans-serif;
+      position: relative;
+      left: 25px;
+      }
+          
   }
-}
-
-@media only screen and (max-width: 500px) {
-  .pop-up-message {
-    width: 24rem;
-    font-family: sans-serif;
-    position: relative;
-    left: 25px;
+  
+  
+  @media only screen and (max-width: 1290px) {
+    .pop-up-message{
+      width: 47rem;
+      font-family: sans-serif;
+      position: relative;
+      }
+          
   }
-}
+  
+  
+  @media only screen and (max-width: 500px) {
+    .pop-up-message{
+        width: 24rem;
+        font-family: sans-serif;
+        position: relative;
+        left: 25px;
+    
+    }
+        
+  }
 
-.editorContainer {
-  height: 400px;
-  overflow: scroll;
-  overflow-x: hidden;
-  border: 1px solid lightgray;
+
+  .editorContainer {
+    height: 400px;
+    overflow: scroll;
+    overflow-x: hidden;
+    border: 1px solid lightgray;
 }
 
 .editor {
-  height: 300%;
-  border: none;
-  overflow-y: hidden;
-}
+    height: 300%;
+    border: none;
+    overflow-y: hidden; 
+  }
 
-.last{
-margin-left: -5px;
-padding: 5px;
+  .dashboard {
+    display: flex;
+    max-width: 200px;
+    height: 80px;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .dash {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 20px;
+    font-size: 16px;
+    color: #007bff;
+    border: 2px solid #007bff;
+    border-radius: 50px;
+    background-color: transparent;
+    text-transform: uppercase;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .dash:hover {
+    background-color: #007bff;
+    color: white;
+  }
+  
+  .dash .icon {
+    font-size: 18px;
+    transition: transform 0.3s ease-in-out;
+  }
+  
+  .dash:hover .icon {
+    transform: rotate(360deg);
+  }
+  
+  .dash::before {
+    content: '';
+    position: absolute;
+    width: 300%;
+    height: 300%;
+    top: 100%;
+    left: -150%;
+    background: linear-gradient(45deg, transparent, #00ff87, #007bff, transparent);
+    transition: 0.5s ease-in-out;
+    z-index: 0;
+  }
+  
+  .dash:hover::before {
+    top: -150%;
+  }
+  
+  .dash:hover {
+    border-color: transparent;
+  }
+  
+  
+  
+  
 
-}
+
+
