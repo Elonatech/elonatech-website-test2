@@ -39,15 +39,21 @@ const ComputerFilter = ({ setFilteredProducts }) => {
     let queryString = "";
 
     if (updatedFilters.ram.length > 0) {
-      queryString += `ram=${updatedFilters.ram.join(",")}&`;
+      queryString += `ram=${updatedFilters.ram
+        .map((ram) => ram.replace(/\D/g, ""))
+        .join(",")}&`;
     }
 
     if (updatedFilters.brand.length > 0) {
-      queryString += `brand=${updatedFilters.brand.join(",")}&`;
+      queryString += `brand=${updatedFilters.brand
+        .map((brand) => brand.replace(/\s+/g, "").toLowerCase())
+        .join(",")}&`;
     }
 
     if (updatedFilters.drive.length > 0) {
-      queryString += `drive=${updatedFilters.drive.join(",")}&`;
+      queryString += `drive=${updatedFilters.drive
+        .map((drive) => drive.replace(/\D/g, ""))
+        .join(",")}&`;
     }
 
     if (updatedFilters.price[0] !== 0 || updatedFilters.price[1] !== 100000) {
@@ -105,7 +111,7 @@ const ComputerFilter = ({ setFilteredProducts }) => {
           <input
             type="checkbox"
             name="brand"
-            value="Dell"
+            value="DELL"
             onChange={handleCheckboxChange}
             className="form-check-input"
           />
@@ -168,7 +174,6 @@ const ComputerFilter = ({ setFilteredProducts }) => {
         </div>
       </div>
 
-      {/* Price Range Filter */}
       <div className="mb-3">
         <label className="form-label">Price Range (₦):</label>
         <Slider
@@ -177,13 +182,35 @@ const ComputerFilter = ({ setFilteredProducts }) => {
           step={100}
           value={filters.price}
           onChange={handlePriceChange}
-          renderTrack={(props) => <div {...props} className="track" />}
-          renderThumb={(props) => <div {...props} className="thumb" />}
+          renderTrack={(props, state) => (
+            <div
+              {...props}
+              style={{
+                ...props.style,
+                height: "6px",
+                background: state.index === 1 ? "#ddd" : "#007bff"
+              }}
+            />
+          )}
+          renderThumb={(props, state) => (
+            <div
+              {...props}
+              style={{
+                ...props.style,
+                height: "20px",
+                width: "20px",
+                backgroundColor: "#007bff",
+                borderRadius: "50%",
+                outline: "none",
+                boxShadow: "0 2px 6px rgba(0, 0, 0, 0.2)"
+              }}
+            />
+          )}
           className="price-slider"
         />
-        <div className="d-flex justify-content-between mt-2">
-          <span>₦{filters.price[0]}</span>
-          <span>₦{filters.price[1]}</span>
+        <div className="d-flex justify-content-between mt-2 ">
+          <span style={{ marginTop: "15px" }}>₦{filters.price[0]}</span>
+          <span style={{ marginTop: "15px" }}>₦{filters.price[1]}</span>
         </div>
       </div>
     </form>

@@ -27,6 +27,7 @@ const Computer = () => {
   const [maxPageNumberLimit, setmaxPageNumberLimit] = useState(4);
   const [minPageNumberLimit, setminPageNumberLimit] = useState(0);
  const [activeItem, setActiveItem] = useState("Item 2");
+   const [itemCount, setItemCount] = useState(0); 
 
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [filters, setFilters] = useState({
@@ -41,104 +42,29 @@ const Computer = () => {
     rating: ""
   });
 
-  const { Range } = Slider;
-
-const handleDriveChange = async (e) => {
-  const { value } = e.target;
-
-  setFilters((prevFilters) => ({
-    ...prevFilters,
-    drive: value
-  }));
-
-  try {
-    const queryParams = new URLSearchParams();
-    queryParams.append("drive", value);
-    // Include other filters if necessary
-    const url = `http://localhost:8000/api/v1/product/filter?${queryParams.toString()}`;
-    const response = await axios.get(url);
-    console.log(response.data); // Handle the response data
-  } catch (error) {
-    console.error("Error fetching data:", error);
-  }
-};
-  const handleRamChange = async (e) => {
-    const { value } = e.target;
-
-    setFilters((prevFilters) => ({
-      ...prevFilters,
-      ram: value
-    }));
-
-    try {
-      const queryParams = new URLSearchParams();
-      queryParams.append("ram", value);
-      // Include other filters if necessary
-      const url = `http://localhost:8000/api/v1/product/filter?${queryParams.toString()}`;
-      const response = await axios.get(url);
-      console.log(response.data); // Handle the response data
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
-
-  const [priceRange, setPriceRange] = useState([0, 100000]);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFilters((prevFilters) => ({
-      ...prevFilters,
-      [name]: value.toLowerCase() // Convert to lowercase
-    }));
-  };
-
-  const handlePriceChange = (e) => {
-    const { name, value } = e.target;
-    setFilters((prevFilters) => ({
-      ...prevFilters,
-      [name]: value // Update priceMin or priceMax
-    }));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-     console.log("Filters State:", filters);
-
-    // Construct the query parameters dynamically
-    const queryParams = new URLSearchParams();
-
-    Object.entries(filters).forEach(([key, value]) => {
-      if (value) {
-        queryParams.append(key, value.toLowerCase()); // Convert to lowercase
-      }
-    });
-
-    if (priceRange) {
-      queryParams.append("price", `${priceRange[0]}-${priceRange[1]}`);
-    }
-
-    const url = `http://localhost:8000/api/v1/product/filter?${queryParams.toString()}`;
-
-    try {
-      const response = await axios.get(url);
-      console.log(response.data); // Handle the response data
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
-
 
   const handleClick = (item) => {
     setActiveItem(item);
   };
 
   
-  useEffect(() => {
-    // Fetch all computers initially
-    fetch("http://localhost:8000/api/v1/product/filter?category=Computer")
-      .then((response) => response.json())
-      .then((data) => setFilteredProducts(data.data));
-  }, []);
+
+
+useEffect(() => {
+  // Fetch all computers initially
+  axios
+    .get("http://localhost:8000/api/v1/product/computers", {})
+    .then((response) => {
+      const products = response.data.data;
+      setFilteredProducts(products);
+      setItemCount(products.length); // Set the number of items
+      console.log(products);
+    })
+    .catch((error) => {
+      console.error("Error fetching computers:", error);
+    });
+}, []);
+
 
  
 
@@ -237,7 +163,7 @@ const handleDriveChange = async (e) => {
                       <span className="text-danger">
                         {currentPage * itemsPerPage}
                       </span>{" "}
-                      OF <span className="text-danger">{data.length}</span>{" "}
+                      OF <span className="text-danger">{itemCount}</span>{" "}
                       RESULTS
                     </h6>
                   </div>
