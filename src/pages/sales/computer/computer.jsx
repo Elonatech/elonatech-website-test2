@@ -20,7 +20,7 @@ import ComputerFilter from "./ComputerFilter";
 const Computer = () => {
   const [data, setData] = useState([]);
   const [records, setRecords] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(12);
   const [pageNumberLimit, setpageNumberLimit] = useState(4);
@@ -57,6 +57,7 @@ useEffect(() => {
     .then((response) => {
       const products = response.data.data;
       setFilteredProducts(products);
+      setIsLoading(true)
       setItemCount(products.length); // Set the number of items
       console.log(products);
     })
@@ -179,9 +180,10 @@ useEffect(() => {
                 </div>
                 <div class="row g-1 progress-circle ">
                   {isLoading ? (
-                    filteredProducts.map((product) => {
+                    filteredProducts?.map((product) => {
                       return (
                         <div class="col-lg-3 mb-4" key={product.id}>
+                     
                           <div class=" mx-1  shadow-lg p-3  bg-body rounded showbutton">
                             <Link
                               className="text-decoration-none text-dark"
@@ -248,7 +250,8 @@ useEffect(() => {
                                 <h6 className="text-danger">ADD TO CART</h6>
                               </div>
                             </div>
-                          </div>
+                          </div> 
+                       
                         </div>
                       );
                     })
@@ -264,7 +267,7 @@ useEffect(() => {
                         </div>
                       </div>
                     </div>
-                  )} 
+                  )}
                   {/*============================================== Pagination ================================================*/}
                   <div className="mt-5">
                     <ComputerPagination
