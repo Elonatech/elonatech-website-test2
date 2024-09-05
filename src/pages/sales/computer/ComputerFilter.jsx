@@ -70,7 +70,7 @@ const ComputerFilter = ({ setFilteredProducts }) => {
 
     // Fetch filtered products
     fetch(
-      `${BASEURL}api/v1/product/filter?category=Computer&${queryString}`
+      `${BASEURL}/api/v1/product/filter?category=Computer&${queryString}`
     )
       .then((response) => response.json())
       .then((data) => setFilteredProducts(data.data))
