@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Slider from "react-slider";
-import "bootstrap/dist/css/bootstrap.min.css";
+import { BASEURL } from "../../../BaseURL/BaseURL";
+// import "bootstrap/dist/css/bootstrap.min.css";
 
 const ComputerFilter = ({ setFilteredProducts }) => {
   const [filters, setFilters] = useState({
@@ -61,10 +62,12 @@ const ComputerFilter = ({ setFilteredProducts }) => {
     }
 
     // Fetch filtered products
-    fetch(`http://localhost:8000/api/v1/product/filter?${queryString}`)
-      .then((response) => response.json())
-      .then((data) => setFilteredProducts(data.data))
-      .catch((error) => console.error("Error:", error));
+  fetch(
+    `${BASEURL}/product/filter?category=Computer&${queryString}`
+  )
+    .then((response) => response.json())
+    .then((data) => setFilteredProducts(data.data))
+    .catch((error) => console.error("Error:", error));
   };
 
   return (
