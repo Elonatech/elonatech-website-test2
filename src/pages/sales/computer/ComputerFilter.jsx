@@ -4,10 +4,10 @@ import { BASEURL } from "../../../BaseURL/BaseURL";
 
 const ComputerFilter = ({ setFilteredProducts }) => {
   const [filters, setFilters] = useState({
-    ram: [],
-    brand: [],
-    drive: [],
-    price: [0, 100000] // Default price range
+    ram: "",
+    brand: "",
+    drive: "",
+    price: [0, 1000000] // Default price range
   });
 
   const handleCheckboxChange = (event) => {
@@ -15,11 +15,9 @@ const ComputerFilter = ({ setFilteredProducts }) => {
     setFilters((prevFilters) => {
       const updatedFilters = {
         ...prevFilters,
-        [name]: checked
-          ? [...prevFilters[name], value]
-          : prevFilters[name].filter((item) => item !== value)
+        [name]: checked ? value : "" // Set value or reset if unchecked
       };
-      applyFilters(updatedFilters);
+      applyFilters(updatedFilters); // Apply filters each time a checkbox is changed
       return updatedFilters;
     });
   };
@@ -30,7 +28,7 @@ const ComputerFilter = ({ setFilteredProducts }) => {
         ...prevFilters,
         price: value
       };
-      applyFilters(updatedFilters);
+      applyFilters(updatedFilters); // Apply filters when the price changes
       return updatedFilters;
     });
   };
@@ -38,34 +36,32 @@ const ComputerFilter = ({ setFilteredProducts }) => {
   const applyFilters = (updatedFilters) => {
     let queryParams = [];
 
-    if (updatedFilters.ram.length > 0) {
+    // Add RAM filter if selected
+    if (updatedFilters.ram) {
+      queryParams.push(`ram=${updatedFilters.ram.replace(/\D/g, "")}`);
+    }
+
+    // Add brand filter if selected
+    if (updatedFilters.brand) {
       queryParams.push(
-        `ram=${updatedFilters.ram
-          .map((ram) => ram.replace(/\D/g, ""))
-          .join(",")}`
+        `brand=${updatedFilters.brand.replace(/\s+/g, "").toLowerCase()}`
       );
     }
 
-    if (updatedFilters.brand.length > 0) {
-      queryParams.push(
-        `brand=${updatedFilters.brand
-          .map((brand) => brand.replace(/\s+/g, "").toLowerCase())
-          .join(",")}`
-      );
+    // Add drive filter if selected
+    if (updatedFilters.drive) {
+      queryParams.push(`drive=${updatedFilters.drive.replace(/\D/g, "")}`);
     }
 
-    if (updatedFilters.drive.length > 0) {
-      queryParams.push(
-        `drive=${updatedFilters.drive
-          .map((drive) => drive.replace(/\D/g, ""))
-          .join(",")}`
-      );
-    }
-
-    if (updatedFilters.price[0] !== 0 || updatedFilters.price[1] !== 100000) {
+    // Add price filter only if price is modified from the default
+    if (
+      updatedFilters.price[0] !== 0 || // Min price is not default
+      updatedFilters.price[1] !== 1000000 // Max price is not default
+    ) {
       queryParams.push(`price=${updatedFilters.price.join("-")}`);
     }
 
+    // Build query string if there are any parameters
     const queryString = queryParams.length > 0 ? queryParams.join("&") : "";
 
     // Fetch filtered products
@@ -75,6 +71,11 @@ const ComputerFilter = ({ setFilteredProducts }) => {
       .then((response) => response.json())
       .then((data) => setFilteredProducts(data.data))
       .catch((error) => console.error("Error:", error));
+  };
+
+  // Helper function to format numbers with commas for display
+  const formatPrice = (price) => {
+    return price.toLocaleString(); // Adds commas to the number
   };
 
   return (
@@ -88,7 +89,9 @@ const ComputerFilter = ({ setFilteredProducts }) => {
             name="ram"
             value="4GB"
             onChange={handleCheckboxChange}
+            checked={filters.ram === "4GB"}
             className="form-check-input"
+            disabled={filters.ram && filters.ram !== "4GB"}
           />
           <label className="form-check-label">4GB</label>
         </div>
@@ -98,7 +101,9 @@ const ComputerFilter = ({ setFilteredProducts }) => {
             name="ram"
             value="8GB"
             onChange={handleCheckboxChange}
+            checked={filters.ram === "8GB"}
             className="form-check-input"
+            disabled={filters.ram && filters.ram !== "8GB"}
           />
           <label className="form-check-label">8GB</label>
         </div>
@@ -108,7 +113,9 @@ const ComputerFilter = ({ setFilteredProducts }) => {
             name="ram"
             value="16GB"
             onChange={handleCheckboxChange}
+            checked={filters.ram === "16GB"}
             className="form-check-input"
+            disabled={filters.ram && filters.ram !== "16GB"}
           />
           <label className="form-check-label">16GB</label>
         </div>
@@ -123,7 +130,9 @@ const ComputerFilter = ({ setFilteredProducts }) => {
             name="brand"
             value="DELL"
             onChange={handleCheckboxChange}
+            checked={filters.brand === "DELL"}
             className="form-check-input"
+            disabled={filters.brand && filters.brand !== "DELL"}
           />
           <label className="form-check-label">Dell</label>
         </div>
@@ -133,7 +142,9 @@ const ComputerFilter = ({ setFilteredProducts }) => {
             name="brand"
             value="HP"
             onChange={handleCheckboxChange}
+            checked={filters.brand === "HP"}
             className="form-check-input"
+            disabled={filters.brand && filters.brand !== "HP"}
           />
           <label className="form-check-label">HP</label>
         </div>
@@ -143,7 +154,9 @@ const ComputerFilter = ({ setFilteredProducts }) => {
             name="brand"
             value="Apple"
             onChange={handleCheckboxChange}
+            checked={filters.brand === "Apple"}
             className="form-check-input"
+            disabled={filters.brand && filters.brand !== "Apple"}
           />
           <label className="form-check-label">Apple</label>
         </div>
@@ -158,7 +171,9 @@ const ComputerFilter = ({ setFilteredProducts }) => {
             name="drive"
             value="512GB"
             onChange={handleCheckboxChange}
+            checked={filters.drive === "512GB"}
             className="form-check-input"
+            disabled={filters.drive && filters.drive !== "512GB"}
           />
           <label className="form-check-label">512GB</label>
         </div>
@@ -168,7 +183,9 @@ const ComputerFilter = ({ setFilteredProducts }) => {
             name="drive"
             value="1TB"
             onChange={handleCheckboxChange}
+            checked={filters.drive === "1TB"}
             className="form-check-input"
+            disabled={filters.drive && filters.drive !== "1TB"}
           />
           <label className="form-check-label">1TB</label>
         </div>
@@ -178,7 +195,9 @@ const ComputerFilter = ({ setFilteredProducts }) => {
             name="drive"
             value="2TB"
             onChange={handleCheckboxChange}
+            checked={filters.drive === "2TB"}
             className="form-check-input"
+            disabled={filters.drive && filters.drive !== "2TB"}
           />
           <label className="form-check-label">2TB</label>
         </div>
@@ -189,7 +208,7 @@ const ComputerFilter = ({ setFilteredProducts }) => {
         <label className="form-label">Price Range (₦):</label>
         <Slider
           min={0}
-          max={100000}
+          max={1000000}
           step={100}
           value={filters.price}
           onChange={handlePriceChange}
@@ -220,8 +239,12 @@ const ComputerFilter = ({ setFilteredProducts }) => {
           className="price-slider"
         />
         <div className="d-flex justify-content-between mt-2">
-          <span style={{ marginTop: "15px" }}>₦{filters.price[0]}</span>
-          <span style={{ marginTop: "15px" }}>₦{filters.price[1]}</span>
+          <span style={{ marginTop: "15px" }}>
+            ₦{formatPrice(filters.price[0])}
+          </span>
+          <span style={{ marginTop: "15px" }}>
+            ₦{formatPrice(filters.price[1])}
+          </span>
         </div>
       </div>
     </form>

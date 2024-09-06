@@ -9,37 +9,38 @@ import { LazyLoadImage } from "react-lazy-load-image-component";
 import { useCart } from "react-use-cart";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import ComputerFilter from "./ComputerFilter";
 import { useParams } from "react-router-dom";
 
-
-
 const ComputerPages = () => {
-
-  const { pagenumber } = useParams();
-
   const [data, setData] = useState([]);
   const [records, setRecords] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [currentPage, setCurrentPage] = useState(Number(pagenumber));
+  const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(12);
   const [pageNumberLimit, setpageNumberLimit] = useState(4);
   const [maxPageNumberLimit, setmaxPageNumberLimit] = useState(4);
   const [minPageNumberLimit, setminPageNumberLimit] = useState(0);
+  const [filteredProducts, setFilteredProducts] = useState([]);
   const [activeItem, setActiveItem] = useState("Item 2");
+
+  const { pagenumber } = useParams();
 
   const handleClick = (item) => {
     setActiveItem(item);
   };
 
+  const formatPrice = (price) => {
+    return price.toLocaleString(); // Adds commas to the number
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`${BASEURL}/api/v1/product/`);
-        const filtered = response.data.getAllProducts.filter(
-          (user) => user.category === "Computer"
-        );
-        setData(filtered.reverse());
-        setRecords(filtered);
+        const response = await axios.get(`${BASEURL}/api/v1/product/computers`);
+        const products = response.data.data.reverse();
+        setData(products);
+        setRecords(products); // Initially display all products
         setIsLoading(true);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -49,20 +50,25 @@ const ComputerPages = () => {
     fetchData();
   }, []);
 
-
-
-  useEffect(() =>{
-    setCurrentPage(Number(pagenumber))
-  },[currentPage]);
-
+  useEffect(() => {
+    // If filteredProducts has any values, display them; otherwise, display all products
+    if (filteredProducts.length > 0) {
+      setRecords(filteredProducts);
+    } else {
+      setRecords(data); // Display all products when no filters are applied
+    }
+  }, [filteredProducts, data]);
 
   const Filter = (event) => {
+    const searchTerm = event.target.value.toLowerCase();
     setRecords(
-      data
-        .reverse()
-        .filter((c) => c.name.toLowerCase().includes(event.target.value))
+      data.filter((product) => product.name.toLowerCase().includes(searchTerm))
     );
   };
+    useEffect(() => {
+      setCurrentPage(Number(pagenumber));
+    }, [currentPage]);
+
 
   const paginate = (pages) => setCurrentPage(pages);
 
@@ -79,7 +85,7 @@ const ComputerPages = () => {
     }
   };
 
-  if(parseInt(pagenumber) > maxPageNumberLimit){
+  if (parseInt(pagenumber) > maxPageNumberLimit) {
     setmaxPageNumberLimit(maxPageNumberLimit + pageNumberLimit);
     setminPageNumberLimit(minPageNumberLimit + pageNumberLimit);
   }
@@ -93,40 +99,13 @@ const ComputerPages = () => {
     }
   };
 
-  // add to cart
   const { addItem } = useCart();
-
-  // Pop up message
-  const [displayPopUp, setDisplayPopUp] = useState(true);
-
-  const closePopUp = () => {
-    localStorage.setItem("ComputerPopUp", true);
-    setDisplayPopUp(false);
-  };
-
-  useEffect(() => {
-    let returningUser = localStorage.getItem("ComputerPopUp");
-    function showPopUp() {
-      if (!returningUser) {
-        toast.warn(
-          "Please Note That Prices Are Subject to Change Without Prior Notice Due to The Fluctuation in Exchange Rate, Kindly Confirm Every Price at Readiness for Purchase",
-          {
-            position: "top-center",
-            autoClose: 20000,
-            className: "pop-up-message"
-          },
-          closePopUp()
-        );
-      }
-    }
-    setInterval(showPopUp(), 604800000);
-  }, []);
 
   return (
     <>
       {/* Header */}
       <div
-        class="container-fluid bg-secondary py-5 "
+        className="container-fluid bg-secondary py-5"
         style={{
           height: "500px",
           backgroundImage: `linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(https://res.cloudinary.com/elonatech/image/upload/v1709806608/productHeaderPage/products_computers_xpqn4e.jpg)`,
@@ -135,27 +114,27 @@ const ComputerPages = () => {
           backgroundSize: "cover"
         }}
       >
-        <div class="py-5 mt-5 ">
-          <h2 class=" mt-5 text-white text-center">Computers</h2>
-          <h5 class=" mt-4 text-white text-center">
+        <div className="py-5 mt-5 ">
+          <h2 className="mt-5 text-white text-center">Computers</h2>
+          <h5 className="mt-4 text-white text-center">
             Have what you need to run your business with maximum efficiency and
             reliability
           </h5>
-          <p class="lead text-white text-center">
+          <p className="lead text-white text-center">
             Properly used, a computer can help you become more organized, work
             more efficiently, and accomplish more tasks.
           </p>
         </div>
       </div>
 
-      {/* ======================================================================================= */}
-      <main class="container-fluid">
-        <div class="row g-0 ">
-          <div class="col-md-9 ">
-            <section class="ftco-section" id="skills-section">
-              <div class="container">
-                <div class="row justify-content-center pt-3 pb-4">
-                  <div className="col-md-8 pt-4 ">
+      {/* Main Content */}
+      <main className="container-fluid">
+        <div className="row g-0">
+          <div className="col-md-9">
+            <section className="ftco-section" id="skills-section">
+              <div className="container">
+                <div className="row justify-content-center pt-3 pb-4">
+                  <div className="col-md-8 pt-4">
                     <h6>
                       SHOWING <span className="text-danger">{currentPage}</span>{" "}
                       –{" "}
@@ -168,7 +147,7 @@ const ComputerPages = () => {
                   </div>
                   <div className="col-md-4 pt-3">
                     <input
-                      class="form-control"
+                      className="form-control"
                       type="search"
                       onChange={Filter}
                       placeholder="Search"
@@ -176,7 +155,7 @@ const ComputerPages = () => {
                     />
                   </div>
                 </div>
-                <div class="row g-1 progress-circle ">
+                <div className="row g-1 progress-circle">
                   {isLoading ? (
                     currentPosts?.map((product) => {
                       return (
@@ -227,7 +206,7 @@ const ComputerPages = () => {
                               </div>
                               <div class="d-flex justify-content-between">
                                 <p className="mt-2 px-1 text-danger">
-                                  ₦ {product.price}.00
+                                  ₦ {formatPrice(Number(product.price))}.00
                                 </p>
                                 <i
                                   class="bi bi-cart p-1"
@@ -397,6 +376,11 @@ const ComputerPages = () => {
                   </li>
                 </ul>
               </div>
+              
+              <div className="filter-section p-2 bg-white rounded shadow-sm">
+                <h4 className="mb-3">Filtered Computers</h4>
+                <ComputerFilter setFilteredProducts={setFilteredProducts} />
+                </div>
             </div>
           </div>
         </div>

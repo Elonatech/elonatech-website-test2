@@ -9,12 +9,7 @@ import { LazyLoadImage } from "react-lazy-load-image-component";
 import { useCart } from "react-use-cart";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import "rc-slider/assets/index.css";
 import ComputerFilter from "./ComputerFilter";
-
-
-
-
 
 const Computer = () => {
   const [data, setData] = useState([]);
@@ -25,58 +20,57 @@ const Computer = () => {
   const [pageNumberLimit, setpageNumberLimit] = useState(4);
   const [maxPageNumberLimit, setmaxPageNumberLimit] = useState(4);
   const [minPageNumberLimit, setminPageNumberLimit] = useState(0);
- const [activeItem, setActiveItem] = useState("Item 2");
-   const [itemCount, setItemCount] = useState(0); 
-
   const [filteredProducts, setFilteredProducts] = useState([]);
-  const [filters, setFilters] = useState({
-    price: "",
-    priceMin: "",
-    priceMax: "",
-    ram: "",
-    name: "",
-    hardDisk: "",
-    category: "",
-    discount: "",
-    rating: ""
-  });
-
+  const [activeItem, setActiveItem] = useState("Item 2");
 
   const handleClick = (item) => {
     setActiveItem(item);
   };
 
-  
+   const formatPrice = (price) => {
+     return price.toLocaleString(); // Adds commas to the number
+   };
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(`${BASEURL}/api/v1/product/computers`);
+        const products = response.data.data.reverse();
+        setData(products);
+        setRecords(products); // Initially display all products
+        setIsLoading(true);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        setIsLoading(true);
+      }
+    };
+    fetchData();
+  }, []);
 
-useEffect(() => {
-  // Fetch all computers initially
-  axios
-    .get(`${BASEURL}/api/v1/product/computers`, {})
-    .then((response) => {
-      const products = response.data.data;
-      setFilteredProducts(products);
-      setIsLoading(true)
-      setItemCount(products.length); // Set the number of items
-      console.log(products);
-    })
-    .catch((error) => {
-      console.error("Error fetching computers:", error);
-    });
-}, []);
+  useEffect(() => {
+    // If filteredProducts has any values, display them; otherwise, display all products
+    if (filteredProducts.length > 0) {
+      setRecords(filteredProducts);
+    } else {
+      setRecords(data); // Display all products when no filters are applied
+    }
+  }, [filteredProducts, data]);
 
-
- 
+  const Filter = (event) => {
+    const searchTerm = event.target.value.toLowerCase();
+    setRecords(
+      data.filter((product) => product.name.toLowerCase().includes(searchTerm))
+    );
+  };
 
   const paginate = (pages) => setCurrentPage(pages);
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
- 
+  const currentPosts = records.slice(indexOfFirstItem, indexOfLastItem);
 
   const handleNextbtn = () => {
     setCurrentPage(currentPage + 1);
-
     if (currentPage + 1 > maxPageNumberLimit) {
       setmaxPageNumberLimit(maxPageNumberLimit + pageNumberLimit);
       setminPageNumberLimit(minPageNumberLimit + pageNumberLimit);
@@ -85,49 +79,19 @@ useEffect(() => {
 
   const handlePrevbtn = () => {
     setCurrentPage(currentPage - 1);
-
-    if ((currentPage - 1) % pageNumberLimit == 0) {
+    if ((currentPage - 1) % pageNumberLimit === 0) {
       setmaxPageNumberLimit(maxPageNumberLimit - pageNumberLimit);
       setminPageNumberLimit(minPageNumberLimit - pageNumberLimit);
     }
   };
 
-  // add to cart
   const { addItem } = useCart();
-
-  // Pop up message
-  const [displayPopUp, setDisplayPopUp] = useState(true);
-
-  const closePopUp = () => {
-    localStorage.setItem("ComputerPopUp", true);
-    setDisplayPopUp(false);
-  };
-
-  useEffect(() => {
-    let returningUser = localStorage.getItem("ComputerPopUp");
-    function showPopUp() {
-      if (!returningUser) {
-        toast.warn(
-          "Please Note That Prices Are Subject to Change Without Prior Notice Due to The Fluctuation in Exchange Rate, Kindly Confirm Every Price at Readiness for Purchase",
-          {
-            position: "top-center",
-            autoClose: 20000,
-            className: "pop-up-message"
-          },
-          closePopUp()
-        );
-      }
-    }
-    setInterval(showPopUp(), 604800000);
-  }, []);
-
-
 
   return (
     <>
       {/* Header */}
       <div
-        class="container-fluid bg-secondary py-5 "
+        className="container-fluid bg-secondary py-5"
         style={{
           height: "500px",
           backgroundImage: `linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(https://res.cloudinary.com/elonatech/image/upload/v1709806608/productHeaderPage/products_computers_xpqn4e.jpg)`,
@@ -136,49 +100,50 @@ useEffect(() => {
           backgroundSize: "cover"
         }}
       >
-        <div class="py-5 mt-5 ">
-          <h2 class=" mt-5 text-white text-center">Computers</h2>
-          <h5 class=" mt-4 text-white text-center">
+        <div className="py-5 mt-5 ">
+          <h2 className="mt-5 text-white text-center">Computers</h2>
+          <h5 className="mt-4 text-white text-center">
             Have what you need to run your business with maximum efficiency and
             reliability
           </h5>
-          <p class="lead text-white text-center">
+          <p className="lead text-white text-center">
             Properly used, a computer can help you become more organized, work
             more efficiently, and accomplish more tasks.
           </p>
         </div>
       </div>
-      {/* ======================================================================================= */}
-      <main class="container-fluid">
-        <div class="row g-0 ">
-          <div class="col-md-9 ">
-            <section class="ftco-section" id="skills-section">
-              <div class="container">
-                <div class="row justify-content-center pt-3 pb-4">
-                  <div className="col-md-8 pt-4 ">
+
+      {/* Main Content */}
+      <main className="container-fluid">
+        <div className="row g-0">
+          <div className="col-md-9">
+            <section className="ftco-section" id="skills-section">
+              <div className="container">
+                <div className="row justify-content-center pt-3 pb-4">
+                  <div className="col-md-8 pt-4">
                     <h6>
                       SHOWING <span className="text-danger">{currentPage}</span>{" "}
                       –{" "}
                       <span className="text-danger">
                         {currentPage * itemsPerPage}
                       </span>{" "}
-                      OF <span className="text-danger">{itemCount}</span>{" "}
+                      OF <span className="text-danger">{data.length}</span>{" "}
                       RESULTS
                     </h6>
                   </div>
                   <div className="col-md-4 pt-3">
                     <input
-                      class="form-control"
+                      className="form-control"
                       type="search"
-                      onChange={filters}
+                      onChange={Filter}
                       placeholder="Search"
                       aria-label="Search"
                     />
                   </div>
                 </div>
-                <div class="row g-1 progress-circle ">
+                <div className="row g-1 progress-circle">
                   {isLoading ? (
-                    filteredProducts?.map((product) => {
+                    currentPosts?.map((product) => {
                       return (
                         <div class="col-lg-3 mb-4" key={product.id}>
                           <div class=" mx-1  shadow-lg p-3  bg-body rounded showbutton">
@@ -227,7 +192,7 @@ useEffect(() => {
                               </div>
                               <div class="d-flex justify-content-between">
                                 <p className="mt-2 px-1 text-danger">
-                                  ₦ {product.price}.00
+                                  ₦ {formatPrice(Number(product.price))}.00
                                 </p>
                                 <i
                                   class="bi bi-cart p-1"
@@ -397,131 +362,11 @@ useEffect(() => {
                   </li>
                 </ul>
               </div>
-              {/* <h1>filters</h1> */}
 
               <div className="filter-section p-2 bg-white rounded shadow-sm">
-                <h4 className="mb-3">Filter Products</h4>
+                <h4 className="mb-3">Filtered Computers</h4>
                 <ComputerFilter setFilteredProducts={setFilteredProducts} />
-
-                {/* <form
-                  onSubmit={handleSubmit}
-                  onKeyDown={(e) => e.key === "Enter" && handleSubmit(e)}
-                > */}
-                {/* Brand */}
-                {/* <div className="mb-2">
-                    <label htmlFor="brand" className="form-label">
-                      Brand
-                    </label>
-                    <input
-                      type="text"
-                      id="brand"
-                      name="brand"
-                      className="form-control mb-2"
-                      placeholder="Search"
-                      value={filters.brand}
-                      onChange={handleChange}
-                    />
-                  </div> */}
-
-                {/* ram */}
-                <div className="mb-2">
-                  {/* <label className="form-label">RAM</label> */}
-                  {/* <div className="form-check">
-                      <input
-                        className="form-check-input"
-                        type="checkbox"
-                        value="4Gb"
-                        onChange={handleRamChange}
-                        checked={filters.ram.includes("4")}
-                      />
-                      <label className="form-check-label">4GB</label>
-                    </div> */}
-
-                  <div className="form-check">
-                    {/* <input
-                        className="form-check-input"
-                        type="checkbox"
-                        value="8 Gb"
-                        onChange={handleRamChange}
-                        checked={filters.ram.includes("8")}
-                      /> */}
-                    {/* <label className="form-check-label">8GB</label> */}
-                  </div>
-                  {/* <div className="form-check">
-                      <input
-                        className="form-check-input"
-                        type="checkbox"
-                        value="16 Gb"
-                        onChange={handleRamChange}
-                        checked={filters.ram.includes("16")}
-                      />
-                      <label className="form-check-label">16GB</label>
-                    </div> */}
-                </div>
-                {/* computer */}
-                <div className="mb-2">
-                  {/* <label className="form-label">Storage</label> */}
-                  {/* <div className="form-check">
-                      <input
-                        className="form-check-input"
-                        type="checkbox"
-                        value="256"
-                        onChange={handleDriveChange}
-                        checked={filters.drive === "256"}
-                      />
-                      <label className="form-check-label">256GB</label>
-                    </div> */}
-                  {/* <div className="form-check">
-                      <input
-                        className="form-check-input"
-                        type="checkbox"
-                        value="512"
-                        onChange={handleDriveChange}
-                        checked={filters.drive === "512"}
-                      />
-                      <label className="form-check-label">512GB</label>
-                    </div> */}
-                  {/* <div className="form-check">
-                      <input
-                        className="form-check-input"
-                        type="checkbox"
-                        value="1TB"
-                        onChange={handleDriveChange}
-                        checked={filters.drive === "1TB"}
-                      />
-                      <label className="form-check-label">1TB</label>
-                    </div> */}
-                </div>
-
-                {/* end */}
-                {/* Price Range */}
-                {/* <div className="mb-2">
-                    <label htmlFor="priceRange" className="form-label">
-                      Price Range (₦)
-                    </label>
-                    <div className="d-flex flex-column"> */}
-                {/* <Slider
-                        range
-                        min={0}
-                        max={100000} // Adjust this to your needs
-                        defaultValue={priceRange}
-                        onChange={(value) => setPriceRange(value)}
-                        allowCross={false}
-                      /> */}
-                {/* <div className="d-flex justify-content-between mt-2">
-                        <span>{`₦${priceRange[0]}`}</span>
-                        <span>{`₦${priceRange[1]}`}</span>
-                      </div> */}
-                {/* </div>
-                  </div> */}
-
-                {/* <button type="submit" className="btn btn-warning mt-2 w-100">
-                    Apply
-                  </button> */}
-                {/* </form> */}
               </div>
-
-              {/* end */}
             </div>
           </div>
         </div>
