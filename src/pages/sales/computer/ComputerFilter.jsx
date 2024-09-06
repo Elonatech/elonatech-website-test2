@@ -7,7 +7,7 @@ const ComputerFilter = ({ setFilteredProducts }) => {
     ram: "",
     brand: "",
     drive: "",
-    price: [0, 1000000] // Default price range
+    price: [0, 100000000] // Default price range
   });
 
   const handleCheckboxChange = (event) => {
@@ -91,7 +91,6 @@ const ComputerFilter = ({ setFilteredProducts }) => {
             onChange={handleCheckboxChange}
             checked={filters.ram === "4GB"}
             className="form-check-input"
-            disabled={filters.ram && filters.ram !== "4GB"}
           />
           <label className="form-check-label">4GB</label>
         </div>
@@ -103,7 +102,6 @@ const ComputerFilter = ({ setFilteredProducts }) => {
             onChange={handleCheckboxChange}
             checked={filters.ram === "8GB"}
             className="form-check-input"
-            disabled={filters.ram && filters.ram !== "8GB"}
           />
           <label className="form-check-label">8GB</label>
         </div>
@@ -115,7 +113,6 @@ const ComputerFilter = ({ setFilteredProducts }) => {
             onChange={handleCheckboxChange}
             checked={filters.ram === "16GB"}
             className="form-check-input"
-            disabled={filters.ram && filters.ram !== "16GB"}
           />
           <label className="form-check-label">16GB</label>
         </div>
@@ -132,7 +129,6 @@ const ComputerFilter = ({ setFilteredProducts }) => {
             onChange={handleCheckboxChange}
             checked={filters.brand === "DELL"}
             className="form-check-input"
-            disabled={filters.brand && filters.brand !== "DELL"}
           />
           <label className="form-check-label">Dell</label>
         </div>
@@ -144,10 +140,21 @@ const ComputerFilter = ({ setFilteredProducts }) => {
             onChange={handleCheckboxChange}
             checked={filters.brand === "HP"}
             className="form-check-input"
-            disabled={filters.brand && filters.brand !== "HP"}
           />
           <label className="form-check-label">HP</label>
         </div>
+        <div className="form-check">
+          <input
+            type="checkbox"
+            name="brand"
+            value="Acer"
+            onChange={handleCheckboxChange}
+            checked={filters.brand === "Acer"}
+            className="form-check-input"
+          />
+          <label className="form-check-label">Acer</label>
+        </div>
+
         <div className="form-check">
           <input
             type="checkbox"
@@ -156,9 +163,19 @@ const ComputerFilter = ({ setFilteredProducts }) => {
             onChange={handleCheckboxChange}
             checked={filters.brand === "Apple"}
             className="form-check-input"
-            disabled={filters.brand && filters.brand !== "Apple"}
           />
           <label className="form-check-label">Apple</label>
+        </div>
+        <div className="form-check">
+          <input
+            type="checkbox"
+            name="brand"
+            value="samsung"
+            onChange={handleCheckboxChange}
+            checked={filters.brand === "Samsung"}
+            className="form-check-input"
+          />
+          <label className="form-check-label">Samsung</label>
         </div>
       </div>
 
@@ -173,7 +190,6 @@ const ComputerFilter = ({ setFilteredProducts }) => {
             onChange={handleCheckboxChange}
             checked={filters.drive === "512GB"}
             className="form-check-input"
-            disabled={filters.drive && filters.drive !== "512GB"}
           />
           <label className="form-check-label">512GB</label>
         </div>
@@ -185,7 +201,6 @@ const ComputerFilter = ({ setFilteredProducts }) => {
             onChange={handleCheckboxChange}
             checked={filters.drive === "1TB"}
             className="form-check-input"
-            disabled={filters.drive && filters.drive !== "1TB"}
           />
           <label className="form-check-label">1TB</label>
         </div>
@@ -197,7 +212,6 @@ const ComputerFilter = ({ setFilteredProducts }) => {
             onChange={handleCheckboxChange}
             checked={filters.drive === "2TB"}
             className="form-check-input"
-            disabled={filters.drive && filters.drive !== "2TB"}
           />
           <label className="form-check-label">2TB</label>
         </div>
