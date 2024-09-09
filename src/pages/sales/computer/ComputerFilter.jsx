@@ -116,7 +116,7 @@ const ComputerFilter = ({ setFilteredProducts }) => {
         <div className="no-results-message">
           <p>{noResultsMessage}</p>
           <p>
-            Please check our <a href="/computers">Computer page</a> to explore
+            Go back to the <a href="/computers">Computer page</a> to explore
             more amazing products.
           </p>
         </div>
@@ -279,7 +279,7 @@ const ComputerFilter = ({ setFilteredProducts }) => {
           </label>
           <Slider
             className="custom-slider"
-            value={formatPrice(filters.price)}
+            value={filters.price}
             onChange={handlePriceChange}
             min={priceRange[0]}
             max={priceRange[1]}
