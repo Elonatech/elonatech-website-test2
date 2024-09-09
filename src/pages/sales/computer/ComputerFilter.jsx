@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import "./ComputerFilter.css"; // Assuming you'll add custom styles here
+import React, { useState, useEffect } from "react";
 import Slider from "react-slider";
 import { BASEURL } from "../../../BaseURL/BaseURL";
 
@@ -7,8 +8,29 @@ const ComputerFilter = ({ setFilteredProducts }) => {
     ram: "",
     brand: "",
     drive: "",
-    price: [0, 100000000] // Default price range
+    price: [0, 1000000] // Default price range
   });
+
+  const [priceRange, setPriceRange] = useState([0, 1000000]); // Dynamic price range state
+  const [noResultsMessage, setNoResultsMessage] = useState(""); // State to handle no results message
+
+  useEffect(() => {
+    fetch(`${BASEURL}/api/v1/product/filter?category=Computer`)
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("Received Min Price:", data.minPrice);
+        console.log("Received Max Price:", data.maxPrice);
+        if (data.minPrice !== undefined && data.maxPrice !== undefined) {
+          setPriceRange([data.minPrice, data.maxPrice]);
+          setFilters((prevFilters) => ({
+            ...prevFilters,
+            price: [data.minPrice, data.maxPrice]
+          }));
+        }
+        setFilteredProducts(data.data);
+      })
+      .catch((error) => console.error("Error fetching initial data:", error));
+  }, [setFilteredProducts]);
 
   const handleCheckboxChange = (event) => {
     const { name, value, checked } = event.target;
@@ -53,23 +75,33 @@ const ComputerFilter = ({ setFilteredProducts }) => {
       queryParams.push(`drive=${updatedFilters.drive.replace(/\D/g, "")}`);
     }
 
-    // Add price filter only if price is modified from the default
+    // Add price filter if the price range is modified
     if (
       updatedFilters.price[0] !== 0 || // Min price is not default
       updatedFilters.price[1] !== 1000000 // Max price is not default
     ) {
-      queryParams.push(`price=${updatedFilters.price.join("-")}`);
+      queryParams.push(`minPrice=${updatedFilters.price[0]}`);
+      queryParams.push(`maxPrice=${updatedFilters.price[1]}`);
     }
 
-    // Build query string if there are any parameters
+    // Build the query string with all active filters
     const queryString = queryParams.length > 0 ? queryParams.join("&") : "";
 
-    // Fetch filtered products
-    fetch(
-      `${BASEURL}/api/v1/product/filter?category=Computer&${queryString}`
-    )
+    // Fetch the products using the combined filter criteria
+    fetch(`${BASEURL}/api/v1/product/filter?category=Computer&${queryString}`)
       .then((response) => response.json())
-      .then((data) => setFilteredProducts(data.data))
+      .then((data) => {
+        if (data.data.length === 0) {
+          // Set no results message if no products found
+          setNoResultsMessage(
+            data.message || "Sorry, no product found with this criteria."
+          );
+        } else {
+          // Clear the no results message if products are found
+          setNoResultsMessage("");
+        }
+        setFilteredProducts(data.data);
+      })
       .catch((error) => console.error("Error:", error));
   };
 
@@ -79,189 +111,209 @@ const ComputerFilter = ({ setFilteredProducts }) => {
   };
 
   return (
-    <form>
-      {/* RAM Filter */}
-      <div className="mb-3">
-        <label className="form-label">RAM:</label>
-        <div className="form-check">
-          <input
-            type="checkbox"
-            name="ram"
-            value="4GB"
-            onChange={handleCheckboxChange}
-            checked={filters.ram === "4GB"}
-            className="form-check-input"
-          />
-          <label className="form-check-label">4GB</label>
+    <div>
+      {noResultsMessage && (
+        <div className="no-results-message">
+          <p>{noResultsMessage}</p>
+          <p>
+            Please check our <a href="/computers">Computer page</a> to explore
+            more amazing products.
+          </p>
         </div>
-        <div className="form-check">
-          <input
-            type="checkbox"
-            name="ram"
-            value="8GB"
-            onChange={handleCheckboxChange}
-            checked={filters.ram === "8GB"}
-            className="form-check-input"
-          />
-          <label className="form-check-label">8GB</label>
-        </div>
-        <div className="form-check">
-          <input
-            type="checkbox"
-            name="ram"
-            value="16GB"
-            onChange={handleCheckboxChange}
-            checked={filters.ram === "16GB"}
-            className="form-check-input"
-          />
-          <label className="form-check-label">16GB</label>
-        </div>
-      </div>
+      )}
 
-      {/* Brand Filter */}
-      <div className="mb-3">
-        <label className="form-label">Brand:</label>
-        <div className="form-check">
-          <input
-            type="checkbox"
-            name="brand"
-            value="DELL"
-            onChange={handleCheckboxChange}
-            checked={filters.brand === "DELL"}
-            className="form-check-input"
-          />
-          <label className="form-check-label">Dell</label>
-        </div>
-        <div className="form-check">
-          <input
-            type="checkbox"
-            name="brand"
-            value="HP"
-            onChange={handleCheckboxChange}
-            checked={filters.brand === "HP"}
-            className="form-check-input"
-          />
-          <label className="form-check-label">HP</label>
-        </div>
-        <div className="form-check">
-          <input
-            type="checkbox"
-            name="brand"
-            value="Acer"
-            onChange={handleCheckboxChange}
-            checked={filters.brand === "Acer"}
-            className="form-check-input"
-          />
-          <label className="form-check-label">Acer</label>
-        </div>
-
-        <div className="form-check">
-          <input
-            type="checkbox"
-            name="brand"
-            value="Apple"
-            onChange={handleCheckboxChange}
-            checked={filters.brand === "Apple"}
-            className="form-check-input"
-          />
-          <label className="form-check-label">Apple</label>
-        </div>
-        <div className="form-check">
-          <input
-            type="checkbox"
-            name="brand"
-            value="samsung"
-            onChange={handleCheckboxChange}
-            checked={filters.brand === "Samsung"}
-            className="form-check-input"
-          />
-          <label className="form-check-label">Samsung</label>
-        </div>
-      </div>
-
-      {/* Drive Filter */}
-      <div className="mb-3">
-        <label className="form-label">Drive:</label>
-        <div className="form-check">
-          <input
-            type="checkbox"
-            name="drive"
-            value="512GB"
-            onChange={handleCheckboxChange}
-            checked={filters.drive === "512GB"}
-            className="form-check-input"
-          />
-          <label className="form-check-label">512GB</label>
-        </div>
-        <div className="form-check">
-          <input
-            type="checkbox"
-            name="drive"
-            value="1TB"
-            onChange={handleCheckboxChange}
-            checked={filters.drive === "1TB"}
-            className="form-check-input"
-          />
-          <label className="form-check-label">1TB</label>
-        </div>
-        <div className="form-check">
-          <input
-            type="checkbox"
-            name="drive"
-            value="2TB"
-            onChange={handleCheckboxChange}
-            checked={filters.drive === "2TB"}
-            className="form-check-input"
-          />
-          <label className="form-check-label">2TB</label>
-        </div>
-      </div>
-
-      {/* Price Filter */}
-      <div className="mb-3">
-        <label className="form-label">Price Range (₦):</label>
-        <Slider
-          min={0}
-          max={1000000}
-          step={100}
-          value={filters.price}
-          onChange={handlePriceChange}
-          renderTrack={(props, state) => (
-            <div
-              {...props}
-              style={{
-                ...props.style,
-                height: "6px",
-                background: state.index === 1 ? "#ddd" : "#007bff"
-              }}
+      <form>
+        {/* RAM Filter */}
+        <div className="mb-3">
+          <label className="form-label">RAM:</label>
+          <div className="form-check">
+            <input
+              type="checkbox"
+              name="ram"
+              value="4GB"
+              onChange={handleCheckboxChange}
+              checked={filters.ram === "4GB"}
+              className="form-check-input"
             />
-          )}
-          renderThumb={(props) => (
-            <div
-              {...props}
-              style={{
-                ...props.style,
-                height: "20px",
-                width: "20px",
-                backgroundColor: "#007bff",
-                borderRadius: "50%",
-                outline: "none",
-                boxShadow: "0 2px 6px rgba(0, 0, 0, 0.2)"
-              }}
+            <label className="form-check-label">4GB</label>
+          </div>
+          <div className="form-check">
+            <input
+              type="checkbox"
+              name="ram"
+              value="8GB"
+              onChange={handleCheckboxChange}
+              checked={filters.ram === "8GB"}
+              className="form-check-input"
             />
-          )}
-          className="price-slider"
-        />
-        <div className="d-flex justify-content-between mt-2">
-          <span style={{ marginTop: "15px" }}>
-            ₦{formatPrice(filters.price[0])}
-          </span>
-          <span style={{ marginTop: "15px" }}>
-            ₦{formatPrice(filters.price[1])}
-          </span>
+            <label className="form-check-label">8GB</label>
+          </div>
+          <div className="form-check">
+            <input
+              type="checkbox"
+              name="ram"
+              value="16GB"
+              onChange={handleCheckboxChange}
+              checked={filters.ram === "16GB"}
+              className="form-check-input"
+            />
+            <label className="form-check-label">16GB</label>
+          </div>
         </div>
-      </div>
-    </form>
+
+        {/* Brand Filter - Scrollable */}
+        <div className="mb-3">
+          <label className="form-label">Brand:</label>
+          <div style={{ maxHeight: "120px", overflowY: "scroll" }}>
+            <div className="form-check">
+              <input
+                type="checkbox"
+                name="brand"
+                value="DELL"
+                onChange={handleCheckboxChange}
+                checked={filters.brand === "DELL"}
+                className="form-check-input"
+              />
+              <label className="form-check-label">Dell</label>
+            </div>
+            <div className="form-check">
+              <input
+                type="checkbox"
+                name="brand"
+                value="HP"
+                onChange={handleCheckboxChange}
+                checked={filters.brand === "HP"}
+                className="form-check-input"
+              />
+              <label className="form-check-label">HP</label>
+            </div>
+            <div className="form-check">
+              <input
+                type="checkbox"
+                name="brand"
+                value="Acer"
+                onChange={handleCheckboxChange}
+                checked={filters.brand === "Acer"}
+                className="form-check-input"
+              />
+              <label className="form-check-label">Acer</label>
+            </div>
+            <div className="form-check">
+              <input
+                type="checkbox"
+                name="brand"
+                value="Apple"
+                onChange={handleCheckboxChange}
+                checked={filters.brand === "Apple"}
+                className="form-check-input"
+              />
+              <label className="form-check-label">Apple</label>
+            </div>
+            <div className="form-check">
+              <input
+                type="checkbox"
+                name="brand"
+                value="Samsung"
+                onChange={handleCheckboxChange}
+                checked={filters.brand === "Samsung"}
+                className="form-check-input"
+              />
+              <label className="form-check-label">Samsung</label>
+            </div>
+            <div className="form-check">
+              <input
+                type="checkbox"
+                name="brand"
+                value="Lenovo"
+                onChange={handleCheckboxChange}
+                checked={filters.brand === "Lenovo"}
+                className="form-check-input"
+              />
+              <label className="form-check-label">Lenovo</label>
+            </div>
+          </div>
+        </div>
+
+        {/* Drive Filter */}
+        <div className="mb-3">
+          <label className="form-label">Drive:</label>
+          <div className="form-check">
+            <input
+              type="checkbox"
+              name="drive"
+              value="512GB"
+              onChange={handleCheckboxChange}
+              checked={filters.drive === "512GB"}
+              className="form-check-input"
+            />
+            <label className="form-check-label">512GB</label>
+          </div>
+          <div className="form-check">
+            <input
+              type="checkbox"
+              name="drive"
+              value="1TB"
+              onChange={handleCheckboxChange}
+              checked={filters.drive === "1TB"}
+              className="form-check-input"
+            />
+            <label className="form-check-label">1TB</label>
+          </div>
+          <div className="form-check">
+            <input
+              type="checkbox"
+              name="drive"
+              value="2TB"
+              onChange={handleCheckboxChange}
+              checked={filters.drive === "2TB"}
+              className="form-check-input"
+            />
+            <label className="form-check-label">2TB</label>
+          </div>
+        </div>
+
+        {/* Price Filter */}
+        <div className="price-filter">
+          <label className="price-label">
+            PRICE (₦) <button className="apply-button">APPLY</button>
+          </label>
+          <Slider
+            className="custom-slider"
+            value={formatPrice(filters.price)}
+            onChange={handlePriceChange}
+            min={priceRange[0]}
+            max={priceRange[1]}
+            step={100}
+            pearling
+            renderThumb={(props, state) => (
+              <div {...props} className="thumb">
+                {/* Optional: Add content inside thumb */}
+              </div>
+            )}
+            renderTrack={(props, state) => (
+              <div {...props} className="track">
+                {/* Optional: Customize track */}
+              </div>
+            )}
+          />
+          <div className="price-inputs">
+            <input
+              type="text"
+              value={filters.price[0]}
+              readOnly
+              className="price-input"
+            />
+            <span className="separator">-</span>
+            <input
+              type="text"
+              value={filters.price[1]}
+              readOnly
+              className="price-input"
+            />
+          </div>
+        </div>
+      </form>
+    </div>
   );
 };
 

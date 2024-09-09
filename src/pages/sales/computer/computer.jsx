@@ -364,7 +364,7 @@ const Computer = () => {
               </div>
 
               <div className="filter-section p-2 bg-white rounded shadow-sm">
-                <h4 className="mb-3">Filtered Computers</h4>
+                <h4 className="mb-3">Sort computers by</h4>
                 <ComputerFilter setFilteredProducts={setFilteredProducts} />
               </div>
             </div>
