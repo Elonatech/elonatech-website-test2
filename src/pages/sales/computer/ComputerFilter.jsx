@@ -31,6 +31,23 @@ const ComputerFilter = ({ setFilteredProducts }) => {
         setFilteredProducts(data.data);
       })
       .catch((error) => console.error("Error fetching initial data:", error));
+
+       const handlePriceInputChange = (event) => {
+         const { name, value } = event.target;
+         const newPrice = parseFloat(value) || 0;
+         setFilters((prevFilters) => {
+           const updatedPrice = [...prevFilters.price];
+           if (name === "minPrice") {
+             updatedPrice[0] = newPrice;
+           } else if (name === "maxPrice") {
+             updatedPrice[1] = newPrice;
+           }
+           return {
+             ...prevFilters,
+             price: updatedPrice
+           };
+         });
+       };
   }, [setFilteredProducts]);
 
   const handleCheckboxChange = (event) => {
@@ -112,6 +129,18 @@ const ComputerFilter = ({ setFilteredProducts }) => {
   const formatPrice = (price) => {
     return price.toLocaleString(); // Adds commas to the number
   };
+   const handleInputPriceChange = (event, index) => {
+     const value = event.target.value.replace(/[^0-9]/g, ""); // Remove non-numeric characters
+     const newPrice = [...filters.price];
+     newPrice[index] = parseFloat(value) || 0;
+     setFilters((prevFilters) => ({
+       ...prevFilters,
+       price: newPrice
+     }));
+   };
+   const formatPrice2 = (price) => {
+     return new Intl.NumberFormat().format(price); // Formats price with commas
+   };
 
   return (
     <div>
@@ -302,8 +331,8 @@ const ComputerFilter = ({ setFilteredProducts }) => {
             className="custom-slider"
             value={filters.price}
             onChange={handlePriceChange}
-            min={formatPrice(priceRange[0])}
-            max={formatPrice(priceRange[1])}
+            min={priceRange[0]}
+            max={priceRange[1]}
             step={5}
             pearling
             renderThumb={(props, state) => (
@@ -319,15 +348,18 @@ const ComputerFilter = ({ setFilteredProducts }) => {
           />
           <div className="price-inputs">
             <input
+              style={{ width: "50%" }}
               type="text"
-              value={`N${formatPrice(filters.price[0])}`}
+              value={formatPrice(filters.price[0])}
+              onChange={(e) => handleInputPriceChange(e, 0)}
               className="price-input"
             />
             <span className="separator">-</span>
             <input
-            style={{width:"200px"}}
+              style={{ width: "50%" }}
               type="text"
-              value={`N${formatPrice(filters.price[1])}`}
+              value={formatPrice(filters.price[1])}
+              onChange={(e) => handleInputPriceChange(e, 1)}
               className="price-input"
             />
           </div>
