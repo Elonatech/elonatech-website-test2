@@ -234,6 +234,17 @@ const ComputerFilter = ({ setFilteredProducts }) => {
               />
               <label className="form-check-label">Lenovo</label>
             </div>
+            <div className="form-check">
+              <input
+                type="checkbox"
+                name="brand"
+                value="Huawei"
+                onChange={handleCheckboxChange}
+                checked={filters.brand === "Huawei"}
+                className="form-check-input"
+              />
+              <label className="form-check-label">Huawei</label>
+            </div>
           </div>
         </div>
 
@@ -291,8 +302,8 @@ const ComputerFilter = ({ setFilteredProducts }) => {
             className="custom-slider"
             value={filters.price}
             onChange={handlePriceChange}
-            min={priceRange[0]}
-            max={priceRange[1]}
+            min={formatPrice(priceRange[0])}
+            max={formatPrice(priceRange[1])}
             step={5}
             pearling
             renderThumb={(props, state) => (
@@ -309,15 +320,14 @@ const ComputerFilter = ({ setFilteredProducts }) => {
           <div className="price-inputs">
             <input
               type="text"
-              value={filters.price[0]}
-              readOnly
+              value={`N${formatPrice(filters.price[0])}`}
               className="price-input"
             />
             <span className="separator">-</span>
             <input
+            style={{width:"200px"}}
               type="text"
-              value={filters.price[1]}
-              readOnly
+              value={`N${formatPrice(filters.price[1])}`}
               className="price-input"
             />
           </div>
