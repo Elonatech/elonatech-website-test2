@@ -1,7 +1,6 @@
 import "./ComputerFilter.css"; // Assuming you'll add custom styles here
 import React, { useState, useEffect } from "react";
 import Slider from "react-slider";
-import { BASEURL } from "../../../BaseURL/BaseURL";
 
 const ComputerFilter = ({ setFilteredProducts }) => {
   const [filters, setFilters] = useState({
@@ -15,7 +14,9 @@ const ComputerFilter = ({ setFilteredProducts }) => {
   const [noResultsMessage, setNoResultsMessage] = useState(""); // State to handle no results message
 
   useEffect(() => {
-    fetch(`${BASEURL}/api/v1/product/filter?category=Computer`)
+    fetch(
+      `https://test-api2-aceo.onrender.com/api/v1/product/filter?category=Computer`
+    )
       .then((response) => response.json())
       .then((data) => {
         console.log("Received Min Price:", data.minPrice);
@@ -45,14 +46,14 @@ const ComputerFilter = ({ setFilteredProducts }) => {
   };
 
   const handlePriceChange = (value) => {
-    setFilters((prevFilters) => {
-      const updatedFilters = {
-        ...prevFilters,
-        price: value
-      };
-      applyFilters(updatedFilters); // Apply filters when the price changes
-      return updatedFilters;
-    });
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      price: value
+    }));
+  };
+
+  const handleApplyClick = () => {
+    applyFilters(filters); // Apply filters including price when "Apply" is clicked
   };
 
   const applyFilters = (updatedFilters) => {
@@ -88,7 +89,9 @@ const ComputerFilter = ({ setFilteredProducts }) => {
     const queryString = queryParams.length > 0 ? queryParams.join("&") : "";
 
     // Fetch the products using the combined filter criteria
-    fetch(`${BASEURL}/api/v1/product/filter?category=Computer&${queryString}`)
+    fetch(
+      `https://test-api2-aceo.onrender.com/api/v1/product/filter?category=Computer&${queryString}`
+    )
       .then((response) => response.json())
       .then((data) => {
         if (data.data.length === 0) {
@@ -275,7 +278,14 @@ const ComputerFilter = ({ setFilteredProducts }) => {
         {/* Price Filter */}
         <div className="price-filter">
           <label className="price-label">
-            PRICE (₦) <button className="apply-button">APPLY</button>
+            PRICE (₦){" "}
+            <button
+              type="button"
+              className="apply-button"
+              onClick={handleApplyClick}
+            >
+              APPLY
+            </button>
           </label>
           <Slider
             className="custom-slider"
@@ -283,7 +293,7 @@ const ComputerFilter = ({ setFilteredProducts }) => {
             onChange={handlePriceChange}
             min={priceRange[0]}
             max={priceRange[1]}
-            step={100}
+            step={5}
             pearling
             renderThumb={(props, state) => (
               <div {...props} className="thumb">
