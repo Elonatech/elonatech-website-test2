@@ -11,7 +11,9 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Helmet } from "react-helmet-async";
 import "rc-slider/assets/index.css";
-import Slider from "rc-slider";
+import ShopFilter from "./shopFilter";
+
+
 
 const Shop = () => {
 
@@ -24,6 +26,7 @@ const Shop = () => {
   const [pageNumberLimit, setpageNumberLimit] = useState(4);
   const [maxPageNumberLimit, setmaxPageNumberLimit] = useState(4);
   const [minPageNumberLimit, setminPageNumberLimit] = useState(0);
+  const [filteredProducts, setFilteredProducts] =useState([])
 
   const [filters, setFilters] = useState({
     price: "",
@@ -93,7 +96,7 @@ const Shop = () => {
       queryParams.append("price", `${priceRange[0]}-${priceRange[1]}`);
     }
 
-    const url = `http://localhost:8000/api/v1/product/filter?${queryParams.toString()}`;
+    const url = `${BASEURL}/api/v1/product/filter/all?${queryParams.toString()}`;
 
     try {
       const response = await axios.get(url);
@@ -479,57 +482,8 @@ const Shop = () => {
               </ul>
             </div>
             {/* <h1>filters</h1> */}
-            <div className="filter-section p-2 bg-white rounded shadow-sm">
-              <h4 className="mb-3">Sort Products By</h4>
-
-              <form
-                onSubmit={handleSubmit}
-                onKeyDown={(e) => e.key === "Enter" && handleSubmit(e)}
-              >
-                {/* Brand */}
-                <div className="mb-2">
-                  <label htmlFor="brand" className="form-label">
-                    Brand
-                  </label>
-                  <input
-                    type="text"
-                    id="brand"
-                    name="brand"
-                    className="form-control mb-2"
-                    placeholder="Search"
-                    value={filters.brand}
-                    onChange={handleChange}
-                  />
-                </div>
-
-                
-
-                {/* Price Range */}
-                <div className="mb-2">
-                  <label htmlFor="priceRange" className="form-label">
-                    Price Range (₦)
-                  </label>
-                  <div className="d-flex flex-column">
-                    <Slider
-                      range
-                      min={0}
-                      max={100000} // Adjust this to your needs
-                      defaultValue={priceRange}
-                      onChange={(value) => setPriceRange(value)}
-                      allowCross={false}
-                    />
-                    <div className="d-flex justify-content-between mt-2">
-                      <span>{`₦${priceRange[0]}`}</span>
-                      <span>{`₦${priceRange[1]}`}</span>
-                    </div>
-                  </div>
-                </div>
-
-                <button type="submit" className="btn btn-warning mt-2 w-100">
-                  Apply
-                </button>
-              </form>
-            </div>
+            <ShopFilter setFilteredProducts={setFilteredProducts}/>
+      
 
             {/* end */}
           </div>

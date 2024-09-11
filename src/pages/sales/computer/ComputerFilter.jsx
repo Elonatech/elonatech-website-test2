@@ -1,6 +1,7 @@
 import "./ComputerFilter.css"; // Assuming you'll add custom styles here
 import React, { useState, useEffect } from "react";
 import Slider from "react-slider";
+import { BASEURL } from "../../../BaseURL/BaseURL";
 
 const ComputerFilter = ({ setFilteredProducts }) => {
   const [filters, setFilters] = useState({
@@ -15,7 +16,7 @@ const ComputerFilter = ({ setFilteredProducts }) => {
 
   useEffect(() => {
     fetch(
-      `https://test-api2-aceo.onrender.com/api/v1/product/filter?category=Computer`
+      `${BASEURL}/api/v1/product/filter?category=Computer`
     )
       .then((response) => response.json())
       .then((data) => {
@@ -107,7 +108,7 @@ const ComputerFilter = ({ setFilteredProducts }) => {
 
     // Fetch the products using the combined filter criteria
     fetch(
-      `https://test-api2-aceo.onrender.com/api/v1/product/filter?category=Computer&${queryString}`
+      `${BASEURL}/api/v1/product/filter?category=Computer&${queryString}`
     )
       .then((response) => response.json())
       .then((data) => {

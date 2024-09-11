@@ -73,7 +73,7 @@ const navigate = useNavigate();
             category, 
             images
         }
-      const data = await axios.post(`${BASEURL}/api/v1/product/create`, newData)
+      const data = await axios.post(`http://localhost:8000/api/v1/product/create`, newData)
       toast.success('Product Added Successfully');
       setImages([]);
       navigate('/shop')

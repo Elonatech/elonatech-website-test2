@@ -34,9 +34,7 @@ const Computer = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(
-          `https://test-api2-aceo.onrender.com/api/v1/product/computers`
-        );
+        const response = await axios.get(`${BASEURL}/api/v1/product/computers`);
         const products = response.data.data.reverse();
         setData(products);
         setRecords(products); // Initially display all products
