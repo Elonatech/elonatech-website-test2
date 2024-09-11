@@ -480,7 +480,7 @@ const Shop = () => {
             </div>
             {/* <h1>filters</h1> */}
             <div className="filter-section p-2 bg-white rounded shadow-sm">
-              <h4 className="mb-3">Filter Products</h4>
+              <h4 className="mb-3">Sort Products By</h4>
 
               <form
                 onSubmit={handleSubmit}
@@ -502,40 +502,7 @@ const Shop = () => {
                   />
                 </div>
 
-                {/* ram */}
-                <div className="mb-2">
-                  <label className="form-label">RAM</label>
-                  <div className="form-check">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      value="4gb"
-                      onChange={handleRamChange}
-                      checked={filters.ram.includes("4gb")}
-                    />
-                    <label className="form-check-label">4GB</label>
-                  </div>
-                  <div className="form-check">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      value="8gb"
-                      onChange={handleRamChange}
-                      checked={filters.ram.includes("8gb")}
-                    />
-                    <label className="form-check-label">8GB</label>
-                  </div>
-                  <div className="form-check">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      value="16gb"
-                      onChange={handleRamChange}
-                      checked={filters.ram.includes("16gb")}
-                    />
-                    <label className="form-check-label">16GB</label>
-                  </div>
-                </div>
+                
 
                 {/* Price Range */}
                 <div className="mb-2">

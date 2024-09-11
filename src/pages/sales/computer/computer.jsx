@@ -54,7 +54,7 @@ const Computer = () => {
     if (filteredProducts.length > 0) {
       setRecords(filteredProducts);
     } else {
-      setRecords(data); // Display all products when no filters are applied
+      setRecords([]); // Display all products when no filters are applied
     }
   }, [filteredProducts, data]);
 
