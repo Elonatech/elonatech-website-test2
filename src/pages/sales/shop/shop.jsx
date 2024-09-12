@@ -5,7 +5,10 @@ import "./shop.css";
 import { BASEURL } from "../../../BaseURL/BaseURL";
 import Loading from "../../../components/Loading/Loading";
 import axios from "axios";
-import {LazyLoadImage, trackWindowScroll } from "react-lazy-load-image-component";
+import {
+  LazyLoadImage,
+  trackWindowScroll
+} from "react-lazy-load-image-component";
 import { useCart } from "react-use-cart";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -13,11 +16,7 @@ import { Helmet } from "react-helmet-async";
 import "rc-slider/assets/index.css";
 import ShopFilter from "./shopFilter";
 
-
-
 const Shop = () => {
-
-
   const [data, setData] = useState([]);
   const [records, setRecords] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -26,99 +25,28 @@ const Shop = () => {
   const [pageNumberLimit, setpageNumberLimit] = useState(4);
   const [maxPageNumberLimit, setmaxPageNumberLimit] = useState(4);
   const [minPageNumberLimit, setminPageNumberLimit] = useState(0);
-  const [filteredProducts, setFilteredProducts] =useState([])
+  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [activeItem, setActiveItem] = useState("Item 1");
+  const [noResultsMessage, setNoResultsMessage] = useState(false);
 
-  const [filters, setFilters] = useState({
-    price: "",
-    priceMin: "",
-    priceMax: "",
-    ram: "",
-    brand: "",
-    name: "",
-    hardDisk: "",
-    category: "",
-    discount: "",
-    rating: ""
-  });
-
-  const handleRamChange = (e) => {
-    const { value, checked } = e.target;
-    let updatedRam = filters.ram.split(",").filter(Boolean); // Split and remove empty strings
-
-    if (checked) {
-      // Add RAM value to the list
-      updatedRam.push(value);
-    } else {
-      // Remove RAM value from the list
-      updatedRam = updatedRam.filter((ram) => ram !== value);
-    }
-
-    setFilters((prevFilters) => ({
-      ...prevFilters,
-      ram: updatedRam.join(","), // Join the array into a string separated by commas
-    }));
-  }
-
-
-
-
-    const [priceRange, setPriceRange] = useState([0, 100000]);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFilters((prevFilters) => ({
-      ...prevFilters,
-      [name]: value.toLowerCase() // Convert to lowercase
-    }));
+  const handleClick = (item) => {
+    setActiveItem(item);
   };
 
-   const handlePriceChange = (e) => {
-     const { name, value } = e.target;
-     setFilters((prevFilters) => ({
-       ...prevFilters,
-       [name]: value // Update priceMin or priceMax
-     }));
-   };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    // Construct the query parameters dynamically
-    const queryParams = new URLSearchParams();
-
-    Object.entries(filters).forEach(([key, value]) => {
-      if (value) {
-        queryParams.append(key, value.toLowerCase()); // Convert to lowercase
-      }
-    });
-
-    if (priceRange) {
-      queryParams.append("price", `${priceRange[0]}-${priceRange[1]}`);
-    }
-
-    const url = `${BASEURL}/api/v1/product/filter/all?${queryParams.toString()}`;
-
-    try {
-      const response = await axios.get(url);
-      console.log(response.data); // Handle the response data
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
+  const formatPrice = (price) => {
+    return price.toLocaleString(); // Adds commas to the number
   };
- const [activeItem, setActiveItem] = useState("Item 1");
-
-   const handleClick = (item) => {
-     setActiveItem(item);
-   };
-
-
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`${BASEURL}/api/v1/product/`);
-        setData(response.data.getAllProducts.reverse());
-        setRecords(response.data.getAllProducts);
+        const response = await axios.get(
+          `${BASEURL}/api/v1/product/filter/all`
+        );
+        const products = response.data.data.reverse();
+        console.log(response.data.data);
+        setData(products);
+        setRecords(products); // Initially display all products
         setIsLoading(true);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -128,17 +56,33 @@ const Shop = () => {
     fetchData();
   }, []);
 
-
-
+  useEffect(() => {
+    // If filteredProducts has any values, display them; otherwise, display all products
+    if (filteredProducts.length > 0) {
+      setRecords(filteredProducts);
+      setNoResultsMessage(false); // Hide the "No Results" message
+    } else if (filteredProducts.length === 0 && data.length > 0) {
+      setRecords([]);
+      setNoResultsMessage(true); // Show the "No Results" message
+    } else {
+      setRecords(data); // Display all products when no filters are applied
+    }
+  }, [filteredProducts, data]);
 
   const Filter = (event) => {
-    setRecords(
-      data
-        .reverse()
-        .filter((c) => c.name.toLowerCase().includes(event.target.value))
+    const searchTerm = event.target.value.toLowerCase();
+    const filtered = data.filter((product) =>
+      product.name.toLowerCase().includes(searchTerm)
     );
-  };
+    setFilteredProducts(filtered);
 
+    // If no matches are found, show the "No Results" message
+    if (filtered.length === 0) {
+      setNoResultsMessage(true);
+    } else {
+      setNoResultsMessage(false);
+    }
+  };
 
   const paginate = (pages) => setCurrentPage(pages);
 
@@ -155,17 +99,16 @@ const Shop = () => {
     }
   };
 
-
   const handlePrevbtn = () => {
     setCurrentPage(currentPage - 1);
 
-    if ((currentPage - 1) % pageNumberLimit == 0) {
+    if ((currentPage - 1) % pageNumberLimit === 0) {
       setmaxPageNumberLimit(maxPageNumberLimit - pageNumberLimit);
       setminPageNumberLimit(minPageNumberLimit - pageNumberLimit);
     }
   };
 
-  // add to cart
+  // Add to cart
   const { addItem } = useCart();
 
   // Pop up message
@@ -201,17 +144,18 @@ const Shop = () => {
         <meta name="robots" content="index,follow" />
         <meta
           name="description"
-          content="Shop through a wide selection of laptops, printers, office equipment, pos system, network devices products at Elonatech. Free shipping and free returns on Prime eligible items. Smart business people need quality and reliable hardware, software, service, and support for the day to day running of their businesses "
+          content="Shop through a wide selection of laptops, printers, office equipment, pos system, network devices products at Elonatech."
         />
         <link rel="canonical" href="/shop" />
         <meta
           name="keywords"
-          content="printers, network devices, laptops, office equipment, pos system, Elonatech "
+          content="printers, network devices, laptops, office equipment, pos system, Elonatech"
         />
       </Helmet>
-      {/* ======================================================================== Header ===========================================================================*/}
+
+      {/* Header Section */}
       <div
-        class="container-fluid bg-secondary py-5 "
+        className="container-fluid bg-secondary py-5"
         style={{
           height: "500px",
           backgroundImage: `linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(https://res.cloudinary.com/elonatech/image/upload/v1709811140/shopPage/shop_oby1yn.jpg)`,
@@ -220,25 +164,25 @@ const Shop = () => {
           backgroundSize: "cover"
         }}
       >
-        <div class="py-5 mt-5 ">
-          <h2 class=" mt-5 text-white text-center">Shop Products</h2>
-          <h5 class=" mt-4 text-white text-center">
+        <div className="py-5 mt-5">
+          <h2 className="mt-5 text-white text-center">Shop Products</h2>
+          <h5 className="mt-4 text-white text-center">
             Get what you need to run your business
           </h5>
-          <p class="lead text-white text-center">
+          <p className="lead text-white text-center">
             Smart business people need quality and reliable hardware, software,
             service, and support for the day to day running of their businesses
           </p>
         </div>
       </div>
 
-      <main class="container-fluid">
-        <div class="row g-0">
-          <div class="col-md-9 ">
-            <section class="ftco-section" id="skills-section">
-              <div class="container ">
-                <div class="row justify-content-center pt-3 pb-4">
-                  <div className="col-md-8 pt-4 ">
+      <main className="container-fluid">
+        <div className="row g-0">
+          <div className="col-md-9">
+            <section className="ftco-section" id="skills-section">
+              <div className="container">
+                <div className="row justify-content-center pt-3 pb-4">
+                  <div className="col-md-8 pt-4">
                     <h6>
                       SHOWING <span className="text-danger">{currentPage}</span>{" "}
                       –{" "}
@@ -251,7 +195,7 @@ const Shop = () => {
                   </div>
                   <div className="col-md-4 pt-3">
                     <input
-                      class="form-control"
+                      className="form-control"
                       type="search"
                       onChange={Filter}
                       placeholder="Search"
@@ -259,93 +203,80 @@ const Shop = () => {
                     />
                   </div>
                 </div>
-                <div class="row g-1 progress-circle ">
+
+                {/* Product Display or No Results */}
+                <div className="row g-1 progress-circle">
                   {isLoading ? (
-                    currentPosts?.map((product) => {
-                      return (
-                        <div class="col-lg-3 mb-4" key={product.id}>
-                          <div class=" mx-1  shadow-lg p-3  bg-body rounded showbutton">
-                            <Link
-                              className="text-decoration-none text-dark"
-                              to={`/product/${product._id}/${product.name
-                                .split(` `)
-                                .join(`-`)
-                                .toLowerCase()}`}
-                            >
-                              <div className="text-center take">
-                                <LazyLoadImage
-                                  src={product.images[0]?.url}
-                                  placeholderSrc="https://res.cloudinary.com/elonatech/image/upload/v1710241889/loaderImage/blurred_o4delz.avif"
-                                  className="lazyload"
-                                  width="130"
-                                  height="130"
-                                  alt=""
-                                />
-                              </div>
-                              <h5 class="fw-normal pt-3">
-                                {product.name.slice(0, 23)}...
-                              </h5>
-                              <p className="lead fs-6">{product.category}</p>
-                              <div class="stars" style={{ color: "black" }}>
-                                <i
-                                  class="bi bi-star-fill"
-                                  style={{ color: "#f4be1d" }}
-                                ></i>
-                                <i
-                                  class="bi bi-star-fill"
-                                  style={{ color: "#f4be1d" }}
-                                ></i>
-                                <i
-                                  class="bi bi-star-fill"
-                                  style={{ color: "#f4be1d" }}
-                                ></i>
-                                <i
-                                  class="bi bi-star-fill"
-                                  style={{ color: "#f4be1d" }}
-                                ></i>
-                                <i
-                                  class="bi bi-star-fill"
-                                  style={{ color: "#f4be1d" }}
-                                ></i>
-                              </div>
-                              <div class="d-flex justify-content-between">
-                                <p className="mt-2 px-1 text-danger">
-                                  ₦ {Number(product.price).toLocaleString()}.00
+                    currentPosts.length > 0 ? (
+                      currentPosts.map((product) => {
+                        return (
+                          <div className="col-lg-3 mb-4" key={product.id}>
+                            <div className="mx-1 shadow-lg p-3 bg-body rounded showbutton">
+                              <Link
+                                className="text-decoration-none text-dark"
+                                to={`/product/${product._id}/${product.name
+                                  .split(" ")
+                                  .join("-")
+                                  .toLowerCase()}`}
+                              >
+                                <div className="text-center take">
+                                  <LazyLoadImage
+                                    src={product.images[0]?.url}
+                                    placeholderSrc="https://res.cloudinary.com/elonatech/image/upload/v1710241889/loaderImage/blurred_o4delz.avif"
+                                    className="lazyload"
+                                    width="130"
+                                    height="130"
+                                    alt=""
+                                  />
+                                </div>
+                                <h5 className="fw-normal pt-3">
+                                  {product.name.slice(0, 23)}...
+                                </h5>
+                                <p className="lead fs-6">{product.category}</p>
+                                <div
+                                  className="stars"
+                                  style={{ color: "black" }}
+                                >
+                                  <i
+                                    className="bi bi-star-fill"
+                                    style={{ color: "#f4be1d" }}
+                                  ></i>
+                                  <i
+                                    className="bi bi-star-fill"
+                                    style={{ color: "#f4be1d" }}
+                                  ></i>
+                                  <i
+                                    className="bi bi-star-fill"
+                                    style={{ color: "#f4be1d" }}
+                                  ></i>
+                                  <i
+                                    className="bi bi-star-fill"
+                                    style={{ color: "#f4be1d" }}
+                                  ></i>
+                                  <i
+                                    className="bi bi-star-half"
+                                    style={{ color: "#f4be1d" }}
+                                  ></i>
+                                </div>
+                                <p className="lead fs-6">
+                                  ₦ {formatPrice(product.price)}
                                 </p>
-                                <i
-                                  class="bi bi-cart p-1"
-                                  style={{
-                                    fontSize: "20px",
-                                    cursor: "pointer"
-                                  }}
-                                ></i>
-                              </div>
-                            </Link>
-                            <div class="d-grid gap-2" key={product.id}>
-                              <div
-                                class="btn btn-outline"
-                                style={{ backgroundColor: "#a9abae" }}
+                              </Link>
+                              <button
+                                className="btn btn-outline-secondary btn-md w-100 rounded"
                                 onClick={() => addItem(product)}
                               >
-                                <h6 className="text-danger">ADD TO CART</h6>
-                              </div>
+                                Add to cart
+                              </button>
                             </div>
                           </div>
-                        </div>
-                      );
-                    })
+                        );
+                      })
+                    ) : (
+                      <h4>No products match your search criteria.</h4>
+                    )
                   ) : (
-                    <div className="container">
-                      <div className="row">
-                        <div className="col-md-12">
-                          <div className="d-flex justify-content-center">
-                            <div className="my-5 py-5">
-                              <Loading />
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+                    <Loading />
                   )}
                 </div>
                 {/*============================================== Pagination ================================================*/}
@@ -482,9 +413,15 @@ const Shop = () => {
               </ul>
             </div>
             {/* <h1>filters</h1> */}
-            <ShopFilter setFilteredProducts={setFilteredProducts}/>
-      
-
+            <div className="filter-section p-2 bg-white rounded shadow-sm">
+              <h4
+                style={{ marginTop: "-8px", marginBottom: "16px" }}
+                class="fw-bold "
+              >
+                Sort Computers by
+              </h4>
+              <ShopFilter setFilteredProducts={setFilteredProducts} />
+            </div>
             {/* end */}
           </div>
         </div>
