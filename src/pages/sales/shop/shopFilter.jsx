@@ -15,7 +15,7 @@ const ShopFilter = ({ setFilteredProducts, filteredProducts }) => {
 
   useEffect(() => {
     axios
-      .get(`${BASEURL}api/v1/product/brand`)
+      .get(`${BASEURL}/api/v1/product/brand`)
       .then((response) => {
         if (response.data.success) {
           const { brands: fetchedBrands, minPrice, maxPrice } = response.data;
@@ -40,11 +40,27 @@ const ShopFilter = ({ setFilteredProducts, filteredProducts }) => {
       });
   }, []);
 
-  const handleInputChange = (e, index) => {
-    const newPriceRange = [...priceRange];
-    newPriceRange[index] = Number(e.target.value);
-    setPriceRange(newPriceRange);
-  };
+ const handleInputChange = (e, index) => {
+   const rawValue = e.target.value.replace(/,/g, ""); // Remove commas
+
+   // If the input is empty, set the value to an empty string
+   if (rawValue === "") {
+     const updatedPriceRange = [...priceRange];
+     updatedPriceRange[index] = ""; // Or use null if you prefer
+     setPriceRange(updatedPriceRange);
+     return;
+   }
+
+   // Convert to number and handle invalid cases
+   const newValue = Number(rawValue);
+
+   // Only update if it's a valid number
+   if (!isNaN(newValue)) {
+     const updatedPriceRange = [...priceRange];
+     updatedPriceRange[index] = newValue;
+     setPriceRange(updatedPriceRange);
+   }
+ };
 
   const handleBrandChange = async (brand) => {
     const updatedBrands = filters.brand.includes(brand)
@@ -91,12 +107,15 @@ const ShopFilter = ({ setFilteredProducts, filteredProducts }) => {
     }
   };
 
-  const formatPrice = (price) => {
-    return price.toLocaleString(); // Adds commas to the number
-  };
+ const formatPrice = (value) => {
+   return value === "" || value === 0
+     ? "0"
+     : new Intl.NumberFormat().format(value);
+ };
+
 
   return (
-    <div className="shop-filter">
+    <div className="">
       {/* Filter by Brand */}
       <div style={{ maxHeight: "200px", overflowY: "scroll" }}>
         {" "}
@@ -125,7 +144,7 @@ const ShopFilter = ({ setFilteredProducts, filteredProducts }) => {
           value={priceRange}
           min={defaultPriceRange[0]}
           max={defaultPriceRange[1]}
-          step={10}
+          step={50}
           onChange={handlePriceRangeChange}
           pearling
           minDistance={10}
@@ -135,18 +154,18 @@ const ShopFilter = ({ setFilteredProducts, filteredProducts }) => {
           <div style={{ width: "100%" }}>
             <input
               style={{ width: "80%", borderRadius: "5px" }}
-              type="number"
-              value={priceRange[0]}
+              type="text"
+              value={priceRange[0] === "" ? "" : formatPrice(priceRange[0])} // Handle zero or empty value
               onChange={(e) => handleInputChange(e, 0)}
             />
           </div>
           <div>
             <input
-              style={{ width: "100%", borderRadius: "5px" }}
-              type="number"
-              value={priceRange[1]}
-              onChange={(e) => handleInputChange(e, 1)}
-            />
+  style={{ width: "100%", borderRadius: "5px" }}
+  type="text"
+  value={priceRange[1] === "" ? "" : formatPrice(priceRange[1])} // Handle zero or empty value
+  onChange={(e) => handleInputChange(e, 1)}
+/>
           </div>
         </div>
 
@@ -157,8 +176,6 @@ const ShopFilter = ({ setFilteredProducts, filteredProducts }) => {
           Reset Price Range
         </button>
       </div>
-
-      
 
       {/* Add custom CSS for better visuals */}
       <style jsx>{`
@@ -184,12 +201,12 @@ const ShopFilter = ({ setFilteredProducts, filteredProducts }) => {
           border-radius: 5px;
         }
         .apply-btn {
-          background-color: #28a745;
+          background-color: rgb(52, 84, 140);
           color: white;
         }
         .reset-btn {
-          background-color: orange;
-          color: black;
+          background-color: rgb(220, 53, 69);
+          color: white;
         }
         .no-products-message {
           color: red;

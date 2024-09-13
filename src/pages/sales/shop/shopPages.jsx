@@ -5,65 +5,98 @@ import "./shop.css";
 import { BASEURL } from "../../../BaseURL/BaseURL";
 import Loading from "../../../components/Loading/Loading";
 import axios from "axios";
-import {LazyLoadImage, trackWindowScroll } from "react-lazy-load-image-component";
+import {
+  LazyLoadImage,
+  trackWindowScroll
+} from "react-lazy-load-image-component";
 import { useCart } from "react-use-cart";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Helmet } from "react-helmet-async";
-import { useParams } from "react-router-dom";
-
+import "rc-slider/assets/index.css";
+import ShopFilter from "./shopFilter";
 
 const ShopPages = () => {
-
-  const { pagenumber } = useParams();
-
   const [data, setData] = useState([]);
   const [records, setRecords] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [currentPage, setCurrentPage] = useState(Number(pagenumber));
+  const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(12);
   const [pageNumberLimit, setpageNumberLimit] = useState(4);
   const [maxPageNumberLimit, setmaxPageNumberLimit] = useState(4);
   const [minPageNumberLimit, setminPageNumberLimit] = useState(0);
+  const [filteredProducts, setFilteredProducts] = useState([]);
   const [activeItem, setActiveItem] = useState("Item 1");
+  const [noResultsMessage, setNoResultsMessage] = useState(false);
+  const [isFiltering, setIsFiltering] = useState(false);
 
   const handleClick = (item) => {
     setActiveItem(item);
   };
 
+  const formatPrice = (price) => {
+    return price.toLocaleString(); // Adds commas to the number
+  };
 
   useEffect(() => {
     const fetchData = async () => {
+      setIsLoading(true);
       try {
-        const response = await axios.get(`${BASEURL}/api/v1/product/`);
-        setData(response.data.getAllProducts.reverse());
-        setRecords(response.data.getAllProducts);
-        setIsLoading(true);
+        const response = await axios.get(
+          `${BASEURL}/api/v1/product/filter/all`
+        );
+        const products = response.data.data.reverse();
+
+        // Initially set all fetched products to both `data` and `records`
+        setData(products);
+        setRecords(products); // Show all products initially
+        setIsLoading(false); // Stop loading state
       } catch (error) {
         console.error("Error fetching data:", error);
-        setIsLoading(true);
+        setIsLoading(false);
       }
     };
     fetchData();
   }, []);
 
-
-
-  useEffect(() =>{
-    setCurrentPage(Number(pagenumber))
-  },[currentPage]);
-
-
+  useEffect(() => {
+    if (filteredProducts.length > 0) {
+      setRecords(filteredProducts); // Show filtered products
+      setNoResultsMessage(false); // Don't show "No Results" message
+    } else if (filteredProducts.length === 0 && isFiltering) {
+      setRecords([]); // Empty records if no products match the filter
+      setNoResultsMessage(true); // Show the "No Results" message
+    } else {
+      // If not filtering or no search term, show all products
+      setRecords(data);
+      setNoResultsMessage(false);
+    }
+  }, [filteredProducts, isFiltering, data]);
 
   const Filter = (event) => {
-    setRecords(
-      data
-        .reverse()
-        .filter((c) => c.name.toLowerCase().includes(event.target.value))
-    );
+    const searchTerm = event.target.value.toLowerCase();
+
+    if (searchTerm === "") {
+      // If the search input is cleared, show all products again
+      setFilteredProducts([]);
+      setIsFiltering(false); // No filter applied
+      setNoResultsMessage(false);
+    } else {
+      const filtered = data.filter((product) =>
+        product.name.toLowerCase().includes(searchTerm)
+      );
+
+      setFilteredProducts(filtered); // Set filtered products based on search term
+      setIsFiltering(true); // Filtering is now applied
+
+      // Trigger "No Results" message only if no matches are found
+      if (filtered.length === 0) {
+        setNoResultsMessage(true);
+      } else {
+        setNoResultsMessage(false);
+      }
+    }
   };
-
-
   const paginate = (pages) => setCurrentPage(pages);
 
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -79,21 +112,16 @@ const ShopPages = () => {
     }
   };
 
-  if(parseInt(pagenumber) > maxPageNumberLimit){
-    setmaxPageNumberLimit(maxPageNumberLimit + pageNumberLimit);
-    setminPageNumberLimit(minPageNumberLimit + pageNumberLimit);
-  }
-
   const handlePrevbtn = () => {
     setCurrentPage(currentPage - 1);
 
-    if ((currentPage - 1) % pageNumberLimit == 0) {
+    if ((currentPage - 1) % pageNumberLimit === 0) {
       setmaxPageNumberLimit(maxPageNumberLimit - pageNumberLimit);
       setminPageNumberLimit(minPageNumberLimit - pageNumberLimit);
     }
   };
 
-  // add to cart
+  // Add to cart
   const { addItem } = useCart();
 
   // Pop up message
@@ -129,17 +157,18 @@ const ShopPages = () => {
         <meta name="robots" content="index,follow" />
         <meta
           name="description"
-          content="Shop through a wide selection of laptops, printers, office equipment, pos system, network devices products at Elonatech. Free shipping and free returns on Prime eligible items. Smart business people need quality and reliable hardware, software, service, and support for the day to day running of their businesses "
+          content="Shop through a wide selection of laptops, printers, office equipment, pos system, network devices products at Elonatech."
         />
         <link rel="canonical" href="/shop" />
         <meta
           name="keywords"
-          content="printers, network devices, laptops, office equipment, pos system, Elonatech "
+          content="printers, network devices, laptops, office equipment, pos system, Elonatech"
         />
       </Helmet>
-      {/* ======================================================================== Header ===========================================================================*/}
+
+      {/* Header Section */}
       <div
-        class="container-fluid bg-secondary py-5 "
+        className="container-fluid bg-secondary py-5"
         style={{
           height: "500px",
           backgroundImage: `linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(https://res.cloudinary.com/elonatech/image/upload/v1709811140/shopPage/shop_oby1yn.jpg)`,
@@ -148,25 +177,25 @@ const ShopPages = () => {
           backgroundSize: "cover"
         }}
       >
-        <div class="py-5 mt-5 ">
-          <h2 class=" mt-5 text-white text-center">Shop Products</h2>
-          <h5 class=" mt-4 text-white text-center">
+        <div className="py-5 mt-5">
+          <h2 className="mt-5 text-white text-center">Shop Products</h2>
+          <h5 className="mt-4 text-white text-center">
             Get what you need to run your business
           </h5>
-          <p class="lead text-white text-center">
+          <p className="lead text-white text-center">
             Smart business people need quality and reliable hardware, software,
             service, and support for the day to day running of their businesses
           </p>
         </div>
       </div>
 
-      <main class="container-fluid">
-        <div class="row g-0">
-          <div class="col-md-9 ">
-            <section class="ftco-section" id="skills-section">
-              <div class="container ">
-                <div class="row justify-content-center pt-3 pb-4">
-                  <div className="col-md-8 pt-4 ">
+      <main className="container-fluid">
+        <div className="row g-0">
+          <div className="col-md-9">
+            <section className="ftco-section" id="skills-section">
+              <div className="container">
+                <div className="row justify-content-center pt-3 pb-4">
+                  <div className="col-md-8 pt-4">
                     <h6>
                       SHOWING <span className="text-danger">{currentPage}</span>{" "}
                       –{" "}
@@ -179,7 +208,7 @@ const ShopPages = () => {
                   </div>
                   <div className="col-md-4 pt-3">
                     <input
-                      class="form-control"
+                      className="form-control"
                       type="search"
                       onChange={Filter}
                       placeholder="Search"
@@ -187,17 +216,21 @@ const ShopPages = () => {
                     />
                   </div>
                 </div>
-                <div class="row g-1 progress-circle ">
-                  {isLoading ? (
-                    currentPosts?.map((product) => {
+
+                {/* Product Display or No Results */}
+                <div className="row g-1 progress-circle">
+                  {isLoading ? ( // Show the loader when isLoading is true
+                    <Loading />
+                  ) : currentPosts.length > 0 ? (
+                    currentPosts.map((product) => {
                       return (
-                        <div class="col-lg-3 mb-4" key={product.id}>
-                          <div class=" mx-1  shadow-lg p-3  bg-body rounded showbutton">
+                        <div className="col-lg-3 mb-4" key={product.id}>
+                          <div className="mx-1 shadow-lg p-3 bg-body rounded showbutton">
                             <Link
                               className="text-decoration-none text-dark"
                               to={`/product/${product._id}/${product.name
-                                .split(` `)
-                                .join(`-`)
+                                .split(" ")
+                                .join("-")
                                 .toLowerCase()}`}
                             >
                               <div className="text-center take">
@@ -210,70 +243,48 @@ const ShopPages = () => {
                                   alt=""
                                 />
                               </div>
-                              <h5 class="fw-normal pt-3">
+                              <h5 className="fw-normal pt-3">
                                 {product.name.slice(0, 23)}...
                               </h5>
                               <p className="lead fs-6">{product.category}</p>
-                              <div class="stars" style={{ color: "black" }}>
+                              <div className="stars" style={{ color: "black" }}>
                                 <i
-                                  class="bi bi-star-fill"
+                                  className="bi bi-star-fill"
                                   style={{ color: "#f4be1d" }}
                                 ></i>
                                 <i
-                                  class="bi bi-star-fill"
+                                  className="bi bi-star-fill"
                                   style={{ color: "#f4be1d" }}
                                 ></i>
                                 <i
-                                  class="bi bi-star-fill"
+                                  className="bi bi-star-fill"
                                   style={{ color: "#f4be1d" }}
                                 ></i>
                                 <i
-                                  class="bi bi-star-fill"
+                                  className="bi bi-star-fill"
                                   style={{ color: "#f4be1d" }}
                                 ></i>
                                 <i
-                                  class="bi bi-star-fill"
+                                  className="bi bi-star-half"
                                   style={{ color: "#f4be1d" }}
                                 ></i>
                               </div>
-                              <div class="d-flex justify-content-between">
-                                <p className="mt-2 px-1 text-danger">
-                                  ₦ {Number(product.price).toLocaleString()}.00
-                                </p>
-                                <i
-                                  class="bi bi-cart p-1"
-                                  style={{
-                                    fontSize: "20px",
-                                    cursor: "pointer"
-                                  }}
-                                ></i>
-                              </div>
+                              <p className="lead fs-6">
+                                ₦ {formatPrice(product.price)}
+                              </p>
                             </Link>
-                            <div class="d-grid gap-2" key={product.id}>
-                              <div
-                                class="btn btn-outline"
-                                style={{ backgroundColor: "#a9abae" }}
-                                onClick={() => addItem(product)}
-                              >
-                                <h6 className="text-danger">ADD TO CART</h6>
-                              </div>
-                            </div>
+                            <button
+                              className="btn btn-outline-secondary btn-md w-100 rounded"
+                              onClick={() => addItem(product)}
+                            >
+                              Add to cart
+                            </button>
                           </div>
                         </div>
                       );
                     })
                   ) : (
-                    <div className="container">
-                      <div className="row">
-                        <div className="col-md-12">
-                          <div className="d-flex justify-content-center">
-                            <div className="my-5 py-5">
-                              <Loading />
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+                    <h4>No products match your search criteria.</h4>
                   )}
                 </div>
                 {/*============================================== Pagination ================================================*/}
@@ -284,6 +295,7 @@ const ShopPages = () => {
                     maxPageNumberLimit={maxPageNumberLimit}
                     minPageNumberLimit={minPageNumberLimit}
                     currentPage={currentPage}
+                    id
                     handleNextbtn={handleNextbtn}
                     handlePrevbtn={handlePrevbtn}
                     paginate={paginate}
@@ -293,122 +305,132 @@ const ShopPages = () => {
             </section>
           </div>
           <div class="col-md-3 ">
-            <div
+            {/* <
               class="position-sticky "
               style={{ top: "2rem", marginTop: "20px" }}
-            >
-              <div
-                style={{
-                  marginTop: "50px",
-                  paddingTop: "30px",
-                  paddingBottom: "30px",
+            > */}
+            <div
+              style={{
+                marginTop: "50px",
+                paddingTop: "30px",
+                paddingBottom: "30px",
 
-                  marginLeft: "15px"
+                marginLeft: "15px"
+              }}
+            >
+              <form
+                style={{
+                  paddingTop: "20px",
+                  paddingBottom: "20px"
                 }}
+                class="d-flex "
+              ></form>
+              <h4
+                style={{ marginTop: "-8px", marginBottom: "16px" }}
+                class="fw-bold "
               >
-                <form
-                  style={{
-                    paddingTop: "20px",
-                    paddingBottom: "20px"
-                  }}
-                  class="d-flex "
-                ></form>
-                <h4
-                  style={{ marginTop: "-8px", marginBottom: "16px" }}
-                  class="fw-bold "
-                >
-                  Browse Categories
-                </h4>
-                <ul className="list-unstyled">
-                  <li>
-                    <Link
-                      to={"/shop"}
-                      className={`item ${
-                        activeItem === "Item 1" ? "active" : ""
-                      }`}
-                      onClick={() => handleClick("Item 1")}
-                    >
-                      All Products
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      to={"/computers"}
-                      className="text-dark"
-                      style={{ textDecoration: "none" }}
-                      onMouseEnter={(e) =>
-                        (e.currentTarget.style.textDecoration = "underline")
-                      }
-                      onMouseLeave={(e) =>
-                        (e.currentTarget.style.textDecoration = "none")
-                      }
-                    >
-                      Computers
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      to={"/office-equipment"}
-                      className="text-dark"
-                      style={{ textDecoration: "none" }}
-                      onMouseEnter={(e) =>
-                        (e.currentTarget.style.textDecoration = "underline")
-                      }
-                      onMouseLeave={(e) =>
-                        (e.currentTarget.style.textDecoration = "none")
-                      }
-                    >
-                      Office Equipment
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      to={"/pos-system"}
-                      className="text-dark"
-                      style={{ textDecoration: "none" }}
-                      onMouseEnter={(e) =>
-                        (e.currentTarget.style.textDecoration = "underline")
-                      }
-                      onMouseLeave={(e) =>
-                        (e.currentTarget.style.textDecoration = "none")
-                      }
-                    >
-                      POS System
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      to={"/printers"}
-                      className="text-dark"
-                      style={{ textDecoration: "none" }}
-                      onMouseEnter={(e) =>
-                        (e.currentTarget.style.textDecoration = "underline")
-                      }
-                      onMouseLeave={(e) =>
-                        (e.currentTarget.style.textDecoration = "none")
-                      }
-                    >
-                      Printers
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      to={"/network-devices"}
-                      className="text-dark"
-                      style={{ textDecoration: "none" }}
-                      onMouseEnter={(e) =>
-                        (e.currentTarget.style.textDecoration = "underline")
-                      }
-                      onMouseLeave={(e) =>
-                        (e.currentTarget.style.textDecoration = "none")
-                      }
-                    >
-                      Network Devices
-                    </Link>
-                  </li>
-                </ul>
-              </div>
+                Browse Categories
+              </h4>
+              <ul className="list-unstyled">
+                <li>
+                  <Link
+                    to={"/shop"}
+                    className={`item ${
+                      activeItem === "Item 1" ? "active" : ""
+                    }`}
+                    onClick={() => handleClick("Item 1")}
+                  >
+                    All Products
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to={"/computers"}
+                    className="text-dark"
+                    style={{ textDecoration: "none" }}
+                    onMouseEnter={(e) =>
+                      (e.currentTarget.style.textDecoration = "underline")
+                    }
+                    onMouseLeave={(e) =>
+                      (e.currentTarget.style.textDecoration = "none")
+                    }
+                  >
+                    Computers
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to={"/office-equipment"}
+                    className="text-dark"
+                    style={{ textDecoration: "none" }}
+                    onMouseEnter={(e) =>
+                      (e.currentTarget.style.textDecoration = "underline")
+                    }
+                    onMouseLeave={(e) =>
+                      (e.currentTarget.style.textDecoration = "none")
+                    }
+                  >
+                    Office Equipment
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to={"/pos-system"}
+                    className="text-dark"
+                    style={{ textDecoration: "none" }}
+                    onMouseEnter={(e) =>
+                      (e.currentTarget.style.textDecoration = "underline")
+                    }
+                    onMouseLeave={(e) =>
+                      (e.currentTarget.style.textDecoration = "none")
+                    }
+                  >
+                    POS System
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to={"/printers"}
+                    className="text-dark"
+                    style={{ textDecoration: "none" }}
+                    onMouseEnter={(e) =>
+                      (e.currentTarget.style.textDecoration = "underline")
+                    }
+                    onMouseLeave={(e) =>
+                      (e.currentTarget.style.textDecoration = "none")
+                    }
+                  >
+                    Printers
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to={"/network-devices"}
+                    className="text-dark"
+                    style={{ textDecoration: "none" }}
+                    onMouseEnter={(e) =>
+                      (e.currentTarget.style.textDecoration = "underline")
+                    }
+                    onMouseLeave={(e) =>
+                      (e.currentTarget.style.textDecoration = "none")
+                    }
+                  >
+                    Network Devices
+                  </Link>
+                </li>
+              </ul>
             </div>
+            {/* <h1>filters</h1> */}
+            <div className="filter-section p-2 bg-white rounded shadow-sm">
+              <h4
+                style={{ marginTop: "-8px", marginBottom: "16px" }}
+                class="fw-bold "
+              >
+                Sort Computers by
+              </h4>
+              <ShopFilter setFilteredProducts={setFilteredProducts} />
+            </div>
+            {/* end */}
           </div>
         </div>
       </main>

@@ -135,7 +135,7 @@
   }
 }
 
-.filter-section {
+/* .filter-section {
   max-width: 300px;
 }
 .filter-section h5 {
@@ -146,7 +146,7 @@
 }
 .filter-section .btn {
   border-radius: 20px;
-}
+} */
 
 
 
@@ -355,7 +355,7 @@
 .apply-button {
   background: none;
   border: none;
-  color: #ff6600; /* Customize color */
+  color: #bdb6b2; /* Customize color */
   font-weight: bold;
   cursor: pointer;
 }

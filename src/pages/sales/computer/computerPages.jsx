@@ -10,7 +10,6 @@ import { useCart } from "react-use-cart";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ComputerFilter from "./ComputerFilter";
-import { useParams } from "react-router-dom";
 
 const ComputerPages = () => {
   const [data, setData] = useState([]);
@@ -23,8 +22,7 @@ const ComputerPages = () => {
   const [minPageNumberLimit, setminPageNumberLimit] = useState(0);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [activeItem, setActiveItem] = useState("Item 2");
-
-  const { pagenumber } = useParams();
+  const [noResultsMessage, setNoResultsMessage] = useState(""); // State to handle no results message
 
   const handleClick = (item) => {
     setActiveItem(item);
@@ -51,11 +49,12 @@ const ComputerPages = () => {
   }, []);
 
   useEffect(() => {
-    // If filteredProducts has any values, display them; otherwise, display all products
     if (filteredProducts.length > 0) {
       setRecords(filteredProducts);
-    } else {
-      setRecords(data); // Display all products when no filters are applied
+      setNoResultsMessage(""); // Clear any previous message
+    } else if (filteredProducts.length === 0 && data.length > 0) {
+      setRecords([]); // Clear the products
+      setNoResultsMessage("No products found with the current filters."); // Display message
     }
   }, [filteredProducts, data]);
 
@@ -65,10 +64,6 @@ const ComputerPages = () => {
       data.filter((product) => product.name.toLowerCase().includes(searchTerm))
     );
   };
-    useEffect(() => {
-      setCurrentPage(Number(pagenumber));
-    }, [currentPage]);
-
 
   const paginate = (pages) => setCurrentPage(pages);
 
@@ -76,30 +71,23 @@ const ComputerPages = () => {
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentPosts = records.slice(indexOfFirstItem, indexOfLastItem);
 
+  const { addItem } = useCart();
+
   const handleNextbtn = () => {
     setCurrentPage(currentPage + 1);
-
     if (currentPage + 1 > maxPageNumberLimit) {
       setmaxPageNumberLimit(maxPageNumberLimit + pageNumberLimit);
       setminPageNumberLimit(minPageNumberLimit + pageNumberLimit);
     }
   };
 
-  if (parseInt(pagenumber) > maxPageNumberLimit) {
-    setmaxPageNumberLimit(maxPageNumberLimit + pageNumberLimit);
-    setminPageNumberLimit(minPageNumberLimit + pageNumberLimit);
-  }
-
   const handlePrevbtn = () => {
     setCurrentPage(currentPage - 1);
-
-    if ((currentPage - 1) % pageNumberLimit == 0) {
+    if ((currentPage - 1) % pageNumberLimit === 0) {
       setmaxPageNumberLimit(maxPageNumberLimit - pageNumberLimit);
       setminPageNumberLimit(minPageNumberLimit - pageNumberLimit);
     }
   };
-
-  const { addItem } = useCart();
 
   return (
     <>
@@ -132,130 +120,136 @@ const ComputerPages = () => {
         <div className="row g-0">
           <div className="col-md-9">
             <section className="ftco-section" id="skills-section">
-              <div className="container">
-                <div className="row justify-content-center pt-3 pb-4">
-                  <div className="col-md-8 pt-4">
-                    <h6>
-                      SHOWING <span className="text-danger">{currentPage}</span>{" "}
-                      –{" "}
-                      <span className="text-danger">
-                        {currentPage * itemsPerPage}
-                      </span>{" "}
-                      OF <span className="text-danger">{data.length}</span>{" "}
-                      RESULTS
-                    </h6>
-                  </div>
-                  <div className="col-md-4 pt-3">
-                    <input
-                      className="form-control"
-                      type="search"
-                      onChange={Filter}
-                      placeholder="Search"
-                      aria-label="Search"
-                    />
-                  </div>
+              {/* <div className="container"> */}
+              <div className="row justify-content-center pt-3 pb-4">
+                <div className="col-md-8 pt-4">
+                  <h6>
+                    SHOWING <span className="text-danger">{currentPage}</span> –{" "}
+                    <span className="text-danger">
+                      {currentPage * itemsPerPage}
+                    </span>{" "}
+                    OF <span className="text-danger">{data.length}</span>{" "}
+                    RESULTS
+                  </h6>
                 </div>
-                <div className="row g-1 progress-circle">
-                  {isLoading ? (
-                    currentPosts?.map((product) => {
-                      return (
-                        <div class="col-lg-3 mb-4" key={product.id}>
-                          <div class=" mx-1  shadow-lg p-3  bg-body rounded showbutton">
-                            <Link
-                              className="text-decoration-none text-dark"
-                              to={`/product/${product._id}/${product.name
-                                .split(` `)
-                                .join(`-`)
-                                .toLowerCase()}`}
-                            >
-                              <div className="text-center take">
-                                <LazyLoadImage
-                                  src={product.images[0]?.url}
-                                  placeholderSrc="https://res.cloudinary.com/elonatech/image/upload/v1710241889/loaderImage/blurred_o4delz.avif"
-                                  className="lazyload"
-                                  width="130"
-                                  height="130"
-                                  alt=""
-                                />
-                              </div>
-                              <h5 class="fw-normal pt-3">
-                                {product.name.slice(0, 23)}...
-                              </h5>
-                              <p className="lead fs-6">{product.category}</p>
-                              <div class="stars" style={{ color: "black" }}>
-                                <i
-                                  class="bi bi-star-fill"
-                                  style={{ color: "#f4be1d" }}
-                                ></i>
-                                <i
-                                  class="bi bi-star-fill"
-                                  style={{ color: "#f4be1d" }}
-                                ></i>
-                                <i
-                                  class="bi bi-star-fill"
-                                  style={{ color: "#f4be1d" }}
-                                ></i>
-                                <i
-                                  class="bi bi-star-fill"
-                                  style={{ color: "#f4be1d" }}
-                                ></i>
-                                <i
-                                  class="bi bi-star-fill"
-                                  style={{ color: "#f4be1d" }}
-                                ></i>
-                              </div>
-                              <div class="d-flex justify-content-between">
-                                <p className="mt-2 px-1 text-danger">
-                                  ₦ {formatPrice(Number(product.price))}.00
-                                </p>
-                                <i
-                                  class="bi bi-cart p-1"
-                                  style={{
-                                    fontSize: "20px",
-                                    cursor: "pointer"
-                                  }}
-                                ></i>
-                              </div>
-                            </Link>
-                            <div class="d-grid gap-2" key={product.id}>
-                              <div
-                                class="btn btn-outline"
-                                style={{ backgroundColor: "#a9abae" }}
-                                onClick={() => addItem(product)}
-                              >
-                                <h6 className="text-danger">ADD TO CART</h6>
-                              </div>
+                <div className="col-md-4 pt-3">
+                  <input
+                    className="form-control"
+                    type="search"
+                    onChange={Filter}
+                    placeholder="Search"
+                    aria-label="Search"
+                  />
+                </div>
+              </div>
+
+              {/* Display products or no results message */}
+
+              <div className="row g-1 progress-circle">
+                {isLoading ? (
+                  currentPosts.length > 0 ? (
+                    currentPosts.map((product) => (
+                      <div class="col-lg-3 mb-4" key={product.id}>
+                        <div class="mx-1 shadow-lg p-3 bg-body rounded showbutton">
+                          <Link
+                            className="text-decoration-none text-dark"
+                            to={`/product/${product._id}/${product.name
+                              .split(` `)
+                              .join(`-`)
+                              .toLowerCase()}`}
+                          >
+                            <div className="text-center take">
+                              <LazyLoadImage
+                                src={product.images[0]?.url}
+                                placeholderSrc="https://res.cloudinary.com/elonatech/image/upload/v1710241889/loaderImage/blurred_o4delz.avif"
+                                className="lazyload"
+                                width="130"
+                                height="130"
+                                alt=""
+                              />
                             </div>
-                          </div>
-                        </div>
-                      );
-                    })
-                  ) : (
-                    <div className="container">
-                      <div className="row">
-                        <div className="col-md-12">
-                          <div className="d-flex justify-content-center">
-                            <div className="my-5 py-5">
-                              <Loading />
+                            <h5 class="fw-normal pt-3">
+                              {product.name.slice(0, 23)}...
+                            </h5>
+                            <p className="lead fs-6">{product.category}</p>
+                            <div class="stars" style={{ color: "black" }}>
+                              <i
+                                class="bi bi-star-fill"
+                                style={{ color: "#f4be1d" }}
+                              ></i>
+                              <i
+                                class="bi bi-star-fill"
+                                style={{ color: "#f4be1d" }}
+                              ></i>
+                              <i
+                                class="bi bi-star-fill"
+                                style={{ color: "#f4be1d" }}
+                              ></i>
+                              <i
+                                class="bi bi-star-fill"
+                                style={{ color: "#f4be1d" }}
+                              ></i>
+                              <i
+                                class="bi bi-star-fill"
+                                style={{ color: "#f4be1d" }}
+                              ></i>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                              <p className="mt-2 px-1 text-danger">
+                                ₦ {formatPrice(Number(product.price))}.00
+                              </p>
+                              <i
+                                class="bi bi-cart p-1"
+                                style={{
+                                  fontSize: "20px",
+                                  cursor: "pointer"
+                                }}
+                              ></i>
+                            </div>
+                          </Link>
+                          <div class="d-grid gap-2" key={product.id}>
+                            <div
+                              class="btn btn-outline"
+                              style={{ backgroundColor: "#a9abae" }}
+                              onClick={() => addItem(product)}
+                            >
+                              <h6 className="text-danger">ADD TO CART</h6>
                             </div>
                           </div>
                         </div>
                       </div>
+                    ))
+                  ) : (
+                    <div className="text-center my-5">
+                      <h4>{noResultsMessage}</h4>
                     </div>
-                  )}
-                  {/*============================================== Pagination ================================================*/}
-                  <div className="mt-5">
-                    <ComputerPagination
-                      totalPosts={records.length}
-                      itemsPerPage={itemsPerPage}
-                      maxPageNumberLimit={maxPageNumberLimit}
-                      minPageNumberLimit={minPageNumberLimit}
-                      currentPage={currentPage}
-                      handleNextbtn={handleNextbtn}
-                      handlePrevbtn={handlePrevbtn}
-                      paginate={paginate}
-                    />
+                  )
+                ) : (
+                  <div className="container">
+                    <div className="row">
+                      <div className="col-md-12">
+                        <div className="d-flex justify-content-center">
+                          <div className="my-5 py-5">
+                            <Loading />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
+                )}
+
+                {/*============================================== Pagination ================================================*/}
+                <div className="mt-5">
+                  <ComputerPagination
+                    totalPosts={records.length}
+                    itemsPerPage={itemsPerPage}
+                    maxPageNumberLimit={maxPageNumberLimit}
+                    minPageNumberLimit={minPageNumberLimit}
+                    currentPage={currentPage}
+                    handleNextbtn={handleNextbtn}
+                    handlePrevbtn={handlePrevbtn}
+                    paginate={paginate}
+                  />
                 </div>
               </div>
             </section>
@@ -376,11 +370,11 @@ const ComputerPages = () => {
                   </li>
                 </ul>
               </div>
-              
+
               <div className="filter-section p-2 bg-white rounded shadow-sm">
-                <h4 className="mb-3">Filtered Computers</h4>
+                <h4 className="mb-3">Sort computers by</h4>
                 <ComputerFilter setFilteredProducts={setFilteredProducts} />
-                </div>
+              </div>
             </div>
           </div>
         </div>

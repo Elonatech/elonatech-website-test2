@@ -15,9 +15,7 @@ const ComputerFilter = ({ setFilteredProducts }) => {
   const [noResultsMessage, setNoResultsMessage] = useState(""); // State to handle no results message
 
   useEffect(() => {
-    fetch(
-      `${BASEURL}/api/v1/product/filter?category=Computer`
-    )
+    fetch(`${BASEURL}/api/v1/product/filter?category=Computer`)
       .then((response) => response.json())
       .then((data) => {
         console.log("Received Min Price:", data.minPrice);
@@ -33,22 +31,22 @@ const ComputerFilter = ({ setFilteredProducts }) => {
       })
       .catch((error) => console.error("Error fetching initial data:", error));
 
-       const handlePriceInputChange = (event) => {
-         const { name, value } = event.target;
-         const newPrice = parseFloat(value) || 0;
-         setFilters((prevFilters) => {
-           const updatedPrice = [...prevFilters.price];
-           if (name === "minPrice") {
-             updatedPrice[0] = newPrice;
-           } else if (name === "maxPrice") {
-             updatedPrice[1] = newPrice;
-           }
-           return {
-             ...prevFilters,
-             price: updatedPrice
-           };
-         });
-       };
+    const handlePriceInputChange = (event) => {
+      const { name, value } = event.target;
+      const newPrice = parseFloat(value) || 0;
+      setFilters((prevFilters) => {
+        const updatedPrice = [...prevFilters.price];
+        if (name === "minPrice") {
+          updatedPrice[0] = newPrice;
+        } else if (name === "maxPrice") {
+          updatedPrice[1] = newPrice;
+        }
+        return {
+          ...prevFilters,
+          price: updatedPrice
+        };
+      });
+    };
   }, [setFilteredProducts]);
 
   const handleCheckboxChange = (event) => {
@@ -107,9 +105,7 @@ const ComputerFilter = ({ setFilteredProducts }) => {
     const queryString = queryParams.length > 0 ? queryParams.join("&") : "";
 
     // Fetch the products using the combined filter criteria
-    fetch(
-      `${BASEURL}/api/v1/product/filter?category=Computer&${queryString}`
-    )
+    fetch(`${BASEURL}/api/v1/product/filter?category=Computer&${queryString}`)
       .then((response) => response.json())
       .then((data) => {
         if (data.data.length === 0) {
@@ -130,18 +126,18 @@ const ComputerFilter = ({ setFilteredProducts }) => {
   const formatPrice = (price) => {
     return price.toLocaleString(); // Adds commas to the number
   };
-   const handleInputPriceChange = (event, index) => {
-     const value = event.target.value.replace(/[^0-9]/g, ""); // Remove non-numeric characters
-     const newPrice = [...filters.price];
-     newPrice[index] = parseFloat(value) || 0;
-     setFilters((prevFilters) => ({
-       ...prevFilters,
-       price: newPrice
-     }));
-   };
-   const formatPrice2 = (price) => {
-     return new Intl.NumberFormat().format(price); // Formats price with commas
-   };
+  const handleInputPriceChange = (event, index) => {
+    const value = event.target.value.replace(/[^0-9]/g, ""); // Remove non-numeric characters
+    const newPrice = [...filters.price];
+    newPrice[index] = parseFloat(value) || 0;
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      price: newPrice
+    }));
+  };
+  const formatPrice2 = (price) => {
+    return new Intl.NumberFormat().format(price); // Formats price with commas
+  };
 
   return (
     <div>

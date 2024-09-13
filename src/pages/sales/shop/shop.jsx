@@ -28,6 +28,7 @@ const Shop = () => {
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [activeItem, setActiveItem] = useState("Item 1");
   const [noResultsMessage, setNoResultsMessage] = useState(false);
+  const [isFiltering, setIsFiltering] = useState(false);
 
   const handleClick = (item) => {
     setActiveItem(item);
@@ -37,53 +38,63 @@ const Shop = () => {
     return price.toLocaleString(); // Adds commas to the number
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(
-          `${BASEURL}/api/v1/product/filter/all`
-        );
-        const products = response.data.data.reverse();
-        console.log(response.data.data);
-        setData(products);
-        setRecords(products); // Initially display all products
-        setIsLoading(true);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        setIsLoading(true);
-      }
-    };
-    fetchData();
-  }, []);
+ useEffect(() => {
+   const fetchData = async () => {
+     setIsLoading(true);
+     try {
+       const response = await axios.get(`${BASEURL}/api/v1/product/filter/all`);
+       const products = response.data.data.reverse();
 
-  useEffect(() => {
-    // If filteredProducts has any values, display them; otherwise, display all products
-    if (filteredProducts.length > 0) {
-      setRecords(filteredProducts);
-      setNoResultsMessage(false); // Hide the "No Results" message
-    } else if (filteredProducts.length === 0 && data.length > 0) {
-      setRecords([]);
-      setNoResultsMessage(true); // Show the "No Results" message
-    } else {
-      setRecords(data); // Display all products when no filters are applied
-    }
-  }, [filteredProducts, data]);
+       // Initially set all fetched products to both `data` and `records`
+       setData(products);
+       setRecords(products); // Show all products initially
+       setIsLoading(false); // Stop loading state
+     } catch (error) {
+       console.error("Error fetching data:", error);
+       setIsLoading(false);
+     }
+   };
+   fetchData();
+ }, []);
 
-  const Filter = (event) => {
-    const searchTerm = event.target.value.toLowerCase();
-    const filtered = data.filter((product) =>
-      product.name.toLowerCase().includes(searchTerm)
-    );
-    setFilteredProducts(filtered);
+ useEffect(() => {
+   if (filteredProducts.length > 0) {
+     setRecords(filteredProducts); // Show filtered products
+     setNoResultsMessage(false); // Don't show "No Results" message
+   } else if (filteredProducts.length === 0 && isFiltering) {
+     setRecords([]); // Empty records if no products match the filter
+     setNoResultsMessage(true); // Show the "No Results" message
+   } else {
+     // If not filtering or no search term, show all products
+     setRecords(data);
+     setNoResultsMessage(false);
+   }
+ }, [filteredProducts, isFiltering, data]);
 
-    // If no matches are found, show the "No Results" message
-    if (filtered.length === 0) {
-      setNoResultsMessage(true);
-    } else {
-      setNoResultsMessage(false);
-    }
-  };
+ const Filter = (event) => {
+   const searchTerm = event.target.value.toLowerCase();
 
+   if (searchTerm === "") {
+     // If the search input is cleared, show all products again
+     setFilteredProducts([]);
+     setIsFiltering(false); // No filter applied
+     setNoResultsMessage(false);
+   } else {
+     const filtered = data.filter((product) =>
+       product.name.toLowerCase().includes(searchTerm)
+     );
+
+     setFilteredProducts(filtered); // Set filtered products based on search term
+     setIsFiltering(true); // Filtering is now applied
+
+     // Trigger "No Results" message only if no matches are found
+     if (filtered.length === 0) {
+       setNoResultsMessage(true);
+     } else {
+       setNoResultsMessage(false);
+     }
+   }
+ };
   const paginate = (pages) => setCurrentPage(pages);
 
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -206,77 +217,72 @@ const Shop = () => {
 
                 {/* Product Display or No Results */}
                 <div className="row g-1 progress-circle">
-                  {isLoading ? (
-                    currentPosts.length > 0 ? (
-                      currentPosts.map((product) => {
-                        return (
-                          <div className="col-lg-3 mb-4" key={product.id}>
-                            <div className="mx-1 shadow-lg p-3 bg-body rounded showbutton">
-                              <Link
-                                className="text-decoration-none text-dark"
-                                to={`/product/${product._id}/${product.name
-                                  .split(" ")
-                                  .join("-")
-                                  .toLowerCase()}`}
-                              >
-                                <div className="text-center take">
-                                  <LazyLoadImage
-                                    src={product.images[0]?.url}
-                                    placeholderSrc="https://res.cloudinary.com/elonatech/image/upload/v1710241889/loaderImage/blurred_o4delz.avif"
-                                    className="lazyload"
-                                    width="130"
-                                    height="130"
-                                    alt=""
-                                  />
-                                </div>
-                                <h5 className="fw-normal pt-3">
-                                  {product.name.slice(0, 23)}...
-                                </h5>
-                                <p className="lead fs-6">{product.category}</p>
-                                <div
-                                  className="stars"
-                                  style={{ color: "black" }}
-                                >
-                                  <i
-                                    className="bi bi-star-fill"
-                                    style={{ color: "#f4be1d" }}
-                                  ></i>
-                                  <i
-                                    className="bi bi-star-fill"
-                                    style={{ color: "#f4be1d" }}
-                                  ></i>
-                                  <i
-                                    className="bi bi-star-fill"
-                                    style={{ color: "#f4be1d" }}
-                                  ></i>
-                                  <i
-                                    className="bi bi-star-fill"
-                                    style={{ color: "#f4be1d" }}
-                                  ></i>
-                                  <i
-                                    className="bi bi-star-half"
-                                    style={{ color: "#f4be1d" }}
-                                  ></i>
-                                </div>
-                                <p className="lead fs-6">
-                                  ₦ {formatPrice(product.price)}
-                                </p>
-                              </Link>
-                              <button
-                                className="btn btn-outline-secondary btn-md w-100 rounded"
-                                onClick={() => addItem(product)}
-                              >
-                                Add to cart
-                              </button>
-                            </div>
-                          </div>
-                        );
-                      })
-                    ) : (
-                      <h4>No products match your search criteria.</h4>
-                    )
-                  ) : (
+                  {isLoading ? ( // Show the loader when isLoading is true
                     <Loading />
+                  ) : currentPosts.length > 0 ? (
+                    currentPosts.map((product) => {
+                      return (
+                        <div className="col-lg-3 mb-4" key={product.id}>
+                          <div className="mx-1 shadow-lg p-3 bg-body rounded showbutton">
+                            <Link
+                              className="text-decoration-none text-dark"
+                              to={`/product/${product._id}/${product.name
+                                .split(" ")
+                                .join("-")
+                                .toLowerCase()}`}
+                            >
+                              <div className="text-center take">
+                                <LazyLoadImage
+                                  src={product.images[0]?.url}
+                                  placeholderSrc="https://res.cloudinary.com/elonatech/image/upload/v1710241889/loaderImage/blurred_o4delz.avif"
+                                  className="lazyload"
+                                  width="130"
+                                  height="130"
+                                  alt=""
+                                />
+                              </div>
+                              <h5 className="fw-normal pt-3">
+                                {product.name.slice(0, 23)}...
+                              </h5>
+                              <p className="lead fs-6">{product.category}</p>
+                              <div className="stars" style={{ color: "black" }}>
+                                <i
+                                  className="bi bi-star-fill"
+                                  style={{ color: "#f4be1d" }}
+                                ></i>
+                                <i
+                                  className="bi bi-star-fill"
+                                  style={{ color: "#f4be1d" }}
+                                ></i>
+                                <i
+                                  className="bi bi-star-fill"
+                                  style={{ color: "#f4be1d" }}
+                                ></i>
+                                <i
+                                  className="bi bi-star-fill"
+                                  style={{ color: "#f4be1d" }}
+                                ></i>
+                                <i
+                                  className="bi bi-star-half"
+                                  style={{ color: "#f4be1d" }}
+                                ></i>
+                              </div>
+                              <p className="lead fs-6">
+                                ₦ {formatPrice(product.price)}
+                              </p>
+                            </Link>
+                            <button
+                              className="btn btn-outline-secondary btn-md w-100 rounded"
+                              onClick={() => addItem(product)}
+                            >
+                              Add to cart
+                            </button>
+                          </div>
+                        </div>
+                      );
+                    })
+                  ) : (
+                    <h4>No products match your search criteria.</h4>
                   )}
                 </div>
                 {/*============================================== Pagination ================================================*/}
