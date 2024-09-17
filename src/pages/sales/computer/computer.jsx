@@ -1,8 +1,8 @@
 import "./computer.css";
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import ComputerPagination from "./computerPagination/computerPagination";
+import { Link, useSearchParams } from "react-router-dom";
 import { BASEURL } from "../../../BaseURL/BaseURL";
+import Pagination from "../../../components/pagination/Pagination";
 import Loading from "../../../components/Loading/Loading";
 import axios from "axios";
 import { LazyLoadImage } from "react-lazy-load-image-component";
@@ -22,7 +22,8 @@ const Computer = () => {
   const [minPageNumberLimit, setminPageNumberLimit] = useState(0);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [activeItem, setActiveItem] = useState("Item 2");
-  const [noResultsMessage, setNoResultsMessage] = useState(""); // State to handle no results message
+  const [noResultsMessage, setNoResultsMessage] = useState(false); // State to handle no results message
+    const [searchParams, setSearchParams] = useSearchParams();
 
   const handleClick = (item) => {
     setActiveItem(item);
@@ -49,7 +50,7 @@ const Computer = () => {
   }, []);
 
   useEffect(() => {
-    if (filteredProducts.length > 0) {
+    if (data.length > 0) {
       setRecords(filteredProducts);
       setNoResultsMessage(""); // Clear any previous message
     } else if (filteredProducts.length === 0 && data.length > 0) {
@@ -146,6 +147,15 @@ const Computer = () => {
               {/* Display products or no results message */}
 
               <div className="row g-1 progress-circle">
+                {/* {noResultsMessage && (
+                  <div className="no-results-message">
+                    <p>{noResultsMessage}</p>
+                    <p>
+                      Go back to the <a href="/computers">Computer page</a> to
+                      explore more amazing products.
+                    </p>
+                  </div>
+                )} */}
                 {isLoading ? (
                   currentPosts.length > 0 ? (
                     currentPosts.map((product) => (
@@ -168,60 +178,50 @@ const Computer = () => {
                                 alt=""
                               />
                             </div>
-                            <h5 class="fw-normal pt-3">
-                              {product.name.slice(0, 23)}...
-                            </h5>
-                            <p className="lead fs-6">{product.category}</p>
-                            <div class="stars" style={{ color: "black" }}>
-                              <i
-                                class="bi bi-star-fill"
-                                style={{ color: "#f4be1d" }}
-                              ></i>
-                              <i
-                                class="bi bi-star-fill"
-                                style={{ color: "#f4be1d" }}
-                              ></i>
-                              <i
-                                class="bi bi-star-fill"
-                                style={{ color: "#f4be1d" }}
-                              ></i>
-                              <i
-                                class="bi bi-star-fill"
-                                style={{ color: "#f4be1d" }}
-                              ></i>
-                              <i
-                                class="bi bi-star-fill"
-                                style={{ color: "#f4be1d" }}
-                              ></i>
-                            </div>
-                            <div class="d-flex justify-content-between">
-                              <p className="mt-2 px-1 text-danger">
-                                ₦ {formatPrice(Number(product.price))}.00
+                           <h5 className="fw-normal pt-3">
+                                {product.name.slice(0, 23)}...
+                              </h5>
+                              <p className="lead fs-6">{product.category}</p>
+                              <div className="stars" style={{ color: "black" }}>
+                                <i
+                                  className="bi bi-star-fill"
+                                  style={{ color: "#f4be1d" }}
+                                ></i>
+                                <i
+                                  className="bi bi-star-fill"
+                                  style={{ color: "#f4be1d" }}
+                                ></i>
+                                <i
+                                  className="bi bi-star-fill"
+                                  style={{ color: "#f4be1d" }}
+                                ></i>
+                                <i
+                                  className="bi bi-star-fill"
+                                  style={{ color: "#f4be1d" }}
+                                ></i>
+                                <i
+                                  className="bi bi-star-half"
+                                  style={{ color: "#f4be1d" }}
+                                ></i>
+                              </div>
+                              <p style={{color:"red"}} className="lead fs-6">
+                                ₦ {formatPrice(product.price)}
                               </p>
-                              <i
-                                class="bi bi-cart p-1"
-                                style={{
-                                  fontSize: "20px",
-                                  cursor: "pointer"
-                                }}
-                              ></i>
-                            </div>
-                          </Link>
-                          <div class="d-grid gap-2" key={product.id}>
-                            <div
-                              class="btn btn-outline"
-                              style={{ backgroundColor: "#a9abae" }}
+                            </Link>
+                            <button
+                             style={{color:"red"}}
+                              className="btn btn-outline-secondary btn-md w-100 rounded"
                               onClick={() => addItem(product)}
                             >
-                              <h6 className="text-danger">ADD TO CART</h6>
-                            </div>
+                              Add to cart
+                            </button>
                           </div>
                         </div>
-                      </div>
+                       
                     ))
                   ) : (
                     <div className="text-center my-5">
-                      <h4>{noResultsMessage}</h4>
+                      {/* <h4>{noResultsMessage}</h4> */}
                     </div>
                   )
                 ) : (
@@ -240,7 +240,7 @@ const Computer = () => {
 
                 {/*============================================== Pagination ================================================*/}
                 <div className="mt-5">
-                  <ComputerPagination
+                  <Pagination
                     totalPosts={records.length}
                     itemsPerPage={itemsPerPage}
                     maxPageNumberLimit={maxPageNumberLimit}
@@ -254,7 +254,7 @@ const Computer = () => {
               </div>
             </section>
           </div>
-          <div class="col-md-3 ">
+          <div style={{padding:"20px"}} class="col-md-3 ">
             <div
               class="position-sticky "
               style={{ top: "2rem", marginTop: "20px" }}
@@ -371,7 +371,7 @@ const Computer = () => {
                 </ul>
               </div>
 
-              <div className="filter-section p-2 bg-white rounded shadow-sm">
+              <div style={{ margin:"20px", width:"60%"}} className="filter-section p-2 rounded shadow-sm">
                 <h4 className="mb-3">Sort computers by</h4>
                 <ComputerFilter setFilteredProducts={setFilteredProducts} />
               </div>

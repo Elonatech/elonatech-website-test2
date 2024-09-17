@@ -3,15 +3,15 @@ import axios from "axios";
 import Slider from "react-slider"; // Import react-slider
 import { BASEURL } from "../../../BaseURL/BaseURL";
 
-const ShopFilter = ({ setFilteredProducts, filteredProducts }) => {
+const ShopFilter = ({ setFilteredProducts }) => {
   const [filters, setFilters] = useState({
     brand: [],
     price: [0, 1000000]
   });
 
   const [brands, setBrands] = useState([]);
-  const [defaultPriceRange, setDefaultPriceRange] = useState([0, 1000000]);
-  const [priceRange, setPriceRange] = useState([0, 1000000]);
+  const [defaultPriceRange, setDefaultPriceRange] = useState([0, 1000000000]);
+  const [priceRange, setPriceRange] = useState([0, 1000000000]);
 
   useEffect(() => {
     axios
@@ -20,6 +20,7 @@ const ShopFilter = ({ setFilteredProducts, filteredProducts }) => {
         if (response.data.success) {
           const { brands: fetchedBrands, minPrice, maxPrice } = response.data;
 
+          // Normalize and remove duplicate brands
           const normalizedBrands = fetchedBrands.map((brand) =>
             brand.trim().toLowerCase()
           );
@@ -40,28 +41,6 @@ const ShopFilter = ({ setFilteredProducts, filteredProducts }) => {
       });
   }, []);
 
- const handleInputChange = (e, index) => {
-   const rawValue = e.target.value.replace(/,/g, ""); // Remove commas
-
-   // If the input is empty, set the value to an empty string
-   if (rawValue === "") {
-     const updatedPriceRange = [...priceRange];
-     updatedPriceRange[index] = ""; // Or use null if you prefer
-     setPriceRange(updatedPriceRange);
-     return;
-   }
-
-   // Convert to number and handle invalid cases
-   const newValue = Number(rawValue);
-
-   // Only update if it's a valid number
-   if (!isNaN(newValue)) {
-     const updatedPriceRange = [...priceRange];
-     updatedPriceRange[index] = newValue;
-     setPriceRange(updatedPriceRange);
-   }
- };
-
   const handleBrandChange = async (brand) => {
     const updatedBrands = filters.brand.includes(brand)
       ? filters.brand.filter((b) => b !== brand)
@@ -75,44 +54,68 @@ const ShopFilter = ({ setFilteredProducts, filteredProducts }) => {
     setPriceRange(values);
   };
 
+  const handleInputChange = (e, index) => {
+    const rawValue = e.target.value.replace(/,/g, ""); // Remove commas
+
+    // If the input is empty, set the value to an empty string
+    if (rawValue === "") {
+      const updatedPriceRange = [...priceRange];
+      updatedPriceRange[index] = ""; // Or use null if you prefer
+      setPriceRange(updatedPriceRange);
+      return;
+    }
+
+    // Convert to number and handle invalid cases
+    const newValue = Number(rawValue);
+
+    // Only update if it's a valid number
+    if (!isNaN(newValue)) {
+      const updatedPriceRange = [...priceRange];
+      updatedPriceRange[index] = newValue;
+      setPriceRange(updatedPriceRange);
+    }
+  };
+
   const applyPriceFilter = async () => {
     setFilters((prevFilters) => ({ ...prevFilters, price: priceRange }));
     await applyFilters(filters.brand, priceRange);
   };
 
   const resetPriceRange = () => {
-    setPriceRange(defaultPriceRange); // Reset price range to the initial min/max values
+    setPriceRange(defaultPriceRange);
     setFilters((prevFilters) => ({ ...prevFilters, price: defaultPriceRange }));
   };
 
   const applyFilters = async (brands, price) => {
-    try {
-      const formattedBrands = brands.map((brand) => brand.trim()).join(",");
-      const response = await axios.get(
-        `${BASEURL}/api/v1/product/filter/all`,
-        {
-          params: {
-            brand: formattedBrands || undefined,
-            minPrice: price[0] || undefined,
-            maxPrice: price[1] || undefined
-          }
-        }
-      );
+  try {
+    const formattedBrands = brands.map((brand) => brand.trim()).join(",");
 
-      if (response.data.success) {
-        setFilteredProducts(response.data.data);
-      }
-    } catch (error) {
-      console.error("Error filtering products:", error);
+    const params = {
+      brand: formattedBrands || undefined,
+    };
+
+    // If the user has specified a price range, add it to the query
+    if (price[0] !== defaultPriceRange[0] || price[1] !== defaultPriceRange[1]) {
+      params.minPrice = price[0];
+      params.maxPrice = price[1];
     }
+
+    const response = await axios.get(`${BASEURL}/api/v1/product/filter/all`, { params });
+
+    if (response.data.success) {
+      setFilteredProducts(response.data.data);
+    }
+  } catch (error) {
+    console.error("Error filtering products:", error);
+  }
+};
+
+
+  const formatPrice = (value) => {
+    return value === "" || value === 0
+      ? "0"
+      : new Intl.NumberFormat().format(value);
   };
-
- const formatPrice = (value) => {
-   return value === "" || value === 0
-     ? "0"
-     : new Intl.NumberFormat().format(value);
- };
-
 
   return (
     <div className="">
@@ -161,18 +164,27 @@ const ShopFilter = ({ setFilteredProducts, filteredProducts }) => {
           </div>
           <div>
             <input
-  style={{ width: "100%", borderRadius: "5px" }}
-  type="text"
-  value={priceRange[1] === "" ? "" : formatPrice(priceRange[1])} // Handle zero or empty value
-  onChange={(e) => handleInputChange(e, 1)}
-/>
+              style={{ width: "100%", borderRadius: "5px" }}
+              type="text"
+              value={priceRange[1] === "" ? "" : formatPrice(priceRange[1])} // Handle zero or empty value
+              onChange={(e) => handleInputChange(e, 1)}
+            />
           </div>
         </div>
-
-        <button onClick={applyPriceFilter} className="apply-btn">
+      </div>
+      <div>
+        <button
+          style={{ width: "100%" }}
+          onClick={applyPriceFilter}
+          className="apply-btn"
+        >
           Apply Price Range
         </button>
-        <button onClick={resetPriceRange} className="reset-btn">
+        <button
+          style={{ width: "100%" }}
+          onClick={resetPriceRange}
+          className="reset-btn"
+        >
           Reset Price Range
         </button>
       </div>

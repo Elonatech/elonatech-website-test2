@@ -46,7 +46,7 @@ const ShopPages = () => {
           `${BASEURL}/api/v1/product/filter/all`
         );
         const products = response.data.data.reverse();
-
+        console.log(products);
         // Initially set all fetched products to both `data` and `records`
         setData(products);
         setRecords(products); // Show all products initially
@@ -63,6 +63,7 @@ const ShopPages = () => {
     if (filteredProducts.length > 0) {
       setRecords(filteredProducts); // Show filtered products
       setNoResultsMessage(false); // Don't show "No Results" message
+      console.log(filteredProducts);
     } else if (filteredProducts.length === 0 && isFiltering) {
       setRecords([]); // Empty records if no products match the filter
       setNoResultsMessage(true); // Show the "No Results" message
@@ -269,11 +270,12 @@ const ShopPages = () => {
                                   style={{ color: "#f4be1d" }}
                                 ></i>
                               </div>
-                              <p className="lead fs-6">
+                              <p style={{ color: "red" }} className="lead fs-6">
                                 ₦ {formatPrice(product.price)}
                               </p>
                             </Link>
                             <button
+                              style={{ color: "red" }}
                               className="btn btn-outline-secondary btn-md w-100 rounded"
                               onClick={() => addItem(product)}
                             >

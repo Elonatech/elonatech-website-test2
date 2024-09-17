@@ -12,7 +12,9 @@ const ComputerFilter = ({ setFilteredProducts }) => {
   });
 
   const [priceRange, setPriceRange] = useState([0, 1000000]); // Dynamic price range state
-  const [noResultsMessage, setNoResultsMessage] = useState(""); // State to handle no results message
+  const [noResultsMessage, setNoResultsMessage] = useState(""); 
+  const [defaultPriceRange, setDefaultPriceRange] = useState([0, 1000000000]);
+// State to handle no results message
 
   useEffect(() => {
     fetch(`${BASEURL}/api/v1/product/filter?category=Computer`)
@@ -61,12 +63,21 @@ const ComputerFilter = ({ setFilteredProducts }) => {
     });
   };
 
+   const resetPriceRange = () => {
+     setPriceRange(defaultPriceRange);
+     setFilters((prevFilters) => ({
+       ...prevFilters,
+       price: defaultPriceRange
+     }));
+   };
+
   const handlePriceChange = (value) => {
     setFilters((prevFilters) => ({
       ...prevFilters,
       price: value
     }));
   };
+
 
   const handleApplyClick = () => {
     applyFilters(filters); // Apply filters including price when "Apply" is clicked
@@ -361,6 +372,48 @@ const ComputerFilter = ({ setFilteredProducts }) => {
             />
           </div>
         </div>
+        <button onClick={handleApplyClick} className="apply-btn">
+          Apply Price Range
+        </button>
+        <button onClick={resetPriceRange} className="reset-btn">
+          Reset Price Range
+        </button>
+        <style jsx>{`
+          .shop-filter {
+            margin-bottom: 1rem;
+          }
+          .price-filter {
+            margin-top: 1rem;
+          }
+          .slider {
+            margin: 10px 0;
+          }
+          .price-range-values {
+            display: flex;
+            justify-content: space-between;
+          }
+          .apply-btn,
+          .reset-btn {
+            margin: 5px;
+            padding: 5px 10px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+          }
+          .apply-btn {
+            background-color: rgb(52, 84, 140);
+            color: white;
+          }
+          .reset-btn {
+            background-color: rgb(220, 53, 69);
+            color: white;
+          }
+          .no-products-message {
+            color: red;
+            font-size: 18px;
+            margin-top: 20px;
+          }
+        `}</style>
       </form>
     </div>
   );

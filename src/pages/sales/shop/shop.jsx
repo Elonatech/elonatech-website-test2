@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link,useSearchParams } from "react-router-dom";
 import ShopPagination from "./shopPagination/shopPagination";
+import Pagination from "../../../components/pagination/Pagination";
 import "./shop.css";
 import { BASEURL } from "../../../BaseURL/BaseURL";
 import Loading from "../../../components/Loading/Loading";
@@ -29,6 +30,7 @@ const Shop = () => {
   const [activeItem, setActiveItem] = useState("Item 1");
   const [noResultsMessage, setNoResultsMessage] = useState(false);
   const [isFiltering, setIsFiltering] = useState(false);
+    const [searchParams, setSearchParams] = useSearchParams();
 
   const handleClick = (item) => {
     setActiveItem(item);
@@ -44,7 +46,7 @@ const Shop = () => {
      try {
        const response = await axios.get(`${BASEURL}/api/v1/product/filter/all`);
        const products = response.data.data.reverse();
-
+        console.log(products)
        // Initially set all fetched products to both `data` and `records`
        setData(products);
        setRecords(products); // Show all products initially
@@ -61,6 +63,7 @@ const Shop = () => {
    if (filteredProducts.length > 0) {
      setRecords(filteredProducts); // Show filtered products
      setNoResultsMessage(false); // Don't show "No Results" message
+     console.log(filteredProducts)
    } else if (filteredProducts.length === 0 && isFiltering) {
      setRecords([]); // Empty records if no products match the filter
      setNoResultsMessage(true); // Show the "No Results" message
@@ -95,25 +98,32 @@ const Shop = () => {
      }
    }
  };
-  const paginate = (pages) => setCurrentPage(pages);
+  const paginate = (pageNumber) => {
+    setCurrentPage(pageNumber);
+    setSearchParams({ page: pageNumber.toString() });
+  };
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentPosts = records.slice(indexOfFirstItem, indexOfLastItem);
 
   const handleNextbtn = () => {
-    setCurrentPage(currentPage + 1);
+    const nextPage = currentPage + 1;
+    setCurrentPage(nextPage);
+    setSearchParams({ page: nextPage.toString() });
 
-    if (currentPage + 1 > maxPageNumberLimit) {
+    if (nextPage > maxPageNumberLimit) {
       setmaxPageNumberLimit(maxPageNumberLimit + pageNumberLimit);
       setminPageNumberLimit(minPageNumberLimit + pageNumberLimit);
     }
   };
 
   const handlePrevbtn = () => {
-    setCurrentPage(currentPage - 1);
+    const prevPage = currentPage - 1;
+    setCurrentPage(prevPage);
+    setSearchParams({ page: prevPage.toString() });
 
-    if ((currentPage - 1) % pageNumberLimit === 0) {
+    if ((prevPage - 1) % pageNumberLimit == 0) {
       setmaxPageNumberLimit(maxPageNumberLimit - pageNumberLimit);
       setminPageNumberLimit(minPageNumberLimit - pageNumberLimit);
     }
@@ -267,11 +277,12 @@ const Shop = () => {
                                   style={{ color: "#f4be1d" }}
                                 ></i>
                               </div>
-                              <p className="lead fs-6">
+                              <p style={{ color: "red" }} className="lead fs-6">
                                 ₦ {formatPrice(product.price)}
                               </p>
                             </Link>
                             <button
+                              style={{ color: "red" }}
                               className="btn btn-outline-secondary btn-md w-100 rounded"
                               onClick={() => addItem(product)}
                             >
@@ -287,7 +298,7 @@ const Shop = () => {
                 </div>
                 {/*============================================== Pagination ================================================*/}
                 <div className="mt-5">
-                  <ShopPagination
+                  <Pagination
                     totalPosts={records.length}
                     itemsPerPage={itemsPerPage}
                     maxPageNumberLimit={maxPageNumberLimit}
@@ -419,7 +430,10 @@ const Shop = () => {
               </ul>
             </div>
             {/* <h1>filters</h1> */}
-            <div className="filter-section p-2 bg-white rounded shadow-sm">
+            <div
+              style={{ margin: "20px", width: "60%" }}
+              className="filter-section p-2 rounded shadow-sm"
+            >
               <h4
                 style={{ marginTop: "-8px", marginBottom: "16px" }}
                 class="fw-bold "
