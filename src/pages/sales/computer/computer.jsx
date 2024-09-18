@@ -22,10 +22,11 @@ const Computer = () => {
   const [maxPageNumberLimit, setmaxPageNumberLimit] = useState(4);
   const [minPageNumberLimit, setminPageNumberLimit] = useState(0);
   const [filteredProducts, setFilteredProducts] = useState([]);
+  const [filter, setFilter] = useState(null); // No filter applied on initial render
+
   const [activeItem, setActiveItem] = useState("Item 2");
   const [noResultsMessage, setNoResultsMessage] = useState(false); // State to handle no results message
   const [searchParams, setSearchParams] = useSearchParams();
-
 
   const handleClick = (item) => {
     setActiveItem(item);
@@ -53,11 +54,13 @@ const Computer = () => {
 
   useEffect(() => {
     if (data.length > 0) {
-      setRecords(filteredProducts);
-      setNoResultsMessage(""); // Clear any previous message
-    } else if (filteredProducts.length === 0 && data.length > 0) {
-      setRecords([]); // Clear the products
-      setNoResultsMessage("No products found with the current filters."); // Display message
+      if (filteredProducts.length > 0) {
+        setRecords(filteredProducts);
+        setNoResultsMessage(""); // Clear any previous message
+      } else {
+        setRecords([]); // Clear the products
+        setNoResultsMessage("No products found with the current filters."); // Display message
+      }
     }
   }, [filteredProducts, data]);
 
@@ -69,14 +72,12 @@ const Computer = () => {
   };
 
   const paginate = (pages) => setCurrentPage(pages);
-  
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentPosts = records.slice(indexOfFirstItem, indexOfLastItem);
   const displayedProducts =
-      currentPosts.length > 0 ? currentPosts : records.slice(0, itemsPerPage);
-
+    currentPosts.length > 0 ? currentPosts : records.slice(0, itemsPerPage);
 
   const { addItem } = useCart();
 
@@ -217,7 +218,12 @@ const Computer = () => {
                     ))
                   ) : (
                     <div className="text-center my-5">
-                      {/* <h4>{noResultsMessage}</h4> */}
+                      {filteredProducts.length === 0 && isLoading && (
+                        <h4>
+                          {noResultsMessage ||
+                            "No products found matching your filters."}
+                        </h4>
+                      )}
                     </div>
                   )
                 ) : (

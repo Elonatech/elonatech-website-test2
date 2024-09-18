@@ -10,11 +10,10 @@ const ComputerFilter = ({ setFilteredProducts }) => {
     drive: "",
     price: [0, 1000000] // Default static price range (can be changed dynamically)
   });
-     const [noResultsMessage, setNoResultsMessage] = useState(""); 
-     const [priceRange, setPriceRange] = useState([0, 1000000]); // For the UI input
-     const [defaultPriceRange, setDefaultPriceRange] = useState([0, 1000000]); // To store the fetched min and max price
-   
-
+  const [noResultsMessage, setNoResultsMessage] = useState("");
+  const [priceRange, setPriceRange] = useState([0, 1000000]); // For the UI input
+  const [defaultPriceRange, setDefaultPriceRange] = useState([0, 1000000]); // To store the fetched min and max price
+  const [filter, setFilter] = useState(null); // No filter applied on initial render
 
   useEffect(() => {
     // Fetch the min and max price from the database (or server)
@@ -39,24 +38,21 @@ const ComputerFilter = ({ setFilteredProducts }) => {
       .catch((error) => console.error("Error fetching initial data:", error));
   }, [setFilteredProducts]);
 
+  const resetPriceRange = () => {
+    // Reset to the dynamic minPrice and maxPrice from the database
+    setPriceRange(defaultPriceRange);
 
+    // Update the filters to reset the price filter to the fetched min and max values
+    const updatedFilters = {
+      ...filters,
+      price: defaultPriceRange // Use the fetched min and max price values
+    };
 
- const resetPriceRange = () => {
-   // Reset to the dynamic minPrice and maxPrice from the database
-   setPriceRange(defaultPriceRange);
+    setFilters(updatedFilters);
 
-   // Update the filters to reset the price filter to the fetched min and max values
-   const updatedFilters = {
-     ...filters,
-     price: defaultPriceRange // Use the fetched min and max price values
-   };
-
-   setFilters(updatedFilters);
-
-   // Apply the filters to fetch and display the products
-   applyFilters(updatedFilters);
- };
-
+    // Apply the filters to fetch and display the products
+    applyFilters(updatedFilters);
+  };
 
   const handleCheckboxChange = (event) => {
     const { name, value, checked } = event.target;
@@ -76,7 +72,6 @@ const ComputerFilter = ({ setFilteredProducts }) => {
       price: value
     }));
   };
- 
 
   const handleApplyClick = () => {
     applyFilters(filters); // Apply filters including price when "Apply" is clicked
@@ -122,7 +117,6 @@ const ComputerFilter = ({ setFilteredProducts }) => {
       })
       .catch((error) => console.error("Error:", error));
   };
-
 
   // Helper function to format numbers with commas for display
   const formatPrice = (price) => {

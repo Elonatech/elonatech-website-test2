@@ -28,7 +28,7 @@ const Error = () => {
         style={{
           minHeight: "500px",
           marginBottom: "50px",
-          backgroundImage: `linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(https://res.cloudinary.com/elonatech/image/upload/v1709812685/techSupportPage/tech_support_header_m69n74.jpg)`,
+          backgroundImage: `linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(https://res.cloudinary.com/elonatech/image/upload/v1726670937/404_page_1_rcbizm.png)`,
           backgroundRepeat: "no-repeat",
           backgroundSize: "cover"
         }}
@@ -71,13 +71,13 @@ const Error = () => {
               GO
             </button>
             <div className="d-flex justify-content-center gap-2">
-              
-                <Link to={-1} class="btn btn-danger py-2 px-5">
-              Previous Page
-                </Link>
-         
-              
-               <Link to={"/"} class="btn btn-danger  py-2 px-5">Go Home</Link>
+              <Link to={-1} class="btn btn-danger py-2 px-5">
+                Previous Page
+              </Link>
+
+              <Link to={"/"} class="btn btn-danger  py-2 px-5">
+                Go Home
+              </Link>
             </div>
           </div>
         </div>
