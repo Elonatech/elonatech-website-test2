@@ -216,9 +216,9 @@ const Printers = () => {
                               <div class="d-flex justify-content-between">
                                 <p className="mt-2 px-1 text-danger">
                                   ₦{" "}
-                                  {parseInt(
-                                    product.price.split(",").join("")
-                                  ).toLocaleString()}
+                                  {
+                                    product.price
+                                  }
                                   .00
                                 </p>
                                 <i

@@ -8,48 +8,55 @@ const ComputerFilter = ({ setFilteredProducts }) => {
     ram: "",
     brand: "",
     drive: "",
-    price: [0, 1000000] // Default price range
+    price: [0, 1000000] // Default static price range (can be changed dynamically)
   });
+     const [noResultsMessage, setNoResultsMessage] = useState(""); 
+     const [priceRange, setPriceRange] = useState([0, 1000000]); // For the UI input
+     const [defaultPriceRange, setDefaultPriceRange] = useState([0, 1000000]); // To store the fetched min and max price
+   
 
-  const [priceRange, setPriceRange] = useState([0, 1000000]); // Dynamic price range state
-  const [noResultsMessage, setNoResultsMessage] = useState(""); 
-  const [defaultPriceRange, setDefaultPriceRange] = useState([0, 1000000000]);
-// State to handle no results message
 
   useEffect(() => {
+    // Fetch the min and max price from the database (or server)
     fetch(`${BASEURL}/api/v1/product/filter?category=Computer`)
       .then((response) => response.json())
       .then((data) => {
-        console.log("Received Min Price:", data.minPrice);
-        console.log("Received Max Price:", data.maxPrice);
         if (data.minPrice !== undefined && data.maxPrice !== undefined) {
-          setPriceRange([data.minPrice, data.maxPrice]);
+          const fetchedMinPrice = data.minPrice;
+          const fetchedMaxPrice = data.maxPrice;
+
+          // Update the default price range to what is fetched from the API
+          setDefaultPriceRange([fetchedMinPrice, fetchedMaxPrice]);
+          setPriceRange([fetchedMinPrice, fetchedMaxPrice]); // Set initial price range
           setFilters((prevFilters) => ({
             ...prevFilters,
-            price: [data.minPrice, data.maxPrice]
+            price: [fetchedMinPrice, fetchedMaxPrice] // Set filter price range initially
           }));
         }
-        setFilteredProducts(data.data);
+
+        setFilteredProducts(data.data); // Populate products
       })
       .catch((error) => console.error("Error fetching initial data:", error));
-
-    const handlePriceInputChange = (event) => {
-      const { name, value } = event.target;
-      const newPrice = parseFloat(value) || 0;
-      setFilters((prevFilters) => {
-        const updatedPrice = [...prevFilters.price];
-        if (name === "minPrice") {
-          updatedPrice[0] = newPrice;
-        } else if (name === "maxPrice") {
-          updatedPrice[1] = newPrice;
-        }
-        return {
-          ...prevFilters,
-          price: updatedPrice
-        };
-      });
-    };
   }, [setFilteredProducts]);
+
+
+
+ const resetPriceRange = () => {
+   // Reset to the dynamic minPrice and maxPrice from the database
+   setPriceRange(defaultPriceRange);
+
+   // Update the filters to reset the price filter to the fetched min and max values
+   const updatedFilters = {
+     ...filters,
+     price: defaultPriceRange // Use the fetched min and max price values
+   };
+
+   setFilters(updatedFilters);
+
+   // Apply the filters to fetch and display the products
+   applyFilters(updatedFilters);
+ };
+
 
   const handleCheckboxChange = (event) => {
     const { name, value, checked } = event.target;
@@ -63,21 +70,13 @@ const ComputerFilter = ({ setFilteredProducts }) => {
     });
   };
 
-   const resetPriceRange = () => {
-     setPriceRange(defaultPriceRange);
-     setFilters((prevFilters) => ({
-       ...prevFilters,
-       price: defaultPriceRange
-     }));
-   };
-
   const handlePriceChange = (value) => {
     setFilters((prevFilters) => ({
       ...prevFilters,
       price: value
     }));
   };
-
+ 
 
   const handleApplyClick = () => {
     applyFilters(filters); // Apply filters including price when "Apply" is clicked
@@ -119,19 +118,11 @@ const ComputerFilter = ({ setFilteredProducts }) => {
     fetch(`${BASEURL}/api/v1/product/filter?category=Computer&${queryString}`)
       .then((response) => response.json())
       .then((data) => {
-        if (data.data.length === 0) {
-          // Set no results message if no products found
-          setNoResultsMessage(
-            data.message || "Sorry, no product found with this criteria."
-          );
-        } else {
-          // Clear the no results message if products are found
-          setNoResultsMessage("");
-        }
         setFilteredProducts(data.data);
       })
       .catch((error) => console.error("Error:", error));
   };
+
 
   // Helper function to format numbers with commas for display
   const formatPrice = (price) => {
@@ -198,6 +189,17 @@ const ComputerFilter = ({ setFilteredProducts }) => {
               className="form-check-input"
             />
             <label className="form-check-label">16GB</label>
+          </div>
+          <div className="form-check">
+            <input
+              type="checkbox"
+              name="ram"
+              value="32GB"
+              onChange={handleCheckboxChange}
+              checked={filters.ram === "32GB"}
+              className="form-check-input"
+            />
+            <label className="form-check-label">32GB</label>
           </div>
         </div>
 
@@ -292,6 +294,28 @@ const ComputerFilter = ({ setFilteredProducts }) => {
             <input
               type="checkbox"
               name="drive"
+              value="256GB"
+              onChange={handleCheckboxChange}
+              checked={filters.drive === "256GB"}
+              className="form-check-input"
+            />
+            <label className="form-check-label">256GB</label>
+          </div>
+          <div className="form-check">
+            <input
+              type="checkbox"
+              name="drive"
+              value="500GB"
+              onChange={handleCheckboxChange}
+              checked={filters.drive === "500GB"}
+              className="form-check-input"
+            />
+            <label className="form-check-label">500GB</label>
+          </div>
+          <div className="form-check">
+            <input
+              type="checkbox"
+              name="drive"
               value="512GB"
               onChange={handleCheckboxChange}
               checked={filters.drive === "512GB"}
@@ -372,12 +396,20 @@ const ComputerFilter = ({ setFilteredProducts }) => {
             />
           </div>
         </div>
-        <button onClick={handleApplyClick} className="apply-btn">
+        {/* <button
+          type="button"
+          className="apply-btn"
+          onClick={handleApplyClick}
+        >
+          APPLY
+        </button> */}
+        <button type="button" onClick={handleApplyClick} className="apply-btn">
           Apply Price Range
         </button>
-        <button onClick={resetPriceRange} className="reset-btn">
+        <button type="button" onClick={resetPriceRange} className="reset-btn">
           Reset Price Range
         </button>
+
         <style jsx>{`
           .shop-filter {
             margin-bottom: 1rem;

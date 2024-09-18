@@ -16,6 +16,7 @@ const Computer = () => {
   const [records, setRecords] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const [itemsPerPage] = useState(12);
   const [pageNumberLimit, setpageNumberLimit] = useState(4);
   const [maxPageNumberLimit, setmaxPageNumberLimit] = useState(4);
@@ -23,7 +24,8 @@ const Computer = () => {
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [activeItem, setActiveItem] = useState("Item 2");
   const [noResultsMessage, setNoResultsMessage] = useState(false); // State to handle no results message
-    const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
+
 
   const handleClick = (item) => {
     setActiveItem(item);
@@ -67,10 +69,14 @@ const Computer = () => {
   };
 
   const paginate = (pages) => setCurrentPage(pages);
+  
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentPosts = records.slice(indexOfFirstItem, indexOfLastItem);
+  const displayedProducts =
+      currentPosts.length > 0 ? currentPosts : records.slice(0, itemsPerPage);
+
 
   const { addItem } = useCart();
 
@@ -147,20 +153,11 @@ const Computer = () => {
               {/* Display products or no results message */}
 
               <div className="row g-1 progress-circle">
-                {/* {noResultsMessage && (
-                  <div className="no-results-message">
-                    <p>{noResultsMessage}</p>
-                    <p>
-                      Go back to the <a href="/computers">Computer page</a> to
-                      explore more amazing products.
-                    </p>
-                  </div>
-                )} */}
                 {isLoading ? (
-                  currentPosts.length > 0 ? (
-                    currentPosts.map((product) => (
-                      <div class="col-lg-3 mb-4" key={product.id}>
-                        <div class="mx-1 shadow-lg p-3 bg-body rounded showbutton">
+                  displayedProducts.length > 0 ? (
+                    displayedProducts.map((product) => (
+                      <div className="col-lg-3 mb-4" key={product.id}>
+                        <div className="mx-1 shadow-lg p-3 bg-body rounded showbutton">
                           <Link
                             className="text-decoration-none text-dark"
                             to={`/product/${product._id}/${product.name
@@ -178,46 +175,45 @@ const Computer = () => {
                                 alt=""
                               />
                             </div>
-                           <h5 className="fw-normal pt-3">
-                                {product.name.slice(0, 23)}...
-                              </h5>
-                              <p className="lead fs-6">{product.category}</p>
-                              <div className="stars" style={{ color: "black" }}>
-                                <i
-                                  className="bi bi-star-fill"
-                                  style={{ color: "#f4be1d" }}
-                                ></i>
-                                <i
-                                  className="bi bi-star-fill"
-                                  style={{ color: "#f4be1d" }}
-                                ></i>
-                                <i
-                                  className="bi bi-star-fill"
-                                  style={{ color: "#f4be1d" }}
-                                ></i>
-                                <i
-                                  className="bi bi-star-fill"
-                                  style={{ color: "#f4be1d" }}
-                                ></i>
-                                <i
-                                  className="bi bi-star-half"
-                                  style={{ color: "#f4be1d" }}
-                                ></i>
-                              </div>
-                              <p style={{color:"red"}} className="lead fs-6">
-                                ₦ {formatPrice(product.price)}
-                              </p>
-                            </Link>
-                            <button
-                             style={{color:"red"}}
-                              className="btn btn-outline-secondary btn-md w-100 rounded"
-                              onClick={() => addItem(product)}
-                            >
-                              Add to cart
-                            </button>
-                          </div>
+                            <h5 className="fw-normal pt-3">
+                              {product.name.slice(0, 23)}...
+                            </h5>
+                            <p className="lead fs-6">{product.category}</p>
+                            <div className="stars" style={{ color: "black" }}>
+                              <i
+                                className="bi bi-star-fill"
+                                style={{ color: "#f4be1d" }}
+                              ></i>
+                              <i
+                                className="bi bi-star-fill"
+                                style={{ color: "#f4be1d" }}
+                              ></i>
+                              <i
+                                className="bi bi-star-fill"
+                                style={{ color: "#f4be1d" }}
+                              ></i>
+                              <i
+                                className="bi bi-star-fill"
+                                style={{ color: "#f4be1d" }}
+                              ></i>
+                              <i
+                                className="bi bi-star-half"
+                                style={{ color: "#f4be1d" }}
+                              ></i>
+                            </div>
+                            <p style={{ color: "red" }} className="lead fs-6">
+                              ₦ {formatPrice(product.price)}
+                            </p>
+                          </Link>
+                          <button
+                            style={{ color: "red" }}
+                            className="btn btn-outline-secondary btn-md w-100 rounded"
+                            onClick={() => addItem(product)}
+                          >
+                            Add to cart
+                          </button>
                         </div>
-                       
+                      </div>
                     ))
                   ) : (
                     <div className="text-center my-5">
@@ -254,7 +250,7 @@ const Computer = () => {
               </div>
             </section>
           </div>
-          <div style={{padding:"20px"}} class="col-md-3 ">
+          <div style={{ padding: "20px" }} class="col-md-3 ">
             <div
               class="position-sticky "
               style={{ top: "2rem", marginTop: "20px" }}
@@ -371,7 +367,10 @@ const Computer = () => {
                 </ul>
               </div>
 
-              <div style={{ margin:"20px", width:"60%"}} className="filter-section p-2 rounded shadow-sm">
+              <div
+                style={{ margin: "20px", width: "60%" }}
+                className="filter-section p-2 rounded shadow-sm"
+              >
                 <h4 className="mb-3">Sort computers by</h4>
                 <ComputerFilter setFilteredProducts={setFilteredProducts} />
               </div>

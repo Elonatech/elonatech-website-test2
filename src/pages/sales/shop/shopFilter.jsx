@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Slider from "react-slider"; // Import react-slider
 import { BASEURL } from "../../../BaseURL/BaseURL";
+import { Link } from "react-router-dom";
 
 const ShopFilter = ({ setFilteredProducts }) => {
   const [filters, setFilters] = useState({
@@ -40,6 +41,17 @@ const ShopFilter = ({ setFilteredProducts }) => {
         console.error("Error fetching brands:", error);
       });
   }, []);
+
+  const resetBrands = async () => {
+    // Clear the selected brands
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      brand: []
+    }));
+
+    // Clear filtered products
+    setFilteredProducts([]);
+  };
 
   const handleBrandChange = async (brand) => {
     const updatedBrands = filters.brand.includes(brand)
@@ -84,7 +96,9 @@ const ShopFilter = ({ setFilteredProducts }) => {
   const resetPriceRange = () => {
     setPriceRange(defaultPriceRange);
     setFilters((prevFilters) => ({ ...prevFilters, price: defaultPriceRange }));
+     setFilteredProducts([]);
   };
+
 
   const applyFilters = async (brands, price) => {
   try {
@@ -123,20 +137,30 @@ const ShopFilter = ({ setFilteredProducts }) => {
       <div style={{ maxHeight: "200px", overflowY: "scroll" }}>
         {" "}
         {/* Adjusted height */}
-        {brands.map((brand) => (
-          <div key={brand} className="text-dark">
-            <input
-              type="checkbox"
-              id={brand}
-              name="brand"
-              value={brand}
-              checked={filters.brand.includes(brand)}
-              onChange={() => handleBrandChange(brand)}
-            />
-            <label htmlFor={brand}>{brand}</label>
-          </div>
-        ))}
+        {brands
+          .sort((a, b) => a.localeCompare(b)) // Sort brands alphabetically
+          .map((brand) => (
+            <div key={brand} className="text-dark">
+              <input
+                type="checkbox"
+                id={brand}
+                name="brand"
+                value={brand}
+                checked={filters.brand.includes(brand)}
+                onChange={() => handleBrandChange(brand)}
+              />
+              <label htmlFor={brand}>{brand}</label>
+            </div>
+          ))}
       </div>
+
+      <button
+        style={{ width: "100%" }}
+        onClick={resetBrands}
+        className="reset-btn"
+      >
+        Reset Brand
+      </button>
 
       {/* Filter by Price */}
       <div className="price-filter">

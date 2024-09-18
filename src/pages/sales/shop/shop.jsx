@@ -98,6 +98,8 @@ const Shop = () => {
      }
    }
  };
+
+ 
   const paginate = (pageNumber) => {
     setCurrentPage(pageNumber);
     setSearchParams({ page: pageNumber.toString() });
@@ -128,6 +130,9 @@ const Shop = () => {
       setminPageNumberLimit(minPageNumberLimit - pageNumberLimit);
     }
   };
+  const displayedProducts =
+    currentPosts.length > 0 ? currentPosts : records.slice(0, itemsPerPage);
+
 
   // Add to cart
   const { addItem } = useCart();
@@ -229,8 +234,8 @@ const Shop = () => {
                 <div className="row g-1 progress-circle">
                   {isLoading ? ( // Show the loader when isLoading is true
                     <Loading />
-                  ) : currentPosts.length > 0 ? (
-                    currentPosts.map((product) => {
+                  ) : displayedProducts.length > 0 ? (
+                    displayedProducts.map((product) => {
                       return (
                         <div className="col-lg-3 mb-4" key={product.id}>
                           <div className="mx-1 shadow-lg p-3 bg-body rounded showbutton">
@@ -431,7 +436,7 @@ const Shop = () => {
             </div>
             {/* <h1>filters</h1> */}
             <div
-              style={{ margin: "20px", width: "60%" }}
+              style={{ margin: "15px", width: "60%" }}
               className="filter-section p-2 rounded shadow-sm"
             >
               <h4

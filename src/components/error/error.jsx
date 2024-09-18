@@ -63,8 +63,8 @@ const Error = () => {
               <input
                 type="text"
                 className="form-control form-control-lg"
-                placeholder="Movie search..."
-                aria-label="Movie search"
+                placeholder="Search Products..."
+                aria-label="Product search"
               />
             </div>
             <button type="button" className="btn btn-danger btn-lg mb-4">

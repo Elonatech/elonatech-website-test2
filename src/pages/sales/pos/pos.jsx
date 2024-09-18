@@ -211,10 +211,7 @@ const Pos = () => {
                               <div class="d-flex justify-content-between">
                                 <p className="mt-2 px-1 text-danger">
                                   ₦{" "}
-                                  {parseInt(
-                                    product.price.split(",").join("")
-                                  ).toLocaleString()}
-                                  .00
+                                  { product.price}
                                 </p>
                                 <i
                                   class="bi bi-cart p-1"
