@@ -1,7 +1,5 @@
 import { useState, useEffect } from "react";
 import { Link,useSearchParams } from "react-router-dom";
-import ShopPagination from "./shopPagination/shopPagination";
-import Pagination from "../../../components/pagination/Pagination";
 import "./shop.css";
 import { BASEURL } from "../../../BaseURL/BaseURL";
 import Loading from "../../../components/Loading/Loading";
@@ -16,6 +14,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { Helmet } from "react-helmet-async";
 import "rc-slider/assets/index.css";
 import ShopFilter from "./shopFilter";
+import Pagination from "../../../components/pagination/Pagination";
 
 const Shop = () => {
   const [data, setData] = useState([]);
@@ -242,10 +241,12 @@ const Shop = () => {
                             <Link
                               className="text-decoration-none text-dark"
                               to={`/product/${product._id}/${product.name
-                                .split(" ")
-                                .join("-")
+                                .split(` `)
+                                .join(`-`)
                                 .toLowerCase()}`}
                             >
+
+                          
                               <div className="text-center take">
                                 <LazyLoadImage
                                   src={product.images[0]?.url}
@@ -256,38 +257,49 @@ const Shop = () => {
                                   alt=""
                                 />
                               </div>
-                              <h5 className="fw-normal pt-3">
+                              <h5 class="fw-normal pt-3">
                                 {product.name.slice(0, 23)}...
                               </h5>
                               <p className="lead fs-6">{product.category}</p>
-                              <div className="stars" style={{ color: "black" }}>
+                              <div class="stars" style={{ color: "black" }}>
                                 <i
-                                  className="bi bi-star-fill"
+                                  class="bi bi-star-fill"
                                   style={{ color: "#f4be1d" }}
                                 ></i>
                                 <i
-                                  className="bi bi-star-fill"
+                                  class="bi bi-star-fill"
                                   style={{ color: "#f4be1d" }}
                                 ></i>
                                 <i
-                                  className="bi bi-star-fill"
+                                  class="bi bi-star-fill"
                                   style={{ color: "#f4be1d" }}
                                 ></i>
                                 <i
-                                  className="bi bi-star-fill"
+                                  class="bi bi-star-fill"
                                   style={{ color: "#f4be1d" }}
                                 ></i>
                                 <i
-                                  className="bi bi-star-half"
+                                  class="bi bi-star-fill"
                                   style={{ color: "#f4be1d" }}
                                 ></i>
                               </div>
-                              <p style={{ color: "red" }} className="lead fs-6">
-                                ₦ {formatPrice(product.price)}
-                              </p>
+                              <div class="d-flex justify-content-between">
+                                <p
+                                  style={{ color: "red", fontWeight: "bold" }}
+                                  className="lead fs-6"
+                                >
+                                  ₦ {formatPrice(product.price)}
+                                </p>
+                                <i
+                                  class="bi bi-cart p-1"
+                                  style={{
+                                    cursor: "pointer"
+                                  }}
+                                ></i>
+                              </div>
                             </Link>
                             <button
-                              style={{ color: "red" }}
+                              style={{ color: "red", fontWeight: "bold" }}
                               className="btn btn-outline-secondary btn-md w-100 rounded"
                               onClick={() => addItem(product)}
                             >
@@ -443,7 +455,7 @@ const Shop = () => {
                 style={{ marginTop: "-8px", marginBottom: "16px" }}
                 class="fw-bold "
               >
-                Sort Computers by
+                Sort brands
               </h4>
               <ShopFilter setFilteredProducts={setFilteredProducts} />
             </div>

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import OfficePagination from "./officePagination/officePagination";
 import { BASEURL } from "../../../BaseURL/BaseURL";
 import Loading from "../../../components/Loading/Loading";
@@ -19,14 +19,17 @@ const Office = () => {
   const [pageNumberLimit, setpageNumberLimit] = useState(4);
   const [maxPageNumberLimit, setmaxPageNumberLimit] = useState(4);
   const [minPageNumberLimit, setminPageNumberLimit] = useState(0);
-  const [activeIndex, setActiveIndex] = useState(0);
-
+  const [filteredProducts, setFilteredProducts] = useState([]);
   const [activeItem, setActiveItem] = useState("Item 3");
+  const [noResultsMessage, setNoResultsMessage] = useState(false);
+  const [isFiltering, setIsFiltering] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
+
+ 
 
   const handleClick = (item) => {
     setActiveItem(item);
   };
-
 
   useEffect(() => {
     const fetchData = async () => {
@@ -379,6 +382,20 @@ const Office = () => {
                   </li>
                 </ul>
               </div>
+              {/* <h1>filters</h1> */}
+              <div
+                style={{ margin: "15px", width: "60%" }}
+                className="filter-section p-2 rounded shadow-sm"
+              >
+                <h4
+                  style={{ marginTop: "-8px", marginBottom: "16px" }}
+                  class="fw-bold "
+                >
+                  Sort brands
+                </h4>
+                <ShopFilter setFilteredProducts={setFilteredProducts} />
+              </div>
+              {/* end */}
             </div>
           </div>
         </div>

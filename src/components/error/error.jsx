@@ -1,3 +1,4 @@
+import Footer from "../footer/footer";
 import Navbar from "../navbar/navbar";
 import "./error.css";
 import { Helmet } from "react-helmet-async";
@@ -38,12 +39,19 @@ const Error = () => {
         </div>
       </div>
 
-      <div className="container d-flex justify-content-center align-items-center">
+      <div
+        style={{ minHeight: "500px", marginBottom: "50px" }}
+        className="container d-flex justify-content-center align-items-center"
+      >
         <div className="row text-center">
           <div className="col-md-6 d-flex flex-column justify-content-center align-items-center">
             <h1
               className="display-1 fw-bold"
-              style={{ fontSize: "10rem", fontWeight: "900" }}
+              style={{
+                fontSize: "10rem",
+                fontWeight: "900",
+                color:"rgb(17, 37, 61)"
+              }}
             >
               404
             </h1>
@@ -55,21 +63,24 @@ const Error = () => {
                 letterSpacing: "2px"
               }}
             >
-              Sorry, <span className="text-muted">the page not found</span>
+              Ooops.... <span className="text-muted"> page not found</span>
             </p>
           </div>
           <div className="col-md-6 d-flex flex-column justify-content-center">
-            <div className="mb-3">
-              <input
-                type="text"
-                className="form-control form-control-lg"
-                placeholder="Search Products..."
-                aria-label="Product search"
-              />
-            </div>
-            <button type="button" className="btn btn-danger btn-lg mb-4">
-              GO
-            </button>
+            <Link to={"/shop"}>
+              <button
+                style={{
+                  width: "100%",
+                  backgroundColor: "rgb(17, 37, 61)",
+                  color: "white"
+                }}
+                className="btn btn-lg mb-4"
+              >
+                {" "}
+                Search More of Our Products
+              </button>
+            </Link>
+
             <div className="d-flex justify-content-center gap-2">
               <Link to={-1} class="btn btn-danger py-2 px-5">
                 Previous Page
@@ -82,6 +93,7 @@ const Error = () => {
           </div>
         </div>
       </div>
+      <Footer />
     </>
   );
 };

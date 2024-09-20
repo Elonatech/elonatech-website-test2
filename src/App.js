@@ -38,6 +38,7 @@ const Time = lazy(() => import("./components/time/time"));
 const News = lazy(() => import("./components/news/News"));
 const Trends = lazy(() => import("./components/trends/Trends"));
 const Blog = lazy(()=>import("./components/blog/blog"))
+// const SingleProduct = lazy(()=>import("./pages/sales/singleProduct/singleProduct"))
 
 // =================================================
 
@@ -410,6 +411,11 @@ const router = createBrowserRouter([
       },
 
       //============================================= sales
+
+  {path: "/product/:id/:name",
+   element: <SingleProduct/>},
+
+
 
       {
         path: "/computers",
